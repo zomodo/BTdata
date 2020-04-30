@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>百推数据 | 登陆</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="{% static 'css/all.min.css' %}">
+    <!-- icheck bootstrap -->
+    <link rel="stylesheet" href="{% static 'css/icheck-bootstrap.min.css' %}">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="{% static 'css/adminlte.min.css' %}">
+    <!-- Toastr -->
+    <link rel="stylesheet" href="{% static 'css/toastr.min.css' %}">
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap-4.min.css' %}">
+
+</head>
+
+<body class="hold-transition login-page">
+
+<div class="login-box">
+    <div class="login-logo">
+        <a href="/">百推数据中心</a>
+    </div>
+  <!-- /.login-logo -->
+    <div class="card">
+        <div class="card-body login-card-body">
+            <!-- p class="login-box-msg">Sign in to start your session</p-->
+
+            <form action="{% url 'login' %}" method="post">
+                {% csrf_token %}
+                <label class="font-weight-lighter">用户名</label>
+                <div class="input-group mb-3">
+                    {{ form.username }}
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-user"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <label class="font-weight-lighter">密码</label>
+                <div class="input-group mb-3">
+                    {{ form.password }}
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-lock"></span>
+                        </div>
+                    </div>
+                </div>
+
+              <!-- /.col -->
+                <div class="row">
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary btn-block">登 录</button>
+                    </div>
+                <!-- /.col -->
+                </div>
+            </form>
+
+        </div>
+    <!-- /.login-card-body -->
+    </div>
+</div>
+<!-- /.login-box -->
+
+<!-- jQuery -->
+<script src="{% static 'js/jquery.min.js' %}"></script>
+<!-- Bootstrap 4 -->
+<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+<!-- AdminLTE App -->
+<script src="{% static 'js/adminlte.min.js' %}"></script>
+<script src="{% static 'js/toastr.min.js' %}"></script>
+<script src="{% static 'js/sweetalert2.min.js' %}"></script>
+
+<script>
+    $(function() {
+        var message={{ message|safe }};
+        if(message!=='success'){
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top',
+                showConfirmButton: false,
+                timer: 3000
+            });
+
+            Toast.fire({
+                icon: 'error',
+                title: message,
+            });
+        }
+    });
+</script>
+
+</body>
+</html>
