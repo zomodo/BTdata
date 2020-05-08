@@ -48,3 +48,6 @@ class PermissionAdmin(ImportExportModelAdmin):
 class MenuAdmin(ImportExportModelAdmin):
     list_display = ['title','parent']
 
+
+admin.site.site_title='百推数据后台管理'
+admin.site.site_header='百推数据后台管理'

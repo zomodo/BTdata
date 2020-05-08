@@ -8,12 +8,15 @@ class AccountResource(resources.ModelResource):
     userid=fields.Field(column_name='账户ID',attribute='userid')
     username = fields.Field(column_name='账户名称', attribute='username')
     company_name= fields.Field(column_name='公司名称', attribute='company_name')
+    account_indus_1=fields.Field(column_name='账户一级行业', attribute='account_indus_1')
+    account_indus_2=fields.Field(column_name='账户二级行业', attribute='account_indus_2')
     account_status= fields.Field(column_name='账户状态', attribute='account_status')
     signup_date=fields.Field(column_name='开户日期',attribute='signup_date')
     feed_firstdate = fields.Field(column_name='自主投放首次消费日', attribute='feed_firstdate')
     account_firstdate= fields.Field(column_name='账户首次消费日', attribute='account_firstdate')
     allbalance= fields.Field(column_name='推广总余额', attribute='allbalance')
     website_url = fields.Field(column_name='网站URL', attribute='website_url')
+    sf_username=fields.Field(column_name='SF对应二级账号', attribute='sf_username')
     administrator = fields.Field(column_name='管理员', attribute='administrator')
     order_line = fields.Field(column_name='订单行', attribute='order_line')
     is_rebate = fields.Field(column_name='高返标识', attribute='is_rebate')
@@ -41,13 +44,15 @@ class AccountResource(resources.ModelResource):
 
     class Meta:
         model=models.Account
-        skip_diff =True
+        skip_diff=True
+        skip_unchanged = True
+        report_skipped = False
 
 
 class TotalResource(resources.ModelResource):
     date = fields.Field(column_name='日期', attribute='date')
     userid=fields.Field(column_name='账户ID', attribute='userid')
-    username=fields.Field(column_name='账户ID', attribute='username')
+    username=fields.Field(column_name='账户名称', attribute='username')
     customer_indus_1=fields.Field(column_name='客户一级行业', attribute='customer_indus_1')
     customer_indus_2=fields.Field(column_name='客户二级行业', attribute='customer_indus_2')
     account_indus_1=fields.Field(column_name='账户一级行业', attribute='account_indus_1')
@@ -62,6 +67,7 @@ class TotalResource(resources.ModelResource):
     allconsume = fields.Field(column_name='总消费', attribute='allconsume')
     searchconsume = fields.Field(column_name='搜索点击消费', attribute='searchconsume')
 
+
     def before_import_row(self, row, **kwargs):
         row['日期'] = datetime.strptime(row['data_flag'], "%Y%m%d").date()
         
@@ -70,3 +76,77 @@ class TotalResource(resources.ModelResource):
     class Meta:
         model=models.Total
         skip_diff=True
+        skip_unchanged = True
+        report_skipped = False
+
+class FeedResource(resources.ModelResource):
+    date = fields.Field(column_name='日期', attribute='date')
+    userid=fields.Field(column_name='账户ID', attribute='userid')
+    username=fields.Field(column_name='账户名称', attribute='username')
+    account_indus_1=fields.Field(column_name='账户一级行业', attribute='account_indus_1')
+    account_indus_2=fields.Field(column_name='账户二级行业', attribute='account_indus_2')
+    sf_username = fields.Field(column_name='SF对应二级账号', attribute='sf_username')
+    order_line=fields.Field(column_name='订单行', attribute='order_line')
+    feed_ald_consume=fields.Field(column_name='原生阿拉丁消费', attribute='feed_ald_consume')
+    feed_cpc_consume=fields.Field(column_name='原生CPC消费', attribute='feed_cpc_consume')
+    feed_cpm_consume=fields.Field(column_name='原生CPM消费', attribute='feed_cpm_consume')
+    baiyi_feed=fields.Field(column_name='百意Feed消费', attribute='baiyi_feed')
+    baiyi_wi_cpc=fields.Field(column_name='百意无线开屏CPC消费', attribute='baiyi_wi_cpc')
+    baiyi_feedGD=fields.Field(column_name='百意FeedGD消费', attribute='baiyi_feedGD')
+    feed_allconsume=fields.Field(column_name='原生总消费', attribute='feed_allconsume')
+
+    def before_import_row(self, row, **kwargs):
+        row['日期']=datetime.strptime(row['data_flag'], "%Y%m%d").date()
+        all_feed=float(row['原生阿拉丁消费'])+float(row['原生CPC消费'])+float(row['原生CPM消费'])+\
+                 float(row['百意Feed消费'])+float(row['百意无线开屏CPC消费'])+float(row['百意FeedGD消费'])
+
+        row['原生总消费']=all_feed
+        return super(FeedResource, self).before_import_row(row,**kwargs)
+
+    class Meta:
+        model=models.Feed
+        skip_diff=True
+        skip_unchanged = True
+        report_skipped = False
+
+class OtherProResource(resources.ModelResource):
+    date = fields.Field(column_name='日期', attribute='date')
+    userid=fields.Field(column_name='账户ID', attribute='userid')
+    username=fields.Field(column_name='账户名称', attribute='username')
+    account_indus_1=fields.Field(column_name='账户一级行业', attribute='account_indus_1')
+    account_indus_2=fields.Field(column_name='账户二级行业', attribute='account_indus_2')
+    sf_username = fields.Field(column_name='SF对应二级账号', attribute='sf_username')
+    order_line=fields.Field(column_name='订单行', attribute='order_line')
+    feed_gd_consume=fields.Field(column_name='原生GD消费', attribute='feed_gd_consume')
+    qipaoxian_consume=fields.Field(column_name='品牌起跑线消费', attribute='qipaoxian_consume')
+    jvping_search=fields.Field(column_name='凤巢聚屏消费', attribute='jvping_search')
+    jvping_contract=fields.Field(column_name='聚屏平台合约消费', attribute='jvping_contract')
+    jvping_compete=fields.Field(column_name='聚屏平台竞价消费', attribute='jvping_compete')
+    huabiao_consume=fields.Field(column_name='品牌华表消费', attribute='huabiao_consume')
+    pic_consume=fields.Field(column_name='图片推广消费', attribute='pic_consume')
+    zhuanqu_consume=fields.Field(column_name='品牌专区消费', attribute='zhuanqu_consume')
+    silu_consume=fields.Field(column_name='品牌丝路消费', attribute='silu_consume')
+    zhishi_consume=fields.Field(column_name='知识营销消费', attribute='zhishi_consume')
+    kaiping_consume=fields.Field(column_name='手百开屏消费', attribute='kaiping_consume')
+    feibiao_consume=fields.Field(column_name='非标消费', attribute='feibiao_consume')
+    quanjing_consume=fields.Field(column_name='品牌全景消费', attribute='quanjing_consume')
+    xuzhang_consume=fields.Field(column_name='品牌序章消费', attribute='xuzhang_consume')
+    jvping_allconsume=fields.Field(column_name='聚屏总消费', attribute='jvping_allconsume')
+    op_allconsume=fields.Field(column_name='品牌总消费', attribute='op_allconsume')
+
+    def before_import_row(self, row, **kwargs):
+        row['日期']=datetime.strptime(row['data_flag'], "%Y%m%d").date()
+        row['聚屏总消费']=float(row['凤巢聚屏消费'])+float(row['聚屏平台合约消费'])+float(row['聚屏平台竞价消费'])
+        all_op=float(row['原生GD消费'])+float(row['品牌起跑线消费'])+float(row['品牌华表消费'])+float(row['图片推广消费'])+\
+               float(row['品牌专区消费'])+float(row['品牌丝路消费'])+float(row['知识营销消费'])+float(row['手百开屏消费'])+\
+               float(row['非标消费'])+float(row['品牌全景消费'])+float(row['品牌序章消费'])+float(row['聚屏总消费'])
+
+        row['品牌总消费']=all_op
+        return super(OtherProResource, self).before_import_row(row,**kwargs)
+
+    class Meta:
+        model=models.OtherPro
+        skip_diff=True
+        skip_unchanged = True
+        report_skipped = False
+

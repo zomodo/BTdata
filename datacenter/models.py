@@ -30,15 +30,26 @@ class Total(models.Model):
     def __str__(self):
         return self.username
 
+    @classmethod
+    def get_latest_date(cls):
+        return cls.objects.latest().date
+
 
 class Feed(models.Model):
     date=models.DateField(verbose_name='日期')
     userid=models.CharField(max_length=16,verbose_name='账户ID')
     username=models.CharField(max_length=128, verbose_name='账户名称')
+    account_indus_1=models.CharField(max_length=16,null=True,blank=True,verbose_name='账户一级行业')
+    account_indus_2=models.CharField(max_length=16,null=True,blank=True,verbose_name='账户二级行业')
+    sf_username = models.CharField(max_length=32, verbose_name='SF二级账号')
     order_line=models.CharField(max_length=16, null=True,blank=True,verbose_name='订单行')
     feed_ald_consume=models.DecimalField(max_digits=10,decimal_places=2,verbose_name='原生阿拉丁')
     feed_cpc_consume=models.DecimalField(max_digits=10,decimal_places=2,verbose_name='原生CPC消费')
-    feed_cpm_consume = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='原生CPM消费')
+    feed_cpm_consume=models.DecimalField(max_digits=10, decimal_places=2,verbose_name='原生CPM消费')
+    baiyi_feed=models.DecimalField(max_digits=10, decimal_places=2,verbose_name='百意Feed消费')
+    baiyi_wi_cpc=models.DecimalField(max_digits=10, decimal_places=2,verbose_name='百意无线开屏CPC消费')
+    baiyi_feedGD=models.DecimalField(max_digits=10, decimal_places=2,verbose_name='百意FeedGD消费')
+    feed_allconsume=models.DecimalField(max_digits=10,decimal_places=2,verbose_name='原生总消费')
 
     class Meta:
         verbose_name=verbose_name_plural='信息流数据'
@@ -55,12 +66,15 @@ class Account(models.Model):
     userid=models.CharField(max_length=16,verbose_name='账户ID')
     username=models.CharField(max_length=128, verbose_name='账户名称')
     company_name=models.CharField(max_length=128,null=True,blank=True,verbose_name='公司名称')
+    account_indus_1=models.CharField(max_length=16,null=True,blank=True,verbose_name='账户一级行业')
+    account_indus_2=models.CharField(max_length=16,null=True,blank=True,verbose_name='账户二级行业')
     account_status=models.CharField(max_length=16,null=True,blank=True,verbose_name='账户状态')
     signup_date=models.DateField(verbose_name='开户日期',null=True,blank=True)
     feed_firstdate=models.DateField(verbose_name='自主投放首消日',null=True,blank=True)
     account_firstdate=models.DateField(verbose_name='账户首消日',null=True,blank=True)
     allbalance=models.DecimalField(null=True,blank=True,max_digits=10,decimal_places=2,verbose_name='推广总余额')
-    website_url=models.URLField(max_length=128,verbose_name='网站URL')
+    website_url=models.CharField(max_length=128,verbose_name='网站URL')
+    sf_username = models.CharField(max_length=32, verbose_name='SF二级账号')
     administrator=models.CharField(max_length=64,verbose_name='管理员')
     order_line=models.CharField(max_length=16,null=True,blank=True,verbose_name='订单行')
     is_rebate=models.CharField(max_length=8,verbose_name='是否高返')
@@ -80,6 +94,9 @@ class OtherPro(models.Model):
     date=models.DateField(verbose_name='日期')
     userid=models.CharField(max_length=16,verbose_name='账户ID')
     username=models.CharField(max_length=128, verbose_name='账户名称')
+    account_indus_1=models.CharField(max_length=16,null=True,blank=True,verbose_name='账户一级行业')
+    account_indus_2=models.CharField(max_length=16,null=True,blank=True,verbose_name='账户二级行业')
+    sf_username = models.CharField(max_length=32, verbose_name='SF二级账号')
     order_line=models.CharField(max_length=16,null=True,blank=True,verbose_name='订单行')
     feed_gd_consume=models.DecimalField(max_digits=10,decimal_places=2,verbose_name='原生GD消费')
     qipaoxian_consume=models.DecimalField(max_digits=10,decimal_places=2,verbose_name='品牌起跑线消费')
@@ -95,6 +112,8 @@ class OtherPro(models.Model):
     feibiao_consume=models.DecimalField(max_digits=10, decimal_places=2, verbose_name='非标消费')
     quanjing_consume=models.DecimalField(max_digits=10, decimal_places=2, verbose_name='品牌全景消费')
     xuzhang_consume=models.DecimalField(max_digits=10, decimal_places=2, verbose_name='品牌序章消费')
+    jvping_allconsume=models.DecimalField(max_digits=10, decimal_places=2, verbose_name='聚屏总消费')
+    op_allconsume=models.DecimalField(max_digits=10, decimal_places=2, verbose_name='品牌总消费')
 
     class Meta:
         verbose_name=verbose_name_plural='品牌类数据'

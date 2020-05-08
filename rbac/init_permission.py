@@ -36,6 +36,7 @@ def init_permission(request, user_obj):
         else:
             permission_action_dict[item['permissions__url']] = [item['permissions__action__code'], ]
 
+    request.session[settings.SESSION_USER_INFO]={'id':user_obj.id,'username':user_obj.username,'realname':user_obj.realname}
 
     request.session[settings.SESSION_PERMISSION_URL_KEY] = permission_url_list
 

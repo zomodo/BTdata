@@ -18,12 +18,16 @@ from django.urls import path
 from django.urls import include
 
 from rbac import views as rbac_views
+from datacenter import views as data_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('',rbac_views.index),
     path('login/',rbac_views.login,name='login'),
     path('logout/',rbac_views.logout,name='logout'),
     path('index/',rbac_views.index,name='index'),
-    path('indus1/',rbac_views.indus1,name='indus1'),
-    path('alldata/',rbac_views.alldata,name='alldata'),
+    path('contact/',rbac_views.contact,name='contact'),
+
+    path('summary/',data_views.summary,name='summary'),
+
 ]

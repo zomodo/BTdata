@@ -40,10 +40,10 @@ def logout(request):
     return redirect(reverse('login'))
 
 def index(request):
-    return render(request,'rbac/index.html')
+    context = {'mark':'index'}
+    return render(request,'rbac/index.html',context)
 
-def indus1(request):
-    return render(request,'rbac/indus1.html')
+def contact(request):
+    context = {'mark': 'contact'}
+    return render(request,'rbac/contact.html',context)
 
-def alldata(request):
-    return render(request,'rbac/alldata.html')
