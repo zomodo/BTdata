@@ -29,5 +29,6 @@ urlpatterns = [
     path('contact/',rbac_views.contact,name='contact'),
 
     path('summary/',data_views.summary,name='summary'),
+    path('summary_chart/',data_views.summary_chart,name='summary_chart'),
 
 ]

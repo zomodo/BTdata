@@ -18,6 +18,8 @@
 
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="{% static 'css/all.min.css' %}">
+    <!-- overlayScrollbars -->
+    <link rel="stylesheet" href="{% static 'css/OverlayScrollbars.min.css' %}">
     <!-- Theme style -->
     <link rel="stylesheet" href="{% static 'css/adminlte.min.css' %}">
     <!-- ICON -->
@@ -29,7 +31,7 @@
 </head>
 
 
-<body class="hold-transition sidebar-mini">
+<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 
 <div class="wrapper">
     <!-- Navbar -->
@@ -114,7 +116,7 @@
     <!-- Main Sidebar Container -->
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
         <!-- Brand Logo -->
-        <a href="#" class="brand-link">
+        <a href="" class="brand-link">
             <img src="{% static 'img/AdminLTELogo.png' %}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
             style="opacity: .8">
             <span class="brand-text font-weight-light">百推数据中心</span>
@@ -175,10 +177,12 @@
 
                 {% endblock %}
 
-            </div><!-- /.container-fluid -->
+            </div>
+            <!-- /.container-fluid -->
         </div>
         <!-- /.content -->
-    </div><!-- /.content-wrapper -->
+    </div>
+    <!-- /.content-wrapper -->
 
     <!-- Control Sidebar -->
     <aside class="control-sidebar control-sidebar-dark">
@@ -210,6 +214,8 @@
 <script src="{% static 'js/jquery.min.js' %}"></script>
 <!-- Bootstrap 4 -->
 <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+<!-- overlayScrollbars -->
+<script src="{% static 'js/jquery.overlayScrollbars.min.js' %}"></script>
 <!-- AdminLTE App -->
 <script src="{% static 'js/adminlte.min.js' %}"></script>
 
