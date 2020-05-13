@@ -164,8 +164,6 @@ SAFE_URL = [
     '/admin/.*',
     '/logout/',
 
-    '/summary_chart/',
-
 ]
 # 配置顶部导航的URL
 NAV_URL = [

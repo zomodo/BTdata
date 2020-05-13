@@ -15,7 +15,8 @@
 
         {% endblock %}
     </title>
-
+    <!-- jQuery -->
+    <script src="{% static 'js/jquery.min.js' %}"></script>
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="{% static 'css/all.min.css' %}">
     <!-- overlayScrollbars -->
@@ -198,7 +199,7 @@
     <footer class="main-footer" style="padding: 0.8rem">
         <!-- To the right -->
         <div class="float-right d-none d-sm-inline">
-            这里添加分享
+            <a href="/admin/" class="text-sm"><span class="fas fa-sign-in-alt"></span> 进入后台</a>
         </div>
         <!-- Default to the left -->
         <span class="text-sm">All rights reserved | 本站由业务运营部-数据部运营. 更多信息与疑问请百度Hi

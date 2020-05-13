@@ -27,8 +27,12 @@ urlpatterns = [
     path('logout/',rbac_views.logout,name='logout'),
     path('index/',rbac_views.index,name='index'),
     path('contact/',rbac_views.contact,name='contact'),
-
-    path('summary/',data_views.summary,name='summary'),
-    path('summary_chart/',data_views.summary_chart,name='summary_chart'),
+    # 第一栏
+    path('allconsume/',data_views.allconsume,name='allconsume'),
+    path('allconsume_chart/',data_views.allconsume_chart,name='allconsume_chart'),
+    path('allaccount/',data_views.allaccount,name='allaccount'),
+    path('allaccount_chart/',data_views.allaccount_chart,name='allaccount_chart'),
+    #第二栏
+    path('more_all/',data_views.more_all,name='more_all'),
 
 ]

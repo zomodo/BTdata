@@ -1,0 +1,488 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}
+    整体消费
+{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+
+    <script src="https://code.highcharts.com.cn/highcharts/highcharts.js"></script>
+    <script src="https://code.highcharts.com.cn/highcharts/modules/exporting.js"></script>
+    <script src="https://img.hcharts.cn/highcharts-plugins/highcharts-zh_CN.js"></script>
+
+{% endblock %}
+
+{% block start-title %}
+    整体消费&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-md">{{ today_consume.date }}</span>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-lg-3 col-6">
+            <!-- CARD 1 -->
+            <div class="card bg-info">
+                <div class="card-header">
+                    <h3 class="card-title">总消费</h3>&nbsp;
+                    <span class="fa fa-question-circle" title="纳入业绩考核指标数据汇总"></span>
+
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card-body" style="padding: 0;">
+
+                    <!-- small box -->
+                    <div class="small-box bg-info" style="margin-bottom: 0;">
+                        <div class="inner">
+                            <h3>{{ today_consume.allconsume | floatformat:2 | intcomma }}</h3>
+                            <span class="text-sm">环比：<b class="compare">{{ compare_l1.allconsume_compare_l1 }}</b></span><br>
+                            <span class="text-sm">同比：<b class="compare">{{ compare_l7.allconsume_compare_l7 }}</b></span>
+                        </div>
+                        <div class="icon">
+                            <i class="ion ion-stats-bars"></i>
+                        </div>
+                        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+        </div>
+        <!-- ./col -->
+
+        <div class="col-lg-3 col-6">
+            <!-- CARD 2 -->
+            <div class="card bg-success">
+                <div class="card-header">
+                    <h3 class="card-title">搜索点击消费</h3>&nbsp;
+                    <span class="fa fa-question-circle" title="搜索点击消费"></span>
+
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card-body" style="padding: 0;">
+
+                    <!-- small box -->
+                    <div class="small-box bg-success" style="margin-bottom: 0;">
+                        <div class="inner">
+                            <h3>{{ today_consume.searchconsume | floatformat:2 | intcomma }}</h3>
+                            <span class="text-sm">环比：<b class="compare">{{ compare_l1.searchconsume_compare_l1 }}</b></span><br>
+                            <span class="text-sm">同比：<b class="compare">{{ compare_l7.searchconsume_compare_l7 }}</b></span>
+                        </div>
+                        <div class="icon">
+                            <i class="ion ion-pie-graph"></i>
+                        </div>
+                        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+        </div>
+        <!-- ./col -->
+
+        <div class="col-lg-3 col-6">
+            <!-- CARD 3 -->
+            <div class="card bg-warning">
+                <div class="card-header">
+                    <h3 class="card-title">信息流消费</h3>&nbsp;
+                    <span class="fa fa-question-circle" title="原生CPC、原生CPM、原生阿拉丁、百意Feed、百意Feed GD、百意无线开屏CPC产品线的业绩收入合计"></span>
+
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card-body" style="padding: 0;">
+
+                    <!-- small box -->
+                    <div class="small-box bg-warning" style="margin-bottom: 0;">
+                        <div class="inner">
+                            <h3>{{ today_consume.feedconsume | floatformat:2 | intcomma }}</h3>
+                            <span class="text-sm">环比：<b class="compare">{{ compare_l1.feedconsume_compare_l1 }}</b></span><br>
+                            <span class="text-sm">同比：<b class="compare">{{ compare_l7.feedconsume_compare_l7 }}</b></span>
+                        </div>
+                        <div class="icon">
+                            <i class="ion ion-map"></i>
+                        </div>
+                        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+        </div>
+        <!-- ./col -->
+
+        <div class="col-lg-3 col-6">
+            <!-- CARD 4 -->
+            <div class="card bg-gradient-blue">
+                <div class="card-header">
+                    <h3 class="card-title">品牌消费</h3>&nbsp;
+                    <span class="fa fa-question-circle" title="原生GD、品牌起跑线、品牌华表、品牌专区、品牌丝路、聚屏（聚屏平台合约、聚屏平台竞价、凤巢聚屏）、手百开屏、品牌全景、品牌序章、图片推广、知识营销、非标等产品线的业绩收入合计"></span>
+
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card-body" style="padding: 0;">
+
+                    <!-- small box -->
+                    <div class="small-box bg-gradient-blue" style="margin-bottom: 0;">
+                        <div class="inner">
+                            <h3>{{ today_consume.opconsume | floatformat:2 | intcomma }}</h3>
+                            <span class="text-sm">环比：<b class="compare">{{ compare_l1.opconsume_compare_l1 }}</b></span><br>
+                            <span class="text-sm">同比：<b class="compare">{{ compare_l7.opconsume_compare_l7 }}</b></span>
+                        </div>
+                        <div class="icon">
+                            <i class="ion ion-speedometer"></i>
+                        </div>
+                        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+        </div>
+        <!-- ./col -->
+
+    </div>
+
+    <div class="row">
+
+        <!-- allconsume chart -->
+        <div class="col-md-6">
+            <!-- Line chart -->
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">总消费</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-times"></i></button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div id="container-all" style="min-width:300px;height:300px"></div>
+                </div>
+            <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+        </div>
+        <!-- /.col-md-6 -->
+
+        <!-- searchconsume chart -->
+        <div class="col-md-6">
+            <!-- Line chart -->
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">搜索点击消费</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-times"></i></button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div id="container-search" style="min-width:300px;height:300px"></div>
+                </div>
+            <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+        </div>
+        <!-- /.col-md-6 -->
+
+    </div>
+    <!-- /.row -->
+
+    <div class="row">
+
+        <!-- feedconsume chart -->
+        <div class="col-md-6">
+            <!-- Line chart -->
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">信息流消费</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-times"></i></button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div id="container-feed" style="min-width:300px;height:300px"></div>
+                </div>
+            <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+        </div>
+        <!-- /.col-md-6 -->
+
+        <!-- opconsume chart -->
+        <div class="col-md-6">
+            <!-- Line chart -->
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">品牌消费</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-times"></i></button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div id="container-op" style="min-width:300px;height:300px"></div>
+                </div>
+            <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+        </div>
+        <!-- /.col-md-6 -->
+    </div>
+    <!-- /.row -->
+
+{% endblock %}
+
+
+<!-- js -->
+{% block script %}
+
+    <script>
+
+        // 给同环比添加颜色
+        $('.compare').each(function(){
+            var c=$(this).text();
+            float_c=parseFloat(c.replace('%',''));
+            if(float_c<0){
+                $(this).css('color','cyan');
+            }
+            else {
+                $(this).text('+'+c);
+                $(this).css('color','orange');
+            }
+        });
+
+        // 绘图数据
+        $(function () {
+
+            $.post("{% url 'allconsume_chart' %}",{csrfmiddlewaretoken:'{{ csrf_token }}'},function (ret) {
+
+                // allconsume start
+                var chart1 = Highcharts.chart('container-all', {
+                    chart: {
+                        type: 'spline'
+                    },
+                    title: {
+                        text: ''
+                    },
+                    subtitle: {
+                        text: ''
+                    },
+                    xAxis: {
+                        categories: ret['date'],
+                    },
+                    yAxis: {
+                        title: {
+                            text: ''
+                        },
+                        labels: {
+                            formatter: function () {
+                                return this.value + '元';
+                            }
+                        }
+                    },
+                    tooltip: {
+                        crosshairs: true,
+                        shared: true
+                    },
+                    plotOptions: {
+                        spline: {
+                            marker: {
+                                radius: 3,
+                                lineColor: '#666666',
+                                lineWidth: 1
+                            }
+                        }
+                    },
+                    series: [{
+                        name: '消费',
+                        showInLegend: false, //隐藏图例
+                        marker: {
+                            symbol: 'circle'
+                        },
+                        data: ret['allconsume']
+                    },]
+                });
+                // allconsume end
+
+                // searchconsume start
+                var chart2 = Highcharts.chart('container-search', {
+                    chart: {
+                        type: 'spline'
+                    },
+                    title: {
+                        text: ''
+                    },
+                    subtitle: {
+                        text: ''
+                    },
+                    xAxis: {
+                        categories: ret['date'],
+                    },
+                    yAxis: {
+                        title: {
+                            text: ''
+                        },
+                        labels: {
+                            formatter: function () {
+                                return this.value + '元';
+                            }
+                        }
+                    },
+                    tooltip: {
+                        crosshairs: true,
+                        shared: true
+                    },
+                    plotOptions: {
+                        spline: {
+                            marker: {
+                                radius: 3,
+                                lineColor: '#666666',
+                                lineWidth: 1
+                            }
+                        }
+                    },
+                    series: [{
+                        name: '消费',
+                        showInLegend: false, //隐藏图例
+                        marker: {
+                            symbol: 'circle'
+                        },
+                        data: ret['searchconsume']
+                    },]
+                });
+                // searchconsume end
+
+                // feedconsume start
+                var chart3 = Highcharts.chart('container-feed', {
+                    chart: {
+                        type: 'spline'
+                    },
+                    title: {
+                        text: ''
+                    },
+                    subtitle: {
+                        text: ''
+                    },
+                    xAxis: {
+                        categories: ret['date'],
+                    },
+                    yAxis: {
+                        title: {
+                            text: ''
+                        },
+                        labels: {
+                            formatter: function () {
+                                return this.value + '元';
+                            }
+                        }
+                    },
+                    tooltip: {
+                        crosshairs: true,
+                        shared: true
+                    },
+                    plotOptions: {
+                        spline: {
+                            marker: {
+                                radius: 3,
+                                lineColor: '#666666',
+                                lineWidth: 1
+                            }
+                        }
+                    },
+                    series: [{
+                        name: '消费',
+                        showInLegend: false, //隐藏图例
+                        marker: {
+                            symbol: 'circle'
+                        },
+                        data: ret['feedconsume']
+                    },]
+                });
+                // feedconsume end
+
+                // opconsume start
+                var chart4 = Highcharts.chart('container-op', {
+                    chart: {
+                        type: 'spline'
+                    },
+                    title: {
+                        text: ''
+                    },
+                    subtitle: {
+                        text: ''
+                    },
+                    xAxis: {
+                        categories: ret['date'],
+                    },
+                    yAxis: {
+                        title: {
+                            text: ''
+                        },
+                        labels: {
+                            formatter: function () {
+                                return this.value + '元';
+                            }
+                        }
+                    },
+                    tooltip: {
+                        crosshairs: true,
+                        shared: true
+                    },
+                    plotOptions: {
+                        spline: {
+                            marker: {
+                                radius: 3,
+                                lineColor: '#666666',
+                                lineWidth: 1
+                            }
+                        }
+                    },
+                    series: [{
+                        name: '消费',
+                        showInLegend: false, //隐藏图例
+                        marker: {
+                            symbol: 'circle'
+                        },
+                        data: ret['opconsume']
+                    },]
+                });
+                // opconsume end
+
+            })
+
+        });
+
+    </script>
+
+
+{% endblock %}
+

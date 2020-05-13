@@ -19,7 +19,8 @@ class PermissionAdminForm(forms.ModelForm):
     )
 
     menu=forms.ModelChoiceField(
-        queryset=models.Menu.objects.all()
+        queryset=models.Menu.objects.all(),
+        required=False,
     )
 
     class Meta:
