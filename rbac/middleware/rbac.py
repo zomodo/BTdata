@@ -26,11 +26,6 @@ class RbacMiddleware(MiddlewareMixin):
     def process_request(self, request):
         request_url = request.path_info
         permission_url = request.session.get(settings.SESSION_PERMISSION_URL_KEY)
-        # 把导航栏的url添加进去，登陆后可访问
-        if permission_url:
-            for url in settings.NAV_URL:
-                permission_url.append(url)
-
         # print('访问url',request_url)
         # print('权限--',permission_url)
 

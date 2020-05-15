@@ -135,10 +135,41 @@
                 </div>
             </div>
 
-            <!-- 目录标签 -->
-            {% block menu %}
-            {% menu_html request %}
-            {% endblock %}
+
+            <!-- Sidebar Menu -->
+            <nav class="mt-2">
+                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+
+                    <!-- 目录标签 -->
+                    {% if request.session.user_info %}
+                        {% block menu %}
+                        {% menu_html request %}
+                        {% endblock %}
+                    {% endif %}
+
+                    <li class="nav-item has-treeview">
+                        <a href="#" class="nav-link">
+                            <i class="nav-icon fas fa-tachometer-alt"></i>
+                            <p>行业数据<i class="right fas fa-angle-left"></i></p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{% url 'industry_1' %}" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>一级行业</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{% url 'industry_2' %}" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>二级行业</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                </ul>
+            </nav>
 
         </div>
     <!-- /.sidebar -->

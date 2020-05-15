@@ -25,7 +25,7 @@ SECRET_KEY = 'g)phjngz8r5$0z&+d3mz36tl7#l1o!4@aem_dz@$vrxr-jc7fb'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'debug_toolbar',            # 引入django-debug-toolbar优化性能
 
     'BTdata',
     'rbac',
@@ -59,7 +61,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
-    'rbac.middleware.rbac.RbacMiddleware',  # 添加rbac中间件
+    'rbac.middleware.rbac.RbacMiddleware',      # 添加rbac中间件
+    'debug_toolbar.middleware.DebugToolbarMiddleware',      # django-debug-toolbar中间件
 ]
 
 ROOT_URLCONF = 'BTdata.urls'
@@ -163,10 +166,34 @@ SAFE_URL = [
     '/login/',
     '/admin/.*',
     '/logout/',
+    '/__debug__/',      # django-debug-toolbar的url
 
-]
-# 配置顶部导航的URL
-NAV_URL = [
     '/index/',
     '/contact/',
+
+    '/industry_1/',
+    '/industry_2/',
 ]
+
+# 配置django-debug-toolbar
+INTERNAL_IPS = ['127.0.0.1',]    # 如果是本机调试，还在将127.0.0.1加入 INTERNAL_IPS
+
+DEBUG_TOOLBAR_PANELS = [
+
+    # 默认的panel
+    'debug_toolbar.panels.versions.VersionsPanel',
+    'debug_toolbar.panels.timer.TimerPanel',
+    'debug_toolbar.panels.settings.SettingsPanel',
+    'debug_toolbar.panels.headers.HeadersPanel',
+    'debug_toolbar.panels.sql.SQLPanel',
+    'debug_toolbar.panels.staticfiles.StaticFilesPanel',
+    'debug_toolbar.panels.templates.TemplatesPanel',
+    'debug_toolbar.panels.cache.CachePanel',
+    'debug_toolbar.panels.signals.SignalsPanel',
+    'debug_toolbar.panels.logging.LoggingPanel',
+    'debug_toolbar.panels.redirects.RedirectsPanel',
+]
+# 如果上方的debug_toolbar配置展示不出来，可以修改JQUERY_URL为国内的CDN地址
+DEBUG_TOOLBAR_CONFIG = {
+    'JQUERY_URL':'https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js',
+}

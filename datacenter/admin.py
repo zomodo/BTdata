@@ -25,3 +25,7 @@ class TotalAdmin(ImportExportModelAdmin):
 class OtherProAdmin(ImportExportModelAdmin):
     resource_class = OtherProResource
     list_display = ['date','username','account_indus_1','account_indus_2','op_allconsume']
+
+@admin.register(models.QuarterTask)
+class QuarterTaskAdmin(ImportExportModelAdmin):
+    list_display = ['date','name','qconsume_task']

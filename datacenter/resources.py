@@ -40,6 +40,10 @@ class AccountResource(resources.ModelResource):
         else:
             row['账户首次消费日']=None
 
+        # 修改那些账户ID为0的数据，重命名为'op'+订单行
+        if row['账户ID']=='0':
+            row['账户ID']='op'+row['订单行']
+
         return super(AccountResource, self).before_import_row(row,**kwargs)
 
     class Meta:
@@ -70,6 +74,10 @@ class TotalResource(resources.ModelResource):
 
     def before_import_row(self, row, **kwargs):
         row['日期'] = datetime.strptime(row['data_flag'], "%Y%m%d").date()
+
+        # 修改那些账户ID为0的数据，重命名为'op'+订单行
+        if row['账户ID']=='0':
+            row['账户ID']='op'+row['订单行']
         
         return super(TotalResource, self).before_import_row(row,**kwargs)
         
@@ -101,6 +109,11 @@ class FeedResource(resources.ModelResource):
                  float(row['百意Feed消费'])+float(row['百意无线开屏CPC消费'])+float(row['百意FeedGD消费'])
 
         row['原生总消费']=all_feed
+
+        # 修改那些账户ID为0的数据，重命名为'op'+订单行
+        if row['账户ID']=='0':
+            row['账户ID']='op'+row['订单行']
+
         return super(FeedResource, self).before_import_row(row,**kwargs)
 
     class Meta:
@@ -142,6 +155,11 @@ class OtherProResource(resources.ModelResource):
                float(row['非标消费'])+float(row['品牌全景消费'])+float(row['品牌序章消费'])+float(row['聚屏总消费'])
 
         row['品牌总消费']=all_op
+
+        # 修改那些账户ID为0的数据，重命名为'op'+订单行
+        if row['账户ID']=='0':
+            row['账户ID']='op'+row['订单行']
+
         return super(OtherProResource, self).before_import_row(row,**kwargs)
 
     class Meta:

@@ -1,15 +1,21 @@
 from django.shortcuts import render
 from django.http import HttpResponse,JsonResponse
 import datetime
+import calendar
 from datacenter import models
 
 from django.db.models import Sum,Count,Avg
 # Create your views here.
 
+# 计算日环比，周同比数据，抽取出来
+def ratio_day_week():
+    pass
+
+
 # 总消费
 def allconsume(request):
     # 数据最新日期
-    latest_date=models.Total.get_latest_date()
+    latest_date=models.Account.get_latest_date()
     # 前一天日期，做环比
     yesterday=latest_date+datetime.timedelta(days=-1)
     # 前七天日期，做同比
@@ -82,7 +88,7 @@ def allconsume(request):
 # 总消费-图表
 def allconsume_chart(request):
     # 数据最新日期
-    latest_date = models.Total.get_latest_date()
+    latest_date = models.Account.get_latest_date()
     # 前30天日期，做曲线图
     last30_date=latest_date+datetime.timedelta(days=-13)
 
@@ -126,7 +132,7 @@ def allconsume_chart(request):
 # 处理有消费账户数
 def allaccount(request):
     # 数据最新日期
-    latest_date=models.Total.get_latest_date()
+    latest_date=models.Account.get_latest_date()
     # 前一天日期，做环比
     yesterday=latest_date+datetime.timedelta(days=-1)
     # 前七天日期，做同比
@@ -194,7 +200,7 @@ def allaccount(request):
 # 有消费账户数-图表
 def allaccount_chart(request):
     # 数据最新日期
-    latest_date = models.Total.get_latest_date()
+    latest_date = models.Account.get_latest_date()
     # 前30天日期，做曲线图
     last30_date=latest_date+datetime.timedelta(days=-13)
 
@@ -241,7 +247,95 @@ def allaccount_chart(request):
 
 # 处理整体数据
 def more_all(request):
-    return render(request,'datacenter/more_all.html')
+    # 数据最新日期
+    latest_date = models.Account.get_latest_date()
+    # 前一天日期，做环比
+    yesterday = latest_date + datetime.timedelta(days=-1)
+    # 前七天日期，做同比
+    lastweek = latest_date + datetime.timedelta(days=-7)
+
+
+    if request.method=='GET':
+
+        """ 计算当日数据，前日数据，日环比，周同比 """
+        # 计算最新日期数据
+        allconsume = models.Total.objects.filter(date=latest_date).aggregate(allconsume=Sum('allconsume'))
+        feedconsume = models.Feed.objects.filter(date=latest_date).aggregate(feedconsume=Sum('feed_allconsume'))
+        opconsume = models.OtherPro.objects.filter(date=latest_date).aggregate(opconsume=Sum('op_allconsume'))
+
+        # 计算前一天数据
+        allconsume_l1 = models.Total.objects.filter(date=yesterday).aggregate(allconsume=Sum('allconsume'))
+        feedconsume_l1 = models.Feed.objects.filter(date=yesterday).aggregate(feedconsume=Sum('feed_allconsume'))
+        opconsume_l1 = models.OtherPro.objects.filter(date=yesterday).aggregate(opconsume=Sum('op_allconsume'))
+
+        # 计算前七天数据
+        allconsume_l7 = models.Total.objects.filter(date=lastweek).aggregate(allconsume=Sum('allconsume'))
+        feedconsume_l7 = models.Feed.objects.filter(date=lastweek).aggregate(feedconsume=Sum('feed_allconsume'))
+        opconsume_l7 = models.OtherPro.objects.filter(date=lastweek).aggregate(opconsume=Sum('op_allconsume'))
+
+        # 计算环比
+        allconsume_compare_l1 = '{:.2%}'.format(allconsume['allconsume'] / allconsume_l1['allconsume'] - 1)
+        feedconsume_compare_l1 = '{:.2%}'.format(feedconsume['feedconsume'] / feedconsume_l1['feedconsume'] - 1)
+        opconsume_compare_l1 = '{:.2%}'.format(opconsume['opconsume'] / opconsume_l1['opconsume'] - 1)
+
+        # 计算同比
+        allconsume_compare_l7 = '{:.2%}'.format(allconsume['allconsume'] / allconsume_l7['allconsume'] - 1)
+        feedconsume_compare_l7 = '{:.2%}'.format(feedconsume['feedconsume'] / feedconsume_l7['feedconsume'] - 1)
+        opconsume_compare_l7 = '{:.2%}'.format(opconsume['opconsume'] / opconsume_l7['opconsume'] - 1)
+
+        normal_consume={
+            'allconsume':allconsume,
+            'feedconsume':feedconsume,
+            'opconsume': opconsume,
+
+            'allconsume_l1': allconsume_l1,
+            'feedconsume_l1': feedconsume_l1,
+            'opconsume_l1': opconsume_l1,
+
+            'allconsume_compare_l1':allconsume_compare_l1,
+            'feedconsume_compare_l1':feedconsume_compare_l1,
+            'opconsume_compare_l1':opconsume_compare_l1,
+
+            'allconsume_compare_l7': allconsume_compare_l7,
+            'feedconsume_compare_l7': feedconsume_compare_l7,
+            'opconsume_compare_l7': opconsume_compare_l7,
+        }
+
+
+        """ 计算时间进度 """
+        # 计算季度第一天
+        quarter_start_day = datetime.date(latest_date.year, latest_date.month - (latest_date.month - 1) % 3, 1)
+        # 计算季度已过的时间长度
+        cost_days = (latest_date - quarter_start_day).days + 1
+        # 计算当前季度
+        quarter_num = (int(latest_date.strftime('%m')) - 1) // 3 + 1
+        # 计算当前季度的长度
+        quarter_days = 0
+        if quarter_num == 1:
+            for i in range(1, 4):
+                quarter_days += calendar.monthrange(int(latest_date.strftime('%Y')), i)[1]
+        elif quarter_num == 2:
+            for i in range(4, 7):
+                quarter_days += calendar.monthrange(int(latest_date.strftime('%Y')), i)[1]
+        elif quarter_num == 3:
+            for i in range(7, 10):
+                quarter_days += calendar.monthrange(int(latest_date.strftime('%Y')), i)[1]
+        elif quarter_num == 4:
+            for i in range(10, 13):
+                quarter_days += calendar.monthrange(int(latest_date.strftime('%Y')), i)[1]
+
+        cost_time_ratio='{:.2%}'.format(cost_days/quarter_days)
+
+        cost_time={
+            'cost_time_ratio':cost_time_ratio,
+        }
+
+        """ 计算消费进度 """
+
+
+        return render(request,'datacenter/more_all.html')
+
+
 
 # 处理信息流数据
 def more_feed(request):
@@ -253,11 +347,11 @@ def more_op(request):
 
 # 处理一级行业数据
 def industry_1(request):
-    pass
+    return render(request,'datacenter/industry_1.html')
 
 # 处理二级行业数据
 def industry_2(request):
-    pass
+    return render(request,'datacenter/industry_2.html')
 
 # 处理失效数据
 def invalid(request):

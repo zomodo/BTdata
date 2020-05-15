@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.urls import include
+from django.conf import settings
 
 from rbac import views as rbac_views
 from datacenter import views as data_views
@@ -35,4 +36,14 @@ urlpatterns = [
     #第二栏
     path('more_all/',data_views.more_all,name='more_all'),
 
+    path('industry_1/',data_views.industry_1,name='industry_1'),
+    path('industry_2/',data_views.industry_2,name='industry_2'),
+
 ]
+
+# 意思是当DEBUG=True时候引入django-debug-toolbar的debug_toolbar，并配置对应的URL地址
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns += [
+        path('__debug__/',include(debug_toolbar.urls)),
+    ]

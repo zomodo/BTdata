@@ -30,10 +30,6 @@ class Total(models.Model):
     def __str__(self):
         return self.username
 
-    @classmethod
-    def get_latest_date(cls):
-        return cls.objects.latest().date
-
 
 class Feed(models.Model):
     date=models.DateField(verbose_name='日期')
@@ -89,6 +85,10 @@ class Account(models.Model):
     def __str__(self):
         return self.username
 
+    @classmethod
+    def get_latest_date(cls):
+        return cls.objects.latest().date
+
 
 class OtherPro(models.Model):
     date=models.DateField(verbose_name='日期')
@@ -123,3 +123,15 @@ class OtherPro(models.Model):
 
     def __str__(self):
         return self.username
+
+class QuarterTask(models.Model):
+    date=models.DateField(auto_now=True,verbose_name='日期')
+    name=models.CharField(max_length=16,verbose_name='任务名称')
+    qconsume_task=models.DecimalField(max_digits=12,decimal_places=2,verbose_name='季度消费任务')
+
+    class Meta:
+        verbose_name=verbose_name_plural='季度任务数据'
+        ordering=['-date']
+
+    def __str__(self):
+        return self.name
