@@ -169,10 +169,9 @@ SAFE_URL = [
     '/__debug__/',      # django-debug-toolbar的url
 
     '/index/',
+    '',
     '/contact/',
 
-    '/industry_1/',
-    '/industry_2/',
 ]
 
 # 配置django-debug-toolbar

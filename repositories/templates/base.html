@@ -77,33 +77,74 @@
 
         <ul class="navbar-nav ml-auto">
 
+            {% if request.session.user_info.username == 'visitor' %}
+
+                <!-- Notifications Dropdown Menu -->
+                <li class="nav-item">
+                    <a href="{% url 'login' %}" title="登录可访问更多内容">
+                        <span class="btn btn-block btn-outline-success">登 录</span>
+                    </a>
+                </li>
+
+            {% else %}
+
+                <!-- Notifications Dropdown Menu -->
+                <li class="nav-item dropdown">
+                    <a href="#" class="dropdown-toggle user-panel nav-link" data-toggle="dropdown" aria-expanded="false">
+                        <img src="{% static 'img/avatar4.png' %}" class="img-circle" alt="User Image">
+                        <span class="hidden-xs">Hi，{{ request.session.user_info.realname }}</span>
+                    </a>
+
+                    <div class="dropdown-menu" style="margin-top: 0.5rem">
+
+                        <a href="#" class="dropdown-item-text">
+                            <i class="fas fa-user mr-2"></i>个人中心
+                        </a>
+
+                        <div class="dropdown-divider"></div><!-- 分隔线 -->
+
+                        <a href="#" class="dropdown-item-text">
+                            <i class="fas fa-lock mr-2"></i>锁 屏
+                        </a>
+
+                        <div class="dropdown-divider"></div><!-- 分隔线 -->
+
+                        <a href="{% url 'logout' %}" class="dropdown-item-text">
+                            <i class="fas fa-power-off mr-2"></i>退 出
+                        </a>
+
+                    </div>
+                </li>
+
+            {% endif %}
+
             <!-- Notifications Dropdown Menu -->
-            <li class="nav-item dropdown">
-                <a href="#" class="dropdown-toggle user-panel nav-link" data-toggle="dropdown" aria-expanded="false">
-                    <img src="{% static 'img/avatar4.png' %}" class="img-circle" alt="User Image">
-                    <span class="hidden-xs">Hi，{{ request.session.user_info.realname }}</span>
-                </a>
-
-                <div class="dropdown-menu" style="margin-top: 0.5rem">
-
-                    <a href="#" class="dropdown-item-text">
-                        <i class="fas fa-user mr-2"></i>个人中心
-                    </a>
-
-                    <div class="dropdown-divider"></div><!-- 分隔线 -->
-
-                    <a href="#" class="dropdown-item-text">
-                        <i class="fas fa-lock mr-2"></i>锁 屏
-                    </a>
-
-                    <div class="dropdown-divider"></div><!-- 分隔线 -->
-
-                    <a href="{% url 'logout' %}" class="dropdown-item-text">
-                        <i class="fas fa-power-off mr-2"></i>退 出
-                    </a>
-
-                </div>
-            </li>
+{#            <li class="nav-item dropdown">#}
+{#                <a href="#" class="dropdown-toggle user-panel nav-link" data-toggle="dropdown" aria-expanded="false">#}
+{#                    <img src="{% static 'img/avatar4.png' %}" class="img-circle" alt="User Image">#}
+{#                    <span class="hidden-xs">Hi，{{ request.session.user_info.realname }}</span>#}
+{#                </a>#}
+{##}
+{#                <div class="dropdown-menu" style="margin-top: 0.5rem">#}
+{##}
+{#                    <a href="#" class="dropdown-item-text">#}
+{#                        <i class="fas fa-user mr-2"></i>个人中心#}
+{#                    </a>#}
+{##}
+{#                    <div class="dropdown-divider"></div><!-- 分隔线 -->#}
+{##}
+{#                    <a href="#" class="dropdown-item-text">#}
+{#                        <i class="fas fa-lock mr-2"></i>锁 屏#}
+{#                    </a>#}
+{##}
+{#                    <div class="dropdown-divider"></div><!-- 分隔线 -->#}
+{##}
+{#                    <a href="{% url 'logout' %}" class="dropdown-item-text">#}
+{#                        <i class="fas fa-power-off mr-2"></i>退 出#}
+{#                    </a>#}
+{##}
+{#                </div>#}
+{#            </li>#}
 
             <li class="nav-item">
                 <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button">
@@ -131,45 +172,15 @@
                     <img src="{% static 'img/avatar4.png' %}" class="img-circle elevation-2" alt="User Image">
                 </div>
                 <div class="info">
-                    <a href="#" class="d-block">Alexander Pierce</a>
+                    <a href="#" class="d-block">Hi，{{ request.session.user_info.username }}</a>
                 </div>
             </div>
 
-
             <!-- Sidebar Menu -->
-            <nav class="mt-2">
-                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-
-                    <!-- 目录标签 -->
-                    {% if request.session.user_info %}
-                        {% block menu %}
-                        {% menu_html request %}
-                        {% endblock %}
-                    {% endif %}
-
-                    <li class="nav-item has-treeview">
-                        <a href="#" class="nav-link">
-                            <i class="nav-icon fas fa-tachometer-alt"></i>
-                            <p>行业数据<i class="right fas fa-angle-left"></i></p>
-                        </a>
-                        <ul class="nav nav-treeview">
-                            <li class="nav-item">
-                                <a href="{% url 'industry_1' %}" class="nav-link">
-                                    <i class="far fa-circle nav-icon"></i>
-                                    <p>一级行业</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{% url 'industry_2' %}" class="nav-link">
-                                    <i class="far fa-circle nav-icon"></i>
-                                    <p>二级行业</p>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-
-                </ul>
-            </nav>
+            <!-- 目录标签 -->
+            {% block menu %}
+            {% menu_html request %}
+            {% endblock %}
 
         </div>
     <!-- /.sidebar -->
@@ -230,7 +241,7 @@
     <footer class="main-footer" style="padding: 0.8rem">
         <!-- To the right -->
         <div class="float-right d-none d-sm-inline">
-            <a href="/admin/" class="text-sm"><span class="fas fa-sign-in-alt"></span> 进入后台</a>
+            <a href="/admin/" class="text-sm"><span class="fas fa-sign-in-alt"></span> 管理后台</a>
         </div>
         <!-- Default to the left -->
         <span class="text-sm">All rights reserved | 本站由业务运营部-数据部运营. 更多信息与疑问请百度Hi

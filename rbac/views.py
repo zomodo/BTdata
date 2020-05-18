@@ -37,7 +37,7 @@ def login(request):
 
 def logout(request):
     request.session.flush()
-    return redirect(reverse('login'))
+    return redirect(reverse('index'))
 
 def index(request):
     context = {'mark':'index'}

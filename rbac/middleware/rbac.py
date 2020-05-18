@@ -1,5 +1,7 @@
 from django.conf import settings
 from django.shortcuts import HttpResponse, redirect
+from rbac.models import User
+from rbac.init_permission import init_permission
 import re
 
 
@@ -20,10 +22,21 @@ class MiddlewareMixin(object):
 
 
 class RbacMiddleware(MiddlewareMixin):
+    # 处理游客的权限
+    def visitor_request(self,request):
+        if not request.session.get(settings.SESSION_USER_INFO):
+            user=User.objects.get(username='visitor')
+            init_permission(request,user)
+        else:
+            pass
+
     """
     检查用户的url请求是否是其权限范围内
     """
     def process_request(self, request):
+        # 判断是否为游客
+        self.visitor_request(request)
+
         request_url = request.path_info
         permission_url = request.session.get(settings.SESSION_PERMISSION_URL_KEY)
         # print('访问url',request_url)
