@@ -283,7 +283,7 @@
         // 绘图数据
         $(function () {
 
-            $.post("{% url 'allconsume_chart' %}",{csrfmiddlewaretoken:'{{ csrf_token }}'},function (ret) {
+            $.post("{% url 'data:allconsume_chart' %}",{csrfmiddlewaretoken:'{{ csrf_token }}'},function (ret) {
 
                 // allconsume start
                 var chart1 = Highcharts.chart('container-all', {

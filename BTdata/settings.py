@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'BTdata',
     'rbac',
     'datacenter',
+    'apidata',
     'repositories',
 
     'import_export',        # 引入django-import-export
@@ -171,6 +172,7 @@ SAFE_URL = [
     '/index/',
     '',
     '/contact/',
+    '/data/more_all_chart/',
 
 ]
 
@@ -196,3 +198,22 @@ DEBUG_TOOLBAR_PANELS = [
 DEBUG_TOOLBAR_CONFIG = {
     'JQUERY_URL':'https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js',
 }
+
+# Django终端打印SQL语句
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'handlers': {
+#     'console': {
+#         'level': 'DEBUG',
+#         'class': 'logging.StreamHandler',
+#         },
+#     },
+#     'loggers': {
+#         'django.db.backends': {
+#             'handlers': ['console'],
+#             'propagate': True,
+#             'level': 'DEBUG',
+#         },
+#     }
+# }

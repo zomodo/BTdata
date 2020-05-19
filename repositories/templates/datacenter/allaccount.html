@@ -283,7 +283,7 @@
         // 绘图数据
         $(function () {
 
-            $.post("{% url 'allaccount_chart' %}",{csrfmiddlewaretoken:'{{ csrf_token }}'},function (ret) {
+            $.post("{% url 'data:allaccount_chart' %}",{csrfmiddlewaretoken:'{{ csrf_token }}'},function (ret) {
 
                 // allcount start
                 var chart1 = Highcharts.chart('container-all', {

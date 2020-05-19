@@ -18,6 +18,7 @@ from django.urls import path
 from django.urls import include
 from django.conf import settings
 
+
 from rbac import views as rbac_views
 from datacenter import views as data_views
 
@@ -28,16 +29,9 @@ urlpatterns = [
     path('logout/',rbac_views.logout,name='logout'),
     path('index/',rbac_views.index,name='index'),
     path('contact/',rbac_views.contact,name='contact'),
-    # 第一栏
-    path('allconsume/',data_views.allconsume,name='allconsume'),
-    path('allconsume_chart/',data_views.allconsume_chart,name='allconsume_chart'),
-    path('allaccount/',data_views.allaccount,name='allaccount'),
-    path('allaccount_chart/',data_views.allaccount_chart,name='allaccount_chart'),
-    #第二栏
-    path('more_all/',data_views.more_all,name='more_all'),
 
-    path('industry_1/',data_views.industry_1,name='industry_1'),
-    path('industry_2/',data_views.industry_2,name='industry_2'),
+    # 路由转发，转到数据部分
+    path('data/',include(('datacenter.urls','data'),namespace='data')),
 
 ]
 
