@@ -135,3 +135,22 @@ class QuarterTask(models.Model):
 
     def __str__(self):
         return self.name
+
+class Industry1(models.Model):
+    indus1_name=models.CharField(max_length=16,unique=True,verbose_name='一级行业')
+
+    class Meta:
+        verbose_name=verbose_name_plural='一级行业'
+
+    def __str__(self):
+        return self.indus1_name
+
+class Industry2(models.Model):
+    indus1_name=models.ForeignKey(Industry1,on_delete=models.CASCADE,verbose_name='一级行业')
+    indus2_name=models.CharField(max_length=16,unique=True,verbose_name='二级行业')
+
+    class Meta:
+        verbose_name=verbose_name_plural='二级行业'
+
+    def __str__(self):
+        return self.indus2_name

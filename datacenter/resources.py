@@ -1,4 +1,5 @@
 from import_export import resources,fields
+from import_export.fields import widgets
 from datetime import datetime
 
 from datacenter import models
@@ -167,4 +168,22 @@ class OtherProResource(resources.ModelResource):
         skip_diff=True
         skip_unchanged = True
         report_skipped = False
+
+
+class Industry1Resource(resources.ModelResource):
+    indus1_name=fields.Field(column_name='一级行业',attribute='indus1_name')
+
+    class Meta:
+        model=models.Industry1
+
+class Industry2Resource(resources.ModelResource):
+    indus1_name=fields.Field(
+        column_name='一级行业',
+        attribute='indus1_name',
+        widget=widgets.ForeignKeyWidget(models.Industry1,'indus1_name')
+    )
+    indus2_name=fields.Field(column_name='二级行业',attribute='indus2_name')
+
+    class Meta:
+        model=models.Industry2
 

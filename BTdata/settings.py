@@ -47,6 +47,8 @@ INSTALLED_APPS = [
     'rbac',
     'datacenter',
     'apidata',
+    'chanpincenter',
+    'peixuncenter',
     'repositories',
 
     'import_export',        # 引入django-import-export
@@ -172,8 +174,6 @@ SAFE_URL = [
     '/index/',
     '',
     '/contact/',
-    '/data/more_all_chart/',
-
 ]
 
 # 配置django-debug-toolbar

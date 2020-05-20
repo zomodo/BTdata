@@ -1,6 +1,7 @@
 from django.contrib import admin
 from import_export.admin import ImportExportModelAdmin
 from datacenter.resources import AccountResource,TotalResource,FeedResource,OtherProResource
+from datacenter.resources import Industry1Resource,Industry2Resource
 
 from datacenter import models
 
@@ -29,3 +30,13 @@ class OtherProAdmin(ImportExportModelAdmin):
 @admin.register(models.QuarterTask)
 class QuarterTaskAdmin(ImportExportModelAdmin):
     list_display = ['date','name','qconsume_task']
+
+@admin.register(models.Industry1)
+class Industry1Admin(ImportExportModelAdmin):
+    resource_class = Industry1Resource
+    list_display = ['indus1_name']
+
+@admin.register(models.Industry2)
+class Industry2Admin(ImportExportModelAdmin):
+    resource_class = Industry2Resource
+    list_display = ['indus1_name','indus2_name']

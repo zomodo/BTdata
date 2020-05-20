@@ -399,6 +399,10 @@ def more_all_chart(request):
         choice_date=request.POST.get('choice_date')
         choice_date=datetime.datetime.strptime(choice_date,'%Y-%m-%d').date()
 
+        if choice_date>models.Account.get_latest_date():
+            context={'message':'{d}日数据尚未更新！'.format(d=choice_date)}
+            return JsonResponse(context)
+
         # 前一天日期，做环比
         yesterday = choice_date + datetime.timedelta(days=-1)
         # 前七天日期，做同比
@@ -453,14 +457,15 @@ def more_all_chart(request):
 
 # 处理信息流数据
 def more_feed(request):
-    pass
+    return render(request,'datacenter/more_feed.html')
 
 # 处理品牌数据
 def more_op(request):
-    pass
+    return render(request,'datacenter/more_op.html')
 
 # 处理一级行业数据
 def industry_1(request):
+
     return render(request,'datacenter/industry_1.html')
 
 # 处理二级行业数据
@@ -469,4 +474,4 @@ def industry_2(request):
 
 # 处理失效数据
 def invalid(request):
-    pass
+    return render(request,'datacenter/invalid.html')

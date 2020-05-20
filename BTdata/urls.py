@@ -33,6 +33,15 @@ urlpatterns = [
     # 路由转发，转到数据部分
     path('data/',include(('datacenter.urls','data'),namespace='data')),
 
+    # 路由转发，转到数据部分
+    path('api/',include(('apidata.urls','api'),namespace='api')),
+
+    # 路由转发，转到产品部分
+    path('chanpin/',include(('chanpincenter.urls','chanpin'),namespace='chanpin')),
+
+    # 路由转发，转到培训部分
+    path('peixun/',include(('peixuncenter.urls','peixun'),namespace='peixun')),
+
 ]
 
 # 意思是当DEBUG=True时候引入django-debug-toolbar的debug_toolbar，并配置对应的URL地址

@@ -19,6 +19,13 @@
     <script src="https://code.highcharts.com.cn/highcharts/modules/oldie.js"></script>
     <script src="https://code.highcharts.com.cn/highcharts-plugins/highcharts-zh_CN.js"></script>
 
+    <style>
+    .table thead th{
+        border-bottom: 1px solid #dee2e6;
+        background-color: #f9f9f9;
+    }
+    </style>
+
 {% endblock %}
 
 
@@ -45,6 +52,7 @@
                     </div>
                 </div>
                 <!-- /.card-header -->
+
                 <div class="card-body table-responsive p-0">
                     <table class="table table-hover text-nowrap">
                         <thead>
@@ -68,7 +76,7 @@
                                 <td class="all">{{ normal_consume.allconsume_l1 | div }}</td>
                                 <td class="all">{{ normal_consume.allconsume_compare_l1 }}</td>
                                 <td class="all">{{ normal_consume.allconsume_compare_l7 }}</td>
-                                <td>{{ estimate_data.allconsume_task | div }}&nbsp;&nbsp;<a href="" class="fas fa-pencil-alt"></a></td>
+                                <td>{{ estimate_data.allconsume_task | div }}&nbsp;&nbsp;<a href="" class="text-sm fas fa-pencil-alt"></a></td>
                                 <td>{{ estimate_data.all_ratio }}</td>
                                 <td>{{ cost_time.cost_time_ratio }}</td>
                                 <td>{{ estimate_data.estimate_all }}</td>
@@ -79,7 +87,7 @@
                                 <td class="feed">{{ normal_consume.feedconsume_l1 | div }}</td>
                                 <td class="feed">{{ normal_consume.feedconsume_compare_l1 }}</td>
                                 <td class="feed">{{ normal_consume.feedconsume_compare_l7 }}</td>
-                                <td>{{ estimate_data.feedconsume_task | div }}&nbsp;&nbsp;<a href="" class="fas fa-pencil-alt"></a></td>
+                                <td>{{ estimate_data.feedconsume_task | div }}&nbsp;&nbsp;<a href="" class="text-sm fas fa-pencil-alt"></a></td>
                                 <td>{{ estimate_data.feed_ratio }}</td>
                                 <td>{{ cost_time.cost_time_ratio }}</td>
                                 <td>{{ estimate_data.estimate_feed }}</td>
@@ -91,7 +99,7 @@
                                 <td class="op">{{ normal_consume.opconsume_l1 | div }}</td>
                                 <td class="op">{{ normal_consume.opconsume_compare_l1 }}</td>
                                 <td class="op">{{ normal_consume.opconsume_compare_l7 }}</td>
-                                <td>{{ estimate_data.opconsume_task | div }}&nbsp;&nbsp;<a href="" class="fas fa-pencil-alt"></a></td>
+                                <td>{{ estimate_data.opconsume_task | div }}&nbsp;&nbsp;<a href="" class="text-sm fas fa-pencil-alt"></a></td>
                                 <td>{{ estimate_data.op_ratio }}</td>
                                 <td>{{ cost_time.cost_time_ratio }}</td>
                                 <td>{{ estimate_data.estimate_op }}</td>
@@ -196,6 +204,23 @@
                 '{% url 'data:more_all_chart' %}',
                 {differ:'single_tab',choice_date:choice_date,csrfmiddlewaretoken:'{{ csrf_token }}'},
                 function (ret) {
+
+                    // message
+                    if(ret['message']){
+                        const Toast = Swal.mixin({
+                            toast: true,
+                            position: 'top',
+                            showConfirmButton: false,
+                            timer: 4000,
+                        });
+
+                        Toast.fire({
+                            icon: 'info',
+                            title:'&nbsp;&nbsp;'+ret['message'],
+                        });
+                    }
+                    // ..message
+
                     // console.log(ret);
                     all_data=[ret['allconsume'],ret['allconsume_l1'],ret['allconsume_compare_l1'],ret['allconsume_compare_l7']];
                     feed_data=[ret['feedconsume'],ret['feedconsume_l1'],ret['feedconsume_compare_l1'],ret['feedconsume_compare_l7']];
@@ -310,7 +335,12 @@
         // 图形初始化
         getchart(
             moment().subtract(29, 'days').format('YYYY-MM-DD'),
-            moment().subtract(1, 'days').format('YYYY-MM-DD')
+            moment().subtract(1, 'days').format('YYYY-MM-DD'),
+        );
+
+        // 图形初始化时填充日期
+        $('#showrangedate').html(
+            moment().subtract(29,'days').format('YYYY.MM.DD')+'-'+moment().subtract(1,'days').format('YYYY.MM.DD')
         );
 
         // 图形日期点击事件
