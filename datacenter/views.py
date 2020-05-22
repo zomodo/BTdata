@@ -463,9 +463,23 @@ def more_feed(request):
 def more_op(request):
     return render(request,'datacenter/more_op.html')
 
+# 获取一级行业列表
+def get_indus1(request):
+    indus1_list=[]
+    all_indus1=models.Industry1.objects.values_list()
+    for name in all_indus1:
+        indus1_list.append(name[1])
+
+    return JsonResponse(indus1_list,safe=False)
+
+
+# 获取二级行业列表
+def get_indus2(request):
+    pass
+
+
 # 处理一级行业数据
 def industry_1(request):
-
     return render(request,'datacenter/industry_1.html')
 
 # 处理二级行业数据

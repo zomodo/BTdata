@@ -34,6 +34,9 @@ urlpatterns = [
 
     path('industry_1/', views.industry_1, name='industry_1'),
     path('industry_2/', views.industry_2, name='industry_2'),
+    path('get_indus1/',views.get_indus1,name='get_indus1'),
+    path('get_indus2/',views.get_indus2,name='get_indus2'),
+
     path('invalid/',views.invalid,name='invalid'),
 
 ]

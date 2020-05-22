@@ -1,5 +1,126 @@
 {% extends 'base.html' %}
 
+{% load staticfiles %}
+
+{% block title %}
+    一级行业
+{% endblock %}
+
+{% block css %}
+    <!-- daterange picker -->
+    <link rel="stylesheet" href="{% static 'css/daterangepicker.css' %}">
+    <!-- load bootstrap select -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap-select.min.css' %}">
+
+{% endblock %}
+
+{% block start-title %}
+
+{% endblock %}
+
 {% block content %}
-    industry_1
+
+    <div class="row">
+
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-tools float-left">
+                        <div class="input-group input-group-sm">
+
+                            <button type="button" class="btn btn-default" id="daterange-btn">
+                                <i class="far fa-calendar-alt"></i>
+                                <span id="showrangedate">选择日期</span>
+                                <i class="fas fa-caret-down"></i>
+                            </button>
+
+                            <select class="selectpicker" id="indus1" data-live-search="true" data-size="5" data-style="btn btn-default ml-2">
+                                <option value="all">所有行业</option>
+                                <!-- options -->
+                            </select>
+
+                            <select class="selectpicker" data-style="btn btn-default ml-3">
+                                <option>全部产品线</option>
+                                <option>原生</option>
+                                <option>品牌</option>
+                            </select>
+
+                            <input type="button" class="btn btn-outline-primary ml-4" value="查 询">
+
+                        </div>
+                    </div>
+                </div>
+                <!-- /.card-header -->
+
+                <div class="card-body table-responsive p-0">
+                    <div id="container" style="min-width:400px;height:400px"></div>
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+        </div>
+
+    </div>
+{% endblock %}
+
+{% block js %}
+
+    <!-- InputMask -->
+    <script src="{% static 'js/moment.min.js' %}"></script>
+    <!-- date-range-picker -->
+    <script src="{% static 'js/daterangepicker.js' %}"></script>
+    <script src="{% static 'js/datepicker-zh-cn.js' %}"></script>
+    <!-- load bootstrap4 -->
+    <script src="{% static 'js/bootstrap4/util.js' %}"></script>
+    <script src="{% static 'js/bootstrap4/dropdown.js' %}"></script>
+    <script src="{% static 'js/bootstrap4/popper.js' %}"></script>
+    <script src="{% static 'js/bootstrap4/bootstrap.min.js' %}"></script>
+    <!-- load bootstrap select -->
+    <script src="{% static 'js/bootstrap-select.min.js' %}"></script>
+    <script src="{% static 'js/bootstrapselect-zh_CN.js' %}"></script>
+
+    <!-- highcharts -->
+    <script src="{% static 'js/highcharts/highcharts.js' %}"></script>
+    <script src="{% static 'js/highcharts/exporting.js' %}"></script>
+    <script src="https://img.hcharts.cn/highcharts-plugins/highcharts-zh_CN.js"></script>
+
+    <script>
+
+        $(function () {
+
+            //Date range as a button
+            $('#daterange-btn').daterangepicker({
+                    ranges   : {
+                        // '今日'       : [moment(), moment()],
+                        // '昨日'   : [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                        '前七天' : [moment().subtract(7, 'days'), moment().subtract(1,'days')],
+                        '前30天': [moment().subtract(30, 'days'), moment().subtract(1,'days')],
+                        '本月'  : [moment().startOf('month'), moment().endOf('month')],
+                        '上月'  : [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                    },
+                    startDate: moment().subtract(30, 'days'),
+                    endDate  : moment().subtract(1, 'days'),
+                    autoApply:true,
+                    minDate:moment('2020-04-01'),
+                    maxDate:moment().subtract(1, 'days'),
+                },
+                function (start, end) {
+                    $('#showrangedate').html(start.format('YYYY.MM.DD')+'-'+end.format('YYYY.MM.DD'));
+            });
+
+            $.get("{% url 'data:get_indus1' %}",function (ret) {
+                // console.log(ret);
+                var op_list=[];
+                $.each(ret,function (i,v) {
+                    op="<option value="+v+">"+v+"</option>";
+                    op_list +=op;
+                });
+                console.log(op_list);
+                $('#indus1').html(op_list)
+
+            })
+
+        })
+    </script>
+
 {% endblock %}

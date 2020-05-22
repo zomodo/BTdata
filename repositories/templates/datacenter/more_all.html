@@ -9,15 +9,9 @@
 {% endblock %}
 
 
-{% block head %}
+{% block css %}
     <!-- daterange picker -->
     <link rel="stylesheet" href="{% static 'css/daterangepicker.css' %}">
-    <!-- highcharts -->
-    <script src="https://code.highcharts.com.cn/jquery/jquery-1.8.3.min.js"></script>
-    <script src="https://code.highcharts.com.cn/highcharts/highcharts.js"></script>
-    <script src="https://code.highcharts.com.cn/highcharts/modules/exporting.js"></script>
-    <script src="https://code.highcharts.com.cn/highcharts/modules/oldie.js"></script>
-    <script src="https://code.highcharts.com.cn/highcharts-plugins/highcharts-zh_CN.js"></script>
 
     <style>
     .table thead th{
@@ -125,7 +119,7 @@
                         <div class="input-group input-group-sm">
                             <button type="button" class="btn btn-default float-right" id="daterange-btn">
                                 <i class="far fa-calendar-alt"></i>
-                                <span id="showrangedate">请选择日期</span>
+                                <span id="showrangedate">选择日期</span>
                                 <i class="fas fa-caret-down"></i>
                             </button>
                         </div>
@@ -169,188 +163,196 @@
         </div-->
         <!-- /.form group -->
 
-
 {% endblock %}
 
 
-{% block script %}
-<!-- InputMask -->
-<script src="{% static 'js/moment.min.js' %}"></script>
-<!-- date-range-picker -->
-<script src="{% static 'js/daterangepicker.js' %}"></script>
-<script src="{% static 'js/zh-cn.js' %}"></script>
+{% block js %}
+
+    <!-- InputMask -->
+    <script src="{% static 'js/moment.min.js' %}"></script>
+    <!-- date-range-picker -->
+    <script src="{% static 'js/daterangepicker.js' %}"></script>
+    <script src="{% static 'js/datepicker-zh-cn.js' %}"></script>
+
+    <!-- highcharts -->
+    <script src="{% static 'js/highcharts/highcharts.js' %}"></script>
+    <script src="{% static 'js/highcharts/exporting.js' %}"></script>
+    <script src="{% static 'js/highcharts/oldie.js' %}"></script>
+    <!-- highcharts中文插件 -->
+    <script src="https://code.highcharts.com.cn/highcharts-plugins/highcharts-zh_CN.js"></script>
 
     <script>
 
-    $(function () {
-        //single date button
-        $('#datesingle-btn').daterangepicker({
-            startDate:moment().subtract(1, 'days'),
-            singleDatePicker: true,
-            showDropdowns: true,
-            autoApply:true,
-            minDate:moment('2020-04-01'),
-            maxDate:moment().subtract(1, 'days'),
-            },
-            function (start) {
-            $('#showsingledate').html(start.format('YYYY-MM-DD'))
-            },
-        );
-
-        $('#datesingle-btn').on('apply.daterangepicker',function (ev,picker) {
-            choice_date=picker.startDate.format('YYYY-MM-DD');
-            //console.log(choice_date);
-            $.post(
-                '{% url 'data:more_all_chart' %}',
-                {differ:'single_tab',choice_date:choice_date,csrfmiddlewaretoken:'{{ csrf_token }}'},
-                function (ret) {
-
-                    // message
-                    if(ret['message']){
-                        const Toast = Swal.mixin({
-                            toast: true,
-                            position: 'top',
-                            showConfirmButton: false,
-                            timer: 4000,
-                        });
-
-                        Toast.fire({
-                            icon: 'info',
-                            title:'&nbsp;&nbsp;'+ret['message'],
-                        });
-                    }
-                    // ..message
-
-                    // console.log(ret);
-                    all_data=[ret['allconsume'],ret['allconsume_l1'],ret['allconsume_compare_l1'],ret['allconsume_compare_l7']];
-                    feed_data=[ret['feedconsume'],ret['feedconsume_l1'],ret['feedconsume_compare_l1'],ret['feedconsume_compare_l7']];
-                    op_data=[ret['opconsume'],ret['opconsume_l1'],ret['opconsume_compare_l1'],ret['opconsume_compare_l7']];
-                    // 替换整体数据
-                    $('.all').each(function (i,v) {
-                        $(this).text(all_data[i]);
-                    });
-                    // 替换信息流数据
-                    $('.feed').each(function (i,v) {
-                        $(this).text(feed_data[i]);
-                    });
-                    // 替换品牌数据
-                    $('.op').each(function (i,v) {
-                        $(this).text(op_data[i]);
-                    });
-
-                })
-        });
-
-
-        //Date range as a button
-        $('#daterange-btn').daterangepicker({
-                ranges   : {
-                    // '今日'       : [moment(), moment()],
-                    // '昨日'   : [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                    '前七天' : [moment().subtract(6, 'days'), moment()],
-                    '前30天': [moment().subtract(29, 'days'), moment()],
-                    '本月'  : [moment().startOf('month'), moment().endOf('month')],
-                    '上月'  : [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-                },
-                startDate: moment().subtract(29, 'days'),
-                endDate  : moment().subtract(1, 'days'),
+        $(function () {
+            //single date button
+            $('#datesingle-btn').daterangepicker({
+                startDate:moment().subtract(1, 'days'),
+                singleDatePicker: true,
+                showDropdowns: true,
                 autoApply:true,
                 minDate:moment('2020-04-01'),
                 maxDate:moment().subtract(1, 'days'),
-            },
-            function po(start, end) {
-                $('#showrangedate').html(start.format('YYYY.MM.DD')+'-'+end.format('YYYY.MM.DD'));
-        });
+                },
+                function (start) {
+                $('#showsingledate').html(start.format('YYYY-MM-DD'))
+                },
+            );
 
-        // highcharts绘图
-        function getchart(begin_date,end_date) {
+            $('#datesingle-btn').on('apply.daterangepicker',function (ev,picker) {
+                choice_date=picker.startDate.format('YYYY-MM-DD');
+                //console.log(choice_date);
+                $.post(
+                    '{% url 'data:more_all_chart' %}',
+                    {differ:'single_tab',choice_date:choice_date,csrfmiddlewaretoken:'{{ csrf_token }}'},
+                    function (ret) {
 
-            var chart=null;
+                        // message
+                        if(ret['message']){
+                            const Toast = Swal.mixin({
+                                toast: true,
+                                position: 'top',
+                                showConfirmButton: false,
+                                timer: 4000,
+                            });
 
-            $.post(
-                '{% url 'data:more_all_chart' %}',
-                {differ:'range_chart',begin_date:begin_date,end_date:end_date,csrfmiddlewaretoken:'{{ csrf_token }}'},
-                function (ret) {
-                    // highcharts
-                    chart = Highcharts.chart('container', {
-                        chart: {
-                            zoomType: 'x'
-                        },
-                        title: {
-                            text: ''
-                        },
-                        subtitle: {
-                            text: ''
-                        },
-                        xAxis: {
-                            categories:ret['date'],
-                        },
-                        tooltip: {
+                            Toast.fire({
+                                icon: 'info',
+                                title:'&nbsp;&nbsp;'+ret['message'],
+                            });
+                        }
+                        // ..message
 
-                        },
-                        yAxis: {
+                        // console.log(ret);
+                        all_data=[ret['allconsume'],ret['allconsume_l1'],ret['allconsume_compare_l1'],ret['allconsume_compare_l7']];
+                        feed_data=[ret['feedconsume'],ret['feedconsume_l1'],ret['feedconsume_compare_l1'],ret['feedconsume_compare_l7']];
+                        op_data=[ret['opconsume'],ret['opconsume_l1'],ret['opconsume_compare_l1'],ret['opconsume_compare_l7']];
+                        // 替换整体数据
+                        $('.all').each(function (i,v) {
+                            $(this).text(all_data[i]);
+                        });
+                        // 替换信息流数据
+                        $('.feed').each(function (i,v) {
+                            $(this).text(feed_data[i]);
+                        });
+                        // 替换品牌数据
+                        $('.op').each(function (i,v) {
+                            $(this).text(op_data[i]);
+                        });
+
+                    })
+            });
+
+
+            //Date range as a button
+            $('#daterange-btn').daterangepicker({
+                    ranges   : {
+                        // '今日'       : [moment(), moment()],
+                        // '昨日'   : [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                        '前七天' : [moment().subtract(7, 'days'), moment().subtract(1,'days')],
+                        '前30天': [moment().subtract(30, 'days'), moment().subtract(1,'days')],
+                        '本月'  : [moment().startOf('month'), moment().endOf('month')],
+                        '上月'  : [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                    },
+                    startDate: moment().subtract(30, 'days'),
+                    endDate  : moment().subtract(1, 'days'),
+                    autoApply:true,
+                    minDate:moment('2020-04-01'),
+                    maxDate:moment().subtract(1, 'days'),
+                },
+                function po(start, end) {
+                    $('#showrangedate').html(start.format('YYYY.MM.DD')+'-'+end.format('YYYY.MM.DD'));
+            });
+
+            // highcharts绘图
+            function getchart(begin_date,end_date) {
+
+                var chart=null;
+
+                $.post(
+                    '{% url 'data:more_all_chart' %}',
+                    {differ:'range_chart',begin_date:begin_date,end_date:end_date,csrfmiddlewaretoken:'{{ csrf_token }}'},
+                    function (ret) {
+                        // highcharts
+                        chart = Highcharts.chart('container', {
+                            chart: {
+                                zoomType: 'x'
+                            },
                             title: {
                                 text: ''
-                            }
-                        },
-                        legend: {
-                            enabled: false
-                        },
-                        plotOptions: {
-                            area: {
-                                fillColor: {
-                                    linearGradient: {
-                                        x1: 0,
-                                        y1: 0,
-                                        x2: 0,
-                                        y2: 1
+                            },
+                            subtitle: {
+                                text: ''
+                            },
+                            xAxis: {
+                                categories:ret['date'],
+                            },
+                            tooltip: {
+
+                            },
+                            yAxis: {
+                                title: {
+                                    text: ''
+                                }
+                            },
+                            legend: {
+                                enabled: false
+                            },
+                            plotOptions: {
+                                area: {
+                                    fillColor: {
+                                        linearGradient: {
+                                            x1: 0,
+                                            y1: 0,
+                                            x2: 0,
+                                            y2: 1
+                                        },
+                                        stops: [
+                                            [0, new Highcharts.getOptions().colors[0]],
+                                            [1, new Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                                        ]
                                     },
-                                    stops: [
-                                        [0, new Highcharts.getOptions().colors[0]],
-                                        [1, new Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
-                                    ]
-                                },
-                                marker: {
-                                    radius: 2
-                                },
-                                lineWidth: 1,
-                                states: {
-                                    hover: {
-                                        lineWidth: 1
-                                    }
-                                },
-                                threshold: null
-                            }
-                        },
-                        series: [{
-                            type: 'area',
-                            name: '消费',
-                            data: ret['consume'],
-                        }]
+                                    marker: {
+                                        radius: 2
+                                    },
+                                    lineWidth: 1,
+                                    states: {
+                                        hover: {
+                                            lineWidth: 1
+                                        }
+                                    },
+                                    threshold: null
+                                }
+                            },
+                            series: [{
+                                type: 'area',
+                                name: '消费',
+                                data: ret['consume'],
+                            }]
+                        });
+
                     });
+            }
 
-                });
-        }
+            // 图形初始化
+            getchart(
+                moment().subtract(29, 'days').format('YYYY-MM-DD'),
+                moment().subtract(1, 'days').format('YYYY-MM-DD'),
+            );
 
-        // 图形初始化
-        getchart(
-            moment().subtract(29, 'days').format('YYYY-MM-DD'),
-            moment().subtract(1, 'days').format('YYYY-MM-DD'),
-        );
+            // 图形初始化时填充日期
+            $('#showrangedate').html(
+                moment().subtract(30,'days').format('YYYY.MM.DD')+'-'+moment().subtract(1,'days').format('YYYY.MM.DD')
+            );
 
-        // 图形初始化时填充日期
-        $('#showrangedate').html(
-            moment().subtract(29,'days').format('YYYY.MM.DD')+'-'+moment().subtract(1,'days').format('YYYY.MM.DD')
-        );
+            // 图形日期点击事件
+            $('#daterange-btn').on('apply.daterangepicker',function (ev,picker) {
+                begin_date=picker.startDate.format('YYYY-MM-DD');
+                end_date=picker.endDate.format('YYYY-MM-DD');
+                getchart(begin_date,end_date);
+            })
 
-        // 图形日期点击事件
-        $('#daterange-btn').on('apply.daterangepicker',function (ev,picker) {
-            begin_date=picker.startDate.format('YYYY-MM-DD');
-            end_date=picker.endDate.format('YYYY-MM-DD');
-            getchart(begin_date,end_date);
-        })
-
-    });
+        });
 
     </script>
+
 {% endblock %}

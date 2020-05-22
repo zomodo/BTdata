@@ -10,13 +10,8 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
 
     <title>
-        百推数据 |
-        {% block title %}
-
-        {% endblock %}
+        百推数据 | {% block title %}{% endblock %}
     </title>
-    <!-- jQuery -->
-    <script src="{% static 'js/jquery.min.js' %}"></script>
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="{% static 'css/all.min.css' %}">
     <!-- overlayScrollbars -->
@@ -30,9 +25,10 @@
     <!-- SweetAlert2 -->
     <link rel="stylesheet" href="{% static 'css/bootstrap-4.min.css' %}">
 
-    {% block head %}
-
+    {% block css %}
+        <!-- css -->
     {% endblock %}
+
 </head>
 
 
@@ -271,7 +267,7 @@
 <script src="{% static 'js/sweetalert2.min.js' %}"></script>
 
 
-{% block script %}
+{% block js %}
     <!-- 这里写js -->
 {% endblock %}
 
