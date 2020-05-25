@@ -172,8 +172,10 @@ SAFE_URL = [
     '/__debug__/',      # django-debug-toolbar的url
 
     '/index/',
-    '',
     '/contact/',
+
+    '/data/get_indus1/',
+    '/data/indus1_chart/',
 ]
 
 # 配置django-debug-toolbar

@@ -35,17 +35,16 @@
                             </button>
 
                             <select class="selectpicker" id="indus1" data-live-search="true" data-size="5" data-style="btn btn-default ml-2">
-                                <option value="all">所有行业</option>
                                 <!-- options -->
                             </select>
 
-                            <select class="selectpicker" data-style="btn btn-default ml-3">
-                                <option>全部产品线</option>
-                                <option>原生</option>
-                                <option>品牌</option>
+                            <select class="selectpicker" id="ctype" data-style="btn btn-default ml-3">
+                                <option value="all">全部产品线</option>
+                                <option value="feed">原生</option>
+                                <option value="op">品牌</option>
                             </select>
 
-                            <input type="button" class="btn btn-outline-primary ml-4" value="查 询">
+                            <input type="button" id="indus1_btn" class="btn btn-outline-primary ml-4" value="查 询">
 
                         </div>
                     </div>
@@ -111,15 +110,43 @@
             $.get("{% url 'data:get_indus1' %}",function (ret) {
                 // console.log(ret);
                 var op_list=[];
+                op_list.push("<option value='all'>所有行业</option>");
                 $.each(ret,function (i,v) {
                     op="<option value="+v+">"+v+"</option>";
                     op_list +=op;
                 });
-                console.log(op_list);
+                // console.log(op_list);
                 $('#indus1').html(op_list)
 
-            })
+            });
 
+            function getstart(){
+                $('#showrangedate').html(
+                    moment().subtract(30,'days').format('YYYY.MM.DD')+'-'+moment().subtract(1,'days').format('YYYY.MM.DD')
+                );
+                $('#indus1').html("<option value='all'>所有行业</option>");
+            }
+            getstart();
+
+
+            $('#indus1_btn').click(function () {
+                var indus1=$('#indus1').val();
+                var ctype=$('#ctype').val();
+                var alldate=$('#showrangedate').text().split('-');
+                //console.log(alldate[0],alldate[1]);
+
+                $.post("{% url 'data:indus1_chart' %}",
+                    {
+                        indus1:indus1,
+                        ctype:ctype,
+                        begin_date:alldate[0],
+                        end_date:alldate[1],
+                        csrfmiddlewaretoken:'{{ csrf_token }}',
+                    },
+                    function (ret) {
+                        console.log(ret);
+                });
+            });
         })
     </script>
 

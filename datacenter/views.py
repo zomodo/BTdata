@@ -482,6 +482,19 @@ def get_indus2(request):
 def industry_1(request):
     return render(request,'datacenter/industry_1.html')
 
+def indus1_chart(request):
+    indus1 = request.POST.get('indus1')
+    ctype = request.POST.get('ctype')
+    begin_date = request.POST.get('begin_date')
+    end_date = request.POST.get('end_date')
+
+    begin_date = datetime.datetime.strptime(begin_date, '%Y.%m.%d').date()
+    end_date = datetime.datetime.strptime(end_date, '%Y.%m.%d').date()
+    print(indus1,ctype,begin_date,end_date)
+
+    return JsonResponse({'a': 123})
+
+
 # 处理二级行业数据
 def industry_2(request):
     return render(request,'datacenter/industry_2.html')
