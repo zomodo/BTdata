@@ -5,26 +5,29 @@ from django.db import models
 class Total(models.Model):
     date=models.DateField(verbose_name='日期')
     userid=models.CharField(max_length=16,verbose_name='账户ID')
-    username=models.CharField(max_length=128,verbose_name='账户名称')
+    username=models.CharField(max_length=128,null=True,blank=True,verbose_name='账户名称')
     customer_indus_1=models.CharField(max_length=16,null=True,blank=True,verbose_name='客户一级行业')
     customer_indus_2=models.CharField(max_length=16,null=True,blank=True,verbose_name='客户二级行业')
     account_indus_1=models.CharField(max_length=16,null=True,blank=True,verbose_name='账户一级行业')
     account_indus_2=models.CharField(max_length=16,null=True,blank=True,verbose_name='账户二级行业')
     account_type=models.CharField(max_length=16,null=True,blank=True,verbose_name='运营单位账户属性')
     register_province=models.CharField(max_length=16,null=True,blank=True,verbose_name='发证机关所在省')
-    register_city=models.CharField(max_length=16, null=True, blank=True, verbose_name='发证机关所在市')
+    register_city=models.CharField(max_length=16,null=True,blank=True,verbose_name='发证机关所在市')
     linked_id=models.IntegerField(verbose_name='关联客户ID',null=True, blank=True)
-    sf_username=models.CharField(max_length=32,verbose_name='SF二级账号')
+    sf_username=models.CharField(max_length=32,null=True,blank=True,verbose_name='SF二级账号')
     order_line=models.CharField(max_length=16,null=True,blank=True,verbose_name='订单行')
-    health_type=models.CharField(max_length=16,verbose_name='客户行业健康度')
+    health_type=models.CharField(max_length=16,null=True,blank=True,verbose_name='客户行业健康度')
 
     allconsume=models.DecimalField(max_digits=10,decimal_places=2,verbose_name='总消费')
-    searchconsume=models.DecimalField(max_digits=10,decimal_places=2,verbose_name='搜索点击消费')
+    fengchao_allconsume=models.DecimalField(max_digits=10,decimal_places=2,verbose_name='凤巢总消费')
+    feed_allconsume=models.DecimalField(max_digits=10,decimal_places=2,verbose_name='原生总消费')
+    op_allconsume=models.DecimalField(max_digits=10,decimal_places=2,verbose_name='品牌展示总消费')
+    feedow_allconsume=models.DecimalField(max_digits=10,decimal_places=2,verbose_name='原生自主投放总消费')
+
 
     class Meta:
         verbose_name=verbose_name_plural='总消费数据'
         ordering=['-date']
-        get_latest_by='date'
         unique_together=(('date','userid'),)
 
     def __str__(self):
@@ -34,10 +37,10 @@ class Total(models.Model):
 class Feed(models.Model):
     date=models.DateField(verbose_name='日期')
     userid=models.CharField(max_length=16,verbose_name='账户ID')
-    username=models.CharField(max_length=128, verbose_name='账户名称')
+    username=models.CharField(max_length=128,null=True,blank=True,verbose_name='账户名称')
     account_indus_1=models.CharField(max_length=16,null=True,blank=True,verbose_name='账户一级行业')
     account_indus_2=models.CharField(max_length=16,null=True,blank=True,verbose_name='账户二级行业')
-    sf_username = models.CharField(max_length=32, verbose_name='SF二级账号')
+    sf_username = models.CharField(max_length=32,null=True,blank=True,verbose_name='SF二级账号')
     order_line=models.CharField(max_length=16, null=True,blank=True,verbose_name='订单行')
     feed_ald_consume=models.DecimalField(max_digits=10,decimal_places=2,verbose_name='原生阿拉丁')
     feed_cpc_consume=models.DecimalField(max_digits=10,decimal_places=2,verbose_name='原生CPC消费')
@@ -50,7 +53,6 @@ class Feed(models.Model):
     class Meta:
         verbose_name=verbose_name_plural='信息流数据'
         ordering=['-date']
-        get_latest_by = 'date'
         unique_together = (('date','userid'),)
 
     def __str__(self):
@@ -60,7 +62,7 @@ class Feed(models.Model):
 class Account(models.Model):
     date=models.DateField(verbose_name='日期')
     userid=models.CharField(max_length=16,verbose_name='账户ID')
-    username=models.CharField(max_length=128, verbose_name='账户名称')
+    username=models.CharField(max_length=128,null=True,blank=True,verbose_name='账户名称')
     company_name=models.CharField(max_length=128,null=True,blank=True,verbose_name='公司名称')
     account_indus_1=models.CharField(max_length=16,null=True,blank=True,verbose_name='账户一级行业')
     account_indus_2=models.CharField(max_length=16,null=True,blank=True,verbose_name='账户二级行业')
@@ -68,18 +70,18 @@ class Account(models.Model):
     signup_date=models.DateField(verbose_name='开户日期',null=True,blank=True)
     feed_firstdate=models.DateField(verbose_name='自主投放首消日',null=True,blank=True)
     account_firstdate=models.DateField(verbose_name='账户首消日',null=True,blank=True)
-    allbalance=models.DecimalField(null=True,blank=True,max_digits=10,decimal_places=2,verbose_name='推广总余额')
-    website_url=models.CharField(max_length=128,verbose_name='网站URL')
-    sf_username = models.CharField(max_length=32, verbose_name='SF二级账号')
-    administrator=models.CharField(max_length=64,verbose_name='管理员')
+    allbalance=models.DecimalField(max_digits=10,decimal_places=2,verbose_name='推广总余额')
+    website_url=models.CharField(max_length=128,null=True,blank=True,verbose_name='网站URL')
+    sf_username = models.CharField(max_length=32,null=True,blank=True,verbose_name='SF二级账号')
+    administrator=models.CharField(max_length=64,null=True,blank=True,verbose_name='管理员')
     order_line=models.CharField(max_length=16,null=True,blank=True,verbose_name='订单行')
-    is_rebate=models.CharField(max_length=8,verbose_name='是否高返')
+    is_rebate=models.CharField(max_length=8,null=True,blank=True,verbose_name='累计高返')
     allconsume=models.DecimalField(max_digits=10,decimal_places=2,verbose_name='总消费')
 
     class Meta:
         verbose_name=verbose_name_plural='账户数据'
         ordering = ['-date']
-        get_latest_by = 'date'
+        get_latest_by='date'
         unique_together = (('date','userid'),)
 
     def __str__(self):
@@ -87,16 +89,16 @@ class Account(models.Model):
 
     @classmethod
     def get_latest_date(cls):
-        return cls.objects.latest().date
+        return cls.objects.only('date').latest().date
 
 
 class OtherPro(models.Model):
     date=models.DateField(verbose_name='日期')
     userid=models.CharField(max_length=16,verbose_name='账户ID')
-    username=models.CharField(max_length=128, verbose_name='账户名称')
+    username=models.CharField(max_length=128,null=True,blank=True,verbose_name='账户名称')
     account_indus_1=models.CharField(max_length=16,null=True,blank=True,verbose_name='账户一级行业')
     account_indus_2=models.CharField(max_length=16,null=True,blank=True,verbose_name='账户二级行业')
-    sf_username = models.CharField(max_length=32, verbose_name='SF二级账号')
+    sf_username = models.CharField(max_length=32,null=True,blank=True,verbose_name='SF二级账号')
     order_line=models.CharField(max_length=16,null=True,blank=True,verbose_name='订单行')
     feed_gd_consume=models.DecimalField(max_digits=10,decimal_places=2,verbose_name='原生GD消费')
     qipaoxian_consume=models.DecimalField(max_digits=10,decimal_places=2,verbose_name='品牌起跑线消费')
@@ -118,7 +120,6 @@ class OtherPro(models.Model):
     class Meta:
         verbose_name=verbose_name_plural='品牌类数据'
         ordering=['-date']
-        get_latest_by='date'
         unique_together = (('date', 'userid'),)
 
     def __str__(self):
@@ -154,3 +155,26 @@ class Industry2(models.Model):
 
     def __str__(self):
         return self.indus2_name
+
+class Invalid(models.Model):
+    date=models.DateField(verbose_name='日期')
+    userid=models.CharField(max_length=16,verbose_name='账户ID')
+    username=models.CharField(max_length=128,null=True,blank=True,verbose_name='账户名称')
+    company_name=models.CharField(max_length=128,null=True,blank=True,verbose_name='公司名称')
+    account_indus_1=models.CharField(max_length=16,null=True,blank=True,verbose_name='账户一级行业')
+    account_indus_2=models.CharField(max_length=16,null=True,blank=True,verbose_name='账户二级行业')
+    linked_id=models.IntegerField(verbose_name='关联客户ID',null=True, blank=True)
+    account_firstdate = models.DateField(verbose_name='账户首消日', null=True, blank=True)
+    sf_username = models.CharField(max_length=32,null=True,blank=True,verbose_name='SF二级账号')
+    depart=models.CharField(max_length=32,null=True,blank=True,verbose_name='部门')
+
+    class Meta:
+        verbose_name=verbose_name_plural='失效账户数据'
+        unique_together = (('date', 'userid'),)
+
+    def __str__(self):
+        return self.username
+
+    @classmethod
+    def get_latest_date(cls):
+        return cls.objects.only('date').last().date

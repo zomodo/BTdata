@@ -1,5 +1,481 @@
 {% extends 'base.html' %}
 
-{% block content %}
+{% load staticfiles %}
+
+{% block title %}
     关键词查询
+{% endblock %}
+
+{% block css %}
+    <!-- daterange picker -->
+    <link rel="stylesheet" href="{% static 'css/daterangepicker.css' %}">
+    <!-- load select2 -->
+    <link rel="stylesheet" href="{% static 'css/select2.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/select2-bootstrap4.min.css' %}">
+
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+
+
+{% endblock %}
+
+{% block start-title %}
+    关键词查询
+{% endblock %}
+
+{% block content %}
+
+
+    <div class="card card-primary card-outline card-tabs">
+        <div class="card-header p-0 pt-1 border-bottom-0">
+            <ul class="nav nav-tabs" id="custom-tabs-three-tab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="custom-content-below-home-tab" data-toggle="pill" href="#custom-content-below-home" role="tab" aria-controls="custom-content-below-home" aria-selected="true">关键词查询</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="custom-content-below-profile-tab" data-toggle="pill" href="#custom-content-below-profile" role="tab" aria-controls="custom-content-below-profile" aria-selected="false">行业关键词</a>
+                </li>
+
+            </ul>
+        </div>
+
+        <div class="tab-content" id="custom-content-below-tabContent">
+            <div class="tab-pane fade show active" id="custom-content-below-home" role="tabpanel" aria-labelledby="custom-content-below-home-tab">
+
+                <div class="card-header">
+                    <div class="card-tools float-left">
+                        <div class="input-group input-group-sm">
+
+                            <button type="button" class="btn btn-default">
+                            <i class="far fa-calendar-alt"></i>
+                            <span id="showdate1">{{ latest_date | date:"Y-m" }}</span>
+                            <!-- i class="fas fa-caret-down"></i-->
+                            </button>
+                            &nbsp;
+                            <select class="select2bs4" id="c1type" style="width: 150px">
+                            <option value="all">整体</option>
+                            <option value="武汉">武汉</option>
+                            <option value="地市">地市</option>
+                            </select>
+                            &nbsp;
+                            <select class="select2bs4" id="p1type" style="width: 150px">
+                            <option value="-consume">消费</option>
+                            <option value="-click">点击</option>
+                            <option value="-pv">展现</option>
+                            </select>
+                            &nbsp;
+                            <input type="text" class="btn btn-default text-left text-sm" id="searchword" placeholder="查关键词">
+
+                            <input type="button" id="tab1_btn" class="btn btn-outline-primary ml-2" value="查 询">
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="tab-pane fade" id="custom-content-below-profile" role="tabpanel" aria-labelledby="custom-content-below-profile-tab">
+
+                <div class="card-header">
+                    <div class="card-tools float-left">
+                        <div class="input-group input-group-sm">
+
+                            <button type="button" class="btn btn-default">
+                                <i class="far fa-calendar-alt"></i>
+                                <span id="showdate2"> {{ latest_date }} </span>
+                                <!-- i class="fas fa-caret-down"></i-->
+                            </button>
+                            &nbsp;
+                            <select class="select2bs4" id="indus1" style="width: 180px">
+                                <!-- options -->
+                            </select>
+                            &nbsp;
+                            <select class="select2bs4" id="indus2" style="width: 180px">
+                                <!-- options -->
+                            </select>
+                            &nbsp;
+                            <select class="select2bs4" id="c2type" style="width: 130px">
+                                <option value="all">整体</option>
+                                <option value="武汉">武汉</option>
+                                <option value="地市">地市</option>
+                            </select>
+                            &nbsp;
+                            <select class="select2bs4" id="p2type" style="width: 130px">
+                                <option value="-consume">消费</option>
+                                <option value="-click">点击</option>
+                                <option value="-pv">展现</option>
+                            </select>
+
+                            <input type="button" id="tab2_btn" class="btn btn-outline-primary ml-2" value="查 询">
+
+                        </div>
+                    </div>
+                </div>
+                <!-- /.card-header -->
+
+            </div>
+        </div>
+
+
+    </div>
+
+
+    <!-- Default box -->
+    <div class="card">
+
+        <div class="card-body">
+
+            <table id="tab1" class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                    <th>关键词</th>
+                    <th>账户名称</th>
+                    <th>一级行业</th>
+                    <th>二级行业</th>
+                    <th>消费</th>
+                    <th>点击</th>
+                    <th>展现</th>
+                    <th>ACP</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                </tbody>
+            </table>
+
+            <!-- button -->
+            <div class="bottom-btn mt-2">
+                <a id="tab1-btn0"></a>
+                <a id="tab1-sjzl"></a>
+                <a  href="#" id="tab1-btn1">首页</a>
+                <a  href="#" id="tab1-btn2">上一页</a>
+                <a  href="#" id="tab1-btn3">下一页</a>
+                <a  href="#" id="tab1-btn4">尾页</a>&nbsp;
+            </div>
+
+        </div>
+        <!-- /.card-body -->
+
+    </div>
+    <!-- /.card -->
+
+
+
+{#    <!-- Default box -->#}
+{#    <div class="card">#}
+{#        <div class="card-header">#}
+{#            <h3 class="card-title">Title</h3>#}
+{##}
+{#            <div class="card-tools">#}
+{#                <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">#}
+{#                    <i class="fas fa-minus"></i></button>#}
+{#                <button type="button" class="btn btn-tool" data-card-widget="remove" data-toggle="tooltip" title="Remove">#}
+{#                    <i class="fas fa-times"></i></button>#}
+{#            </div>#}
+{#        </div>#}
+{##}
+{#        <div class="card-body">#}
+{#            Start creating your amazing application!#}
+{#        </div>#}
+{#        <!-- /.card-body -->#}
+{##}
+{#    </div>#}
+{#    <!-- /.card -->#}
+
+
+
+{% endblock %}
+
+{% block js %}
+
+    <!-- InputMask -->
+{#    <script src="{% static 'js/moment.min.js' %}"></script>#}
+    <!-- date-range-picker -->
+{#    <script src="{% static 'js/daterangepicker.js' %}"></script>#}
+{#    <script src="{% static 'js/datepicker-zh-cn.js' %}"></script>#}
+    <!-- load bootstrap4 -->
+    <script src="{% static 'js/bootstrap4/util.js' %}"></script>
+    <script src="{% static 'js/bootstrap4/dropdown.js' %}"></script>
+    <script src="{% static 'js/bootstrap4/popper.js' %}"></script>
+    <script src="{% static 'js/bootstrap4/bootstrap.min.js' %}"></script>
+    <!-- load select2 -->
+    <script src="{% static 'js/select2.full.min.js' %}"></script>
+
+    <!-- DataTables -->
+{#    <script src="{% static 'js/jquery.dataTables.js' %}"></script>#}
+{#    <script src="{% static 'js/dataTables.bootstrap4.min.js' %}"></script>#}
+{#    <script src="{% static 'js/dataTables.responsive.min.js' %}"></script>#}
+{#    <script src="{% static 'js/responsive.bootstrap4.min.js' %}"></script>#}
+
+    <script>
+
+        $('.select2bs4').select2({
+                theme: 'bootstrap4'
+        });
+
+        // tab1
+
+        var pageSize=10;    //每页显示的记录条数
+        var curPage=0;        //当前页
+        var lastPage;        //最后页
+        var direct=0;        //方向
+        var len;            //总行数
+        var page;            //总页数
+        var begin;
+        var end;
+
+        $(function () {
+
+
+            function get_tab1(d1,d2,d3){
+
+                $.post("{% url 'api:keyword_tab1' %}",
+                    {
+                        c1type:d1,
+                        p1type:d2,
+                        kword:d3,
+                        csrfmiddlewaretoken:'{{ csrf_token }}',
+                    },
+                    function (ret) {
+
+                        $.each(ret['kw_list'],function (i,v) {
+
+                            row="<tr>"+
+                                "<td>"+v['keyword']+"</td>"+
+                                "<td>"+"百捷****"+"</td>"+
+                                "<td>"+v['indus_1']+"</td>"+
+                                "<td>"+v['indus_2']+"</td>"+
+                                "<td>"+v['consume']+"</td>"+
+                                "<td>"+v['click']+"</td>"+
+                                "<td>"+v['pv']+"</td>"+
+                                "<td>"+(v['consume']/v['click']).toFixed(2)+"</td>"+
+                                "</tr>";
+
+                            $('#tab1 tbody').append(row);
+
+                        });
+
+                        len=$("#tab1 tr").length - 1;    // 求这个表的总行数，剔除第一行介绍
+                        page=len % pageSize==0 ? len/pageSize : Math.floor(len/pageSize)+1;//根据记录条数，计算页数
+                        // alert("page==="+page);
+                        curPage=1;    // 设置当前为第一页
+                        direct=0;
+                        displayPage();//显示第一页
+
+                        document.getElementById("tab1-btn0").innerHTML="当前 " + curPage + "/" + page + " 页";    // 显示当前多少页
+                        document.getElementById("tab1-sjzl").innerHTML="共计" + len + "条";        // 显示数据量
+                        //document.getElementById("pageSize").value = pageSize;
+
+                    }
+
+                );
+
+            }
+
+
+            function get_tab2(d1,d2,d3,d4){
+
+                $.post("{% url 'api:keyword_tab2' %}",
+                    {
+                        indus1:d1,
+                        indus2:d2,
+                        c2type:d3,
+                        p2type:d4,
+                        csrfmiddlewaretoken:'{{ csrf_token }}',
+
+                    },
+                    function (ret) {
+                        // console.log(ret);
+
+                        $.each(ret['kw_list'],function (i,v) {
+
+                            row="<tr>"+
+                                "<td>"+v['keyword']+"</td>"+
+                                "<td>"+"百捷****"+"</td>"+
+                                "<td>"+v['indus_1']+"</td>"+
+                                "<td>"+v['indus_2']+"</td>"+
+                                "<td>"+v['consume']+"</td>"+
+                                "<td>"+v['click']+"</td>"+
+                                "<td>"+v['pv']+"</td>"+
+                                "<td>"+(v['consume']/v['click']).toFixed(2)+"</td>"+
+                                "</tr>";
+
+                            $('#tab1 tbody').append(row);
+
+                        });
+
+                        len=$("#tab1 tr").length - 1;    // 求这个表的总行数，剔除第一行介绍
+                        page=len % pageSize==0 ? len/pageSize : Math.floor(len/pageSize)+1;//根据记录条数，计算页数
+                        // alert("page==="+page);
+                        curPage=1;    // 设置当前为第一页
+                        direct=0;
+                        displayPage();//显示第一页
+
+                        document.getElementById("tab1-btn0").innerHTML="当前 " + curPage + "/" + page + " 页";    // 显示当前多少页
+                        document.getElementById("tab1-sjzl").innerHTML="共计" + len + "条";        // 显示数据量
+                        //document.getElementById("pageSize").value = pageSize;
+
+                    }
+                )
+            }
+
+
+
+
+
+            function getindus1() {
+                $.get("{% url 'data:get_indus1' %}",function (ret) {
+                    // console.log(ret);
+                    var op_list=[];
+                    // op_list.push("<option value='all'>所有行业</option>");
+                    $.each(ret,function (i,v) {
+                        op="<option value="+v+">"+v+"</option>";
+                        op_list +=op;
+                    });
+                    // console.log(op_list);
+                    $('#indus1').html(op_list);
+
+                });
+            }
+
+            function getindus2(indus1_name) {
+
+                $.get("{% url 'data:get_indus2' %}",{'indus1':indus1_name},function (ret) {
+                    //console.log(ret);
+                    var op_list=[];
+                    $.each(ret,function (i,v) {
+                        op="<option value="+v+">"+v+"</option>";
+                        op_list += op;
+                    });
+                    // $('#indus2').find('option').remove();
+                    $('#indus2').html(op_list);
+
+                });
+
+            }
+
+
+            $('#indus1').change(function () {
+                indus1_name=$('#indus1').val();
+                getindus2(indus1_name)
+            });
+
+            getstart();
+
+            function getstart(){
+
+                get_tab1(0,0,0); //初始化
+
+                getindus1();
+                $('#indus1').html("<option value='IT/消费电子'>IT/消费电子</option>");
+                indus1_name=$('#indus1').val();
+
+                getindus2(indus1_name);
+                $('#indus2').html("<option value='3C周边'>3C周边</option>");
+
+                //get_tab2();
+            }
+
+
+            function removetab1(){
+                var table=document.getElementById('tab1');
+                var trs=table.getElementsByTagName('tr');
+                for(var i = trs.length - 1; i > 0; i--) {
+                    table.deleteRow(i);
+                }
+            }
+
+
+
+            $('#tab1_btn').click(function () {
+
+                removetab1(); // 清除表格
+                var c1type=$('#c1type').val();
+                var p1type=$('#p1type').val();
+                var kword=$('#searchword').val();
+
+                get_tab1(c1type,p1type,kword);
+
+            });
+
+            $('#tab2_btn').click(function () {
+
+                removetab1();
+                var indus1=$('#indus1').val();
+                var indus2=$('#indus2').val();
+                var c2type=$('#c2type').val();
+                var p2type=$('#p2type').val();
+
+                get_tab2(indus1,indus2,c2type,p2type);
+
+            });
+
+
+            $("#tab1-btn1").click(function firstPage(){    // 首页
+                curPage=1;
+                direct= 0;
+                displayPage();
+            });
+            $("#tab1-btn2").click(function frontPage(){    // 上一页
+                direct=-1;
+                displayPage();
+            });
+            $("#tab1-btn3").click(function nextPage(){    // 下一页
+                direct=1;
+                displayPage();
+            });
+            $("#tab1-btn4").click(function lastPage(){    // 尾页
+                curPage=page;
+                direct=0;
+                displayPage();
+            });
+
+
+            function displayPage(){
+                if(curPage <=1 && direct==-1){
+                    direct=0;
+                    alert("已经是第一页了！");
+                    return;
+                }
+                else if(curPage >= page && direct==1) {
+                    direct=0;
+                    alert("已经是最后一页了！");
+                    return ;
+                }
+
+                lastPage = curPage;
+
+                // 修复当len=1时，curPage计算得0的bug
+                if (len > pageSize) {
+                    curPage = ((curPage + direct + len) % len);
+                } else {
+                    curPage = 1;
+                }
+
+
+                document.getElementById("tab1-btn0").innerHTML="当前 " + curPage + "/" + page + " 页";        // 显示当前多少页
+
+                begin=(curPage-1)*pageSize + 1;// 起始记录号
+                end = begin + 1*pageSize - 1;    // 末尾记录号
+
+
+                if(end > len ) end=len;
+                $("#tab1 tr").hide();    // 首先，设置这行为隐藏
+                $("#tab1 tr").each(function(i){    // 然后，通过条件判断决定本行是否恢复显示
+                    if((i>=begin && i<=end) || i==0 )//显示begin<=x<=end的记录
+                        $(this).show();
+                });
+
+            }
+
+
+        });
+
+        // end tab1
+
+
+    </script>
+
 {% endblock %}

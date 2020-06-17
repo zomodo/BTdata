@@ -17,17 +17,18 @@ from django.contrib import admin
 from django.urls import path
 from django.urls import include
 from django.conf import settings
-
+from django.conf.urls.static import static
 
 from rbac import views as rbac_views
 from datacenter import views as data_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('',rbac_views.index),
+    path('', rbac_views.index),
     path('login/',rbac_views.login,name='login'),
     path('logout/',rbac_views.logout,name='logout'),
     path('index/',rbac_views.index,name='index'),
+    path('message/<str:id>',rbac_views.message,name='message'),
     path('contact/',rbac_views.contact,name='contact'),
 
     # 路由转发，转到数据部分
@@ -42,7 +43,9 @@ urlpatterns = [
     # 路由转发，转到培训部分
     path('peixun/',include(('peixuncenter.urls','peixun'),namespace='peixun')),
 
-]
+    path('ckeditor/',include('ckeditor_uploader.urls')),
+
+] + static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
 
 # 意思是当DEBUG=True时候引入django-debug-toolbar的debug_toolbar，并配置对应的URL地址
 if settings.DEBUG:
@@ -50,3 +53,8 @@ if settings.DEBUG:
     urlpatterns += [
         path('__debug__/',include(debug_toolbar.urls)),
     ]
+
+# 自定义错误页面
+handler403 = rbac_views.permission_denied
+handler404 = rbac_views.page_not_found
+handler500 = rbac_views.error

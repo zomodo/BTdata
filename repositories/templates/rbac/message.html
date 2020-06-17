@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    message
+{% endblock %}
+
+{% block css %}
+
+{% endblock %}
+
+{% block start-title %}
+{% endblock %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-md-3">
+            <a href="{% url 'index' %}" class="btn btn-primary btn-block mb-3">返 回 主 页</a>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">{{ message.get_type_display }}</h3>
+
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card-body p-0">
+                    <ul class="nav nav-pills flex-column">
+                        {% for menu in menu_list %}
+
+                            <li class="nav-item active">
+                                <a href="{% url 'message' menu.id %}" class="nav-link">
+                                    <i class="fas fa-inbox"></i> {{ menu.title }}
+                                </a>
+                            </li>
+
+                        {% endfor %}
+
+                    </ul>
+                </div>
+            <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+        </div>
+        <!-- /.col -->
+        <div class="col-md-9">
+            <div class="card card-primary card-outline">
+                <div class="card-body p-0">
+
+                    <div class="mailbox-read-info">
+                        <h5>{{ message.title }}</h5>
+                        <h6>
+                            <span class="mailbox-read-time float-right">
+                                {{ message.author.first_name }}-{{ message.created_time }}
+                            </span>
+                        </h6>
+                    </div>
+
+                    <!-- /.mailbox-read-info -->
+                    <div class="mailbox-read-message">
+                        {% autoescape off %}
+                            {{ message.content }}
+                        {% endautoescape %}
+                    </div>
+                    <!-- /.mailbox-read-message -->
+                </div>
+                <!-- /.card-body -->
+
+            </div>
+            <!-- /.card -->
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+
+{% endblock %}

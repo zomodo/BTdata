@@ -49,5 +49,16 @@ class MenuAdmin(ImportExportModelAdmin):
     list_display = ['title','parent']
 
 
-admin.site.site_title='百推数据后台管理'
-admin.site.site_header='百推数据后台管理'
+@admin.register(models.Message)
+class MessageAdmin(admin.ModelAdmin):
+    list_display = ['type','author','show','title']
+    list_filter = ['type','show']
+    exclude = ['author']
+
+    def save_model(self, request, obj, form, change):
+        obj.author=request.user
+        return super(MessageAdmin, self).save_model(request,obj,form,change)
+
+
+admin.site.site_title='业务运营后台管理'
+admin.site.site_header='业务运营后台管理'

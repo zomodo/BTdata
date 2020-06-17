@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+{% block css %}
+    <!-- css -->
+    <link rel="stylesheet" href="{% static 'css/dataTables.bootstrap4.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/responsive.bootstrap4.min.css' %}">
+
+    <style>
+    label{
+        margin: 0;
+    }
+    </style>
+
+{% endblock %}
+
+{% block start-title %}
+
+{% endblock %}
+
+
+{% block content %}
+
+    <div class="row">
+
+
+        <div class="col-12">
+            <div class="card card-primary card-outline">
+
+                <div class="card-body p-0">
+                    <div class="mailbox-read-info">
+                        <h5>
+                            {{ data.title }}
+                            <a href="javascript:history.go(-1)" class="ml-2" title="返回">
+                                <i class="fas fa-reply"></i>
+                            </a>
+                        </h5>
+
+                        <h6>
+                            <span class="mailbox-read-time float-right">
+                                {{ data.author.first_name }}-{{ data.created_time }}
+                            </span>
+                        </h6>
+                    </div>
+
+                    {% if data.desc %}
+                        <div class="mailbox-controls with-border">
+                            {% autoescape off %}
+                                {{ data.desc }}
+                            {% endautoescape %}
+                        </div>
+                    {% endif %}
+
+                    <div class="p-0">
+                        <iframe src="{{ data.upload_file.url }}" style="width: 100%;min-height: 666px"></iframe>
+                    </div>
+                <!-- /.mailbox-read-message -->
+                </div>
+            <!-- /.card-body -->
+
+            <!-- /.card-footer -->
+                <div class="card-footer">
+                    <a href="{% url 'chanpin:insight_download' data.id %}">
+                        <button type="button" class="btn btn-outline-primary">
+                            <i class="fas fa-download"></i> 下载
+                        </button>
+                    </a>
+                </div>
+            <!-- /.card-footer -->
+            </div>
+            <!-- /.card -->
+        </div>
+        <!-- /.col -->
+
+
+
+    </div>
+    <!-- /.row -->
+
+{% endblock %}
+
+
+{% block js %}
+    <script src="{% static 'js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'js/dataTables.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'js/responsive.bootstrap4.min.js' %}"></script>
+    <!-- js -->
+    <script>
+
+        $('thead').hide();
+
+        $("#tab").DataTable({
+
+            language: {
+                "sProcessing": "处理中...",
+                "sLengthMenu": "显示 _MENU_ 项结果",
+                "sZeroRecords": "没有匹配结果",
+                "sInfo": "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+                "sInfoEmpty": "显示第 0 至 0 项结果，共 0 项",
+                "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+                "sInfoPostFix": "",
+                "sSearch": "",
+                "sSearchPlaceholder": "搜索",
+                "sUrl": "",
+                "sEmptyTable": "表中数据为空",
+                "sLoadingRecords": "载入中...",
+                "sInfoThousands": ",",
+                "oPaginate": {
+                "sFirst": "首页",
+                "sPrevious": "«",
+                "sNext": "»",
+                "sLast": "末页"
+                },
+            "oAria": {
+            "sSortAscending": ": 以升序排列此列",
+            "sSortDescending": ": 以降序排列此列"
+            }
+            },
+
+            "paging": true,
+            "lengthChange": false,
+            "searching": true,
+            "ordering": false,
+            "info": false,
+            "autoWidth": false,
+            "responsive": true,
+        });
+
+        $('.list-card').append($('#tab_filter'));
+
+    </script>
+
+{% endblock %}

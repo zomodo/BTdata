@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+{% block css %}
+    <!-- css -->
+    <link rel="stylesheet" href="{% static 'css/dataTables.bootstrap4.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/responsive.bootstrap4.min.css' %}">
+    <style>
+    label{
+        margin: 0;
+    }
+    </style>
+
+{% endblock %}
+
+{% block start-title %}
+    营销洞察
+{% endblock %}
+
+
+{% block content %}
+
+    <div class="row">
+
+        <div class="col-12">
+            <div class="card card-primary card-outline">
+                <div class="card-header">
+                    <h3 class="card-title">项目列表</h3>
+
+                    <div class="card-tools list-card">
+
+                    </div>
+                    <!-- /.card-tools -->
+
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+
+                    <div class="table-responsive mailbox-messages">
+                        <table class="table table-hover table-striped" id="tab">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {% for data in data_list %}
+                                    <tr>
+                                        <td>{{ data.title }}</td>
+                                        <td>{{ data.upload_file.name | cut:'chanpin/insight/' }}</td>
+                                        <td>{{ data.created_time }}</td>
+                                        <td><a href="{% url 'chanpin:insight_detail' data.id %}"><button class="btn btn-block btn-sm btn-outline-secondary">预览</button></a></td>
+                                        <td><a href="{% url 'chanpin:insight_download' data.id %}"><button class="btn btn-block btn-sm btn-outline-secondary">下载</button></a></td>
+                                    </tr>
+
+                                {% endfor %}
+
+
+
+                            </tbody>
+                        </table>
+                        <!-- /.table -->
+
+                    </div>
+                    <!-- /.mail-box-messages -->
+                </div>
+                <!-- /.card-body -->
+
+            </div>
+            <!-- /.card -->
+
+        </div>
+        <!-- /.col -->
+
+    </div>
+    <!-- /.row -->
+
+{% endblock %}
+
+
+{% block js %}
+    <script src="{% static 'js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'js/dataTables.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'js/responsive.bootstrap4.min.js' %}"></script>
+    <!-- js -->
+    <script>
+
+    $(function () {
+
+        $("#tab").DataTable({
+
+            language: {
+                "sProcessing": "处理中...",
+                "sLengthMenu": "显示 _MENU_ 项结果",
+                "sZeroRecords": "没有匹配结果",
+                "sInfo": "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+                "sInfoEmpty": "显示第 0 至 0 项结果，共 0 项",
+                "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+                "sInfoPostFix": "",
+                "sSearch": "",
+                "sSearchPlaceholder": "搜索",
+                "sUrl": "",
+                "sEmptyTable": "数据为空",
+                "sLoadingRecords": "载入中...",
+                "sInfoThousands": ",",
+                "oPaginate": {
+                "sFirst": "首页",
+                "sPrevious": "«",
+                "sNext": "»",
+                "sLast": "末页"
+                },
+            "oAria": {
+            "sSortAscending": ": 以升序排列此列",
+            "sSortDescending": ": 以降序排列此列"
+            }
+            },
+
+            "paging": true,
+            "lengthChange": false,
+            "searching": true,
+            "ordering": false,
+            "info": false,
+            "autoWidth": false,
+            "responsive": true,
+        });
+
+        $('thead').hide();
+
+        {#$('.list-card').append($('#tab_filter'));#}
+
+    });
+
+    </script>
+
+{% endblock %}

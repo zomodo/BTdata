@@ -1,5 +1,301 @@
 {% extends 'base.html' %}
 
-{% block content %}
+{% load staticfiles %}
+
+{% block title %}
     推广时段分布
+{% endblock %}
+
+{% block css %}
+    <!-- daterange picker -->
+    <link rel="stylesheet" href="{% static 'css/daterangepicker.css' %}">
+    <!-- load select2 -->
+    <link rel="stylesheet" href="{% static 'css/select2.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/select2-bootstrap4.min.css' %}">
+
+    <style>
+    .chart {
+        min-width: 600px;
+        max-width: 1000px;
+        height: 250px;
+        margin: 0 auto;
+    }
+    </style>
+
+{% endblock %}
+
+{% block start-title %}
+    推广时段分布
+{% endblock %}
+
+{% block content %}
+
+    <div class="row">
+
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-tools float-left">
+                        <div class="input-group input-group-sm">
+
+                            <button type="button" class="btn btn-default">
+                                <i class="far fa-calendar-alt"></i>
+                                <span id="showdate">{{ latest_date | date:"Y-m" }}</span>
+                                <!-- i class="fas fa-caret-down"></i-->
+                            </button>
+                            &nbsp;
+                            <select class="select2bs4" id="ctype" style="width: 150px">
+                                <option value="all">整体</option>
+                                <option value="武汉">武汉</option>
+                                <option value="地市">地市</option>
+                            </select>
+                            &nbsp;
+                            <select class="select2bs4" id="indus1" style="width: 180px">
+                                <!-- options -->
+                            </select>
+                            &nbsp;
+                            <select class="select2bs4" id="indus2" style="width: 180px">
+                                <!-- options -->
+                            </select>
+
+                            <input type="button" id="hour_btn" class="btn btn-outline-primary ml-2" value="查 询">
+
+                        </div>
+                    </div>
+                </div>
+                <!-- /.card-header -->
+
+                <div class="card-body">
+                    <div id="container"></div>
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+        </div>
+
+    </div>
+{% endblock %}
+
+{% block js %}
+
+    <!-- InputMask -->
+{#    <script src="{% static 'js/moment.min.js' %}"></script>#}
+    <!-- date-range-picker -->
+{#    <script src="{% static 'js/daterangepicker.js' %}"></script>#}
+{#    <script src="{% static 'js/datepicker-zh-cn.js' %}"></script>#}
+    <!-- load bootstrap4 -->
+    <script src="{% static 'js/bootstrap4/util.js' %}"></script>
+    <script src="{% static 'js/bootstrap4/dropdown.js' %}"></script>
+    <script src="{% static 'js/bootstrap4/popper.js' %}"></script>
+    <script src="{% static 'js/bootstrap4/bootstrap.min.js' %}"></script>
+    <!-- load select2 -->
+    <script src="{% static 'js/select2.full.min.js' %}"></script>
+
+    <!-- highcharts -->
+    <script src="{% static 'js/highcharts/highcharts.js' %}"></script>
+    <script src="{% static 'js/highcharts/highcharts-more.js' %}"></script>
+    <script src="{% static 'js/highcharts/highcharts-zh_CN.js' %}"></script>
+
+    <script>
+
+        $(function () {
+
+            $('.select2bs4').select2({
+                theme: 'bootstrap4'
+            });
+
+            // highcharts
+            $('#container').bind('mousemove touchmove touchstart', function (e) {
+                var chart,
+                    point,
+                    i,
+                    event;
+                for (i = 0; i < Highcharts.charts.length; i = i + 1) {
+                    chart = Highcharts.charts[i];
+                    event = chart.pointer.normalize(e.originalEvent); // Find coordinates within the chart
+                    point = chart.series[0].searchPoint(event, true); // Get the hovered point
+                    if (point) {
+                        point.highlight(e);
+                    }
+                }
+            });
+            /**
+             * 重写内部的方法， 这里是将提示框即十字准星的隐藏函数关闭
+             */
+            Highcharts.Pointer.prototype.reset = function () {
+                return undefined;
+            };
+            /**
+             * 高亮当前的数据点，并设置鼠标滑动状态及绘制十字准星线
+             */
+            Highcharts.Point.prototype.highlight = function (event) {
+                this.onMouseOver(); // 显示鼠标激活标识
+                this.series.chart.tooltip.refresh(this); // 显示提示框
+                this.series.chart.xAxis[0].drawCrosshair(event, this); // 显示十字准星线
+            };
+            /**
+             * 同步缩放效果，即当一个图表进行了缩放效果，其他图表也进行缩放
+             */
+            function syncExtremes(e) {
+                var thisChart = this.chart;
+                if (e.trigger !== 'syncExtremes') {
+                    Highcharts.each(Highcharts.charts, function (chart) {
+                        if (chart !== thisChart) {
+                            if (chart.xAxis[0].setExtremes) {
+                                chart.xAxis[0].setExtremes(e.min, e.max, undefined, false, { trigger: 'syncExtremes' });
+                            }
+                        }
+                    });
+                }
+            }
+
+            function getdata(){
+
+                var ctype=$('#ctype').val();
+                var indus1=$('#indus1').val();
+                var indus2=$('#indus2').val();
+                // console.log(indus1,indus2);
+
+                $.post("{% url 'api:hour_chart' %}",
+                    {
+                        ctype:ctype,
+                        indus1:indus1,
+                        indus2:indus2,
+                        csrfmiddlewaretoken:'{{ csrf_token }}',
+                    },
+                    function (activity) {
+                        // console.log(activity);
+
+                        $.each(activity.datasets, function (i, dataset) {
+                            // 添加 X 数据
+                            dataset.data = Highcharts.map(dataset.data, function (val, j) {
+                                return [activity.xData[j], val];
+                            });
+                            $('<div class="chart">')
+                                .appendTo('#container')
+                                .highcharts({
+                                chart: {
+                                    marginLeft: 40, // Keep all charts left aligned
+                                    spacingTop: 20,
+                                    spacingBottom: 20,
+                                    zoomType: 'x'
+                                },
+                                title: {
+                                    text: dataset.name,
+                                    align: 'left',
+                                    margin: 0,
+                                    x: 30
+                                },
+                                credits: {
+                                    enabled: false
+                                },
+                                legend: {
+                                    enabled: false
+                                },
+                                xAxis: {
+                                    crosshair: true,
+                                    events: {
+                                        setExtremes: syncExtremes
+                                    },
+                                    labels: {
+                                        format: '{value} 时'
+                                    }
+                                },
+                                yAxis: {
+                                    title: {
+                                        text: null
+                                    }
+                                },
+                                tooltip: {
+                                    positioner: function () {
+                                        return {
+                                            x: this.chart.chartWidth - this.label.width, // right aligned
+                                            y: -1 // align to title
+                                        };
+                                    },
+                                    borderWidth: 0,
+                                    backgroundColor: 'none',
+                                    pointFormat: '{point.y}',
+                                    headerFormat: '',
+                                    shadow: false,
+                                    style: {
+                                        fontSize: '16px'
+                                    },
+                                    valueDecimals: dataset.valueDecimals
+                                },
+                                series: [{
+                                    data: dataset.data,
+                                    name: dataset.name,
+                                    type: dataset.type,
+                                    color: Highcharts.getOptions().colors[i],
+                                    fillOpacity: 0.3,
+                                    tooltip: {
+                                        pointFormat:'{point.x}'+'时',
+                                        // valuePrefix: dataset.unit + ' '
+                                        // pointFormat: dataset.unit
+                                    }
+                                }]
+                            });
+                        });
+
+                });
+            }
+
+
+            function getindus1() {
+                $.get("{% url 'data:get_indus1' %}",function (ret) {
+                    // console.log(ret);
+                    var op_list=[];
+                    // op_list.push("<option value='all'>所有行业</option>");
+                    $.each(ret,function (i,v) {
+                        op="<option value="+v+">"+v+"</option>";
+                        op_list +=op;
+                    });
+                    // console.log(op_list);
+                    $('#indus1').html(op_list);
+
+                });
+            }
+
+            function getindus2(indus1_name) {
+
+                $.get("{% url 'data:get_indus2' %}",{'indus1':indus1_name},function (ret) {
+                    //console.log(ret);
+                    var op_list=[];
+                    $.each(ret,function (i,v) {
+                        op="<option value="+v+">"+v+"</option>";
+                        op_list += op;
+                    });
+                    // $('#indus2').find('option').remove();
+                    $('#indus2').html(op_list);
+
+                });
+
+            }
+
+            getstart();
+
+            function getstart(){
+                getindus1();
+                $('#indus1').html("<option value='IT/消费电子'>IT/消费电子</option>");
+                indus1_name=$('#indus1').val();
+                getindus2(indus1_name);
+                $('#indus2').html("<option value='3C周边'>3C周边</option>");
+                getdata();
+            }
+
+            $('#indus1').change(function () {
+                indus1_name=$('#indus1').val();
+                getindus2(indus1_name)
+            });
+
+            $('#hour_btn').click(function () {
+                $('#container').empty();
+                getdata();
+            });
+
+
+        })
+    </script>
+
 {% endblock %}

@@ -40,10 +40,46 @@ def logout(request):
     return redirect(reverse('index'))
 
 def index(request):
-    context = {'mark':'index'}
+
+    alldata=models.Message.objects.filter(show=1).only('id','title','created_time')
+    sheet0=alldata.filter(type=0)[:20]
+    sheet1=alldata.filter(type=1)[:20]
+    sheet2=alldata.filter(type=2)[:20]
+
+    context={
+        'mark':'index',
+        'sheet0':sheet0,
+        'sheet1':sheet1,
+        'sheet2':sheet2,
+    }
+
     return render(request,'rbac/index.html',context)
+
+
+def message(request,id):
+
+    message=models.Message.objects.get(id=id)
+    menu_list=models.Message.objects.filter(type=message.type,show=1).only('title')[:20]
+
+    context={
+        'menu_list':menu_list,
+        'message':message,
+    }
+    return render(request,'rbac/message.html',context)
+
 
 def contact(request):
     context = {'mark': 'contact'}
     return render(request,'rbac/contact.html',context)
 
+
+def permission_denied(request,exception):
+    context={'exception':exception}
+    return render(request,'rbac/403.html',context)
+
+def page_not_found(request,exception):
+    context = {'exception': exception}
+    return render(request, 'rbac/404.html',context)
+
+def error(request):
+    return render(request, 'rbac/500.html')

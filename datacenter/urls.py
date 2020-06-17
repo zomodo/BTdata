@@ -36,18 +36,12 @@ urlpatterns = [
     path('indus1_chart/',views.indus1_chart,name='indus1_chart'),
 
     path('industry_2/', views.industry_2, name='industry_2'),
+    path('indus2_chart/', views.indus2_chart, name='indus2_chart'),
 
     path('get_indus1/',views.get_indus1,name='get_indus1'),
     path('get_indus2/',views.get_indus2,name='get_indus2'),
 
     path('invalid/',views.invalid,name='invalid'),
+    path('get_invalid/',views.get_invalid,name='get_invalid'),
 
 ]
-
-# 意思是当DEBUG=True时候引入django-debug-toolbar的debug_toolbar，并配置对应的URL地址
-if settings.DEBUG:
-    import debug_toolbar
-
-    urlpatterns += [
-        path('__debug__/', include(debug_toolbar.urls)),
-    ]

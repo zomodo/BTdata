@@ -1,7 +1,7 @@
 from django.contrib import admin
 from import_export.admin import ImportExportModelAdmin
 from datacenter.resources import AccountResource,TotalResource,FeedResource,OtherProResource
-from datacenter.resources import Industry1Resource,Industry2Resource
+from datacenter.resources import Industry1Resource,Industry2Resource,InvalidResource
 
 from datacenter import models
 
@@ -40,3 +40,8 @@ class Industry1Admin(ImportExportModelAdmin):
 class Industry2Admin(ImportExportModelAdmin):
     resource_class = Industry2Resource
     list_display = ['indus1_name','indus2_name']
+
+@admin.register(models.Invalid)
+class InvalidAdmin(ImportExportModelAdmin):
+    resource_class = InvalidResource
+    list_display = ['date','username','company_name','account_firstdate','depart']

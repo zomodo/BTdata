@@ -31,6 +31,8 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+
+    'dj_pagination',
     'simpleui',     # 引入simpleUI
     'django.contrib.humanize',  # 人类可读过滤器
 
@@ -52,10 +54,14 @@ INSTALLED_APPS = [
     'repositories',
 
     'import_export',        # 引入django-import-export
+    'ckeditor',
+    'ckeditor_uploader',
 ]
 
 
 MIDDLEWARE = [
+    'dj_pagination.middleware.PaginationMiddleware',  # dj_pagination
+
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -66,6 +72,7 @@ MIDDLEWARE = [
 
     'rbac.middleware.rbac.RbacMiddleware',      # 添加rbac中间件
     'debug_toolbar.middleware.DebugToolbarMiddleware',      # django-debug-toolbar中间件
+
 ]
 
 ROOT_URLCONF = 'BTdata.urls'
@@ -73,7 +80,7 @@ ROOT_URLCONF = 'BTdata.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -81,6 +88,9 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+
+                'django.template.context_processors.i18n',
+                'django.template.context_processors.media',
             ],
         },
     },
@@ -92,24 +102,23 @@ WSGI_APPLICATION = 'BTdata.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
-
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'BTdata',
-#         'USER': 'root',
-#         'PASSWORD': '*******',
-#         'HOST': 'localhost',
-#         'PORT': '3306',
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
 #     }
 # }
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'BTdata',
+        'USER': 'root',
+        'PASSWORD': '123456',
+        'HOST': '172.16.3.92',
+        'PORT': '3306',
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -135,7 +144,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'zh-hans'
 
-TIME_ZONE = 'Asia/shanghai'
+TIME_ZONE = 'Asia/Shanghai'
 
 USE_I18N = True
 
@@ -149,6 +158,13 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATIC_ROOT = os.path.join(BASE_DIR,'static')
+
+
+# ckeditor配置图片上传路径
+MEDIA_URL='/media/'
+MEDIA_ROOT=os.path.join(BASE_DIR,'media')
+CKEDITOR_UPLOAD_PATH='message_files'
 
 # 定义session 键：
 # 保存用户权限url列表
@@ -171,15 +187,14 @@ SAFE_URL = [
     '/logout/',
     '/__debug__/',      # django-debug-toolbar的url
 
+    '/$',
     '/index/',
     '/contact/',
 
-    '/data/get_indus1/',
-    '/data/indus1_chart/',
 ]
 
 # 配置django-debug-toolbar
-INTERNAL_IPS = ['127.0.0.1',]    # 如果是本机调试，还在将127.0.0.1加入 INTERNAL_IPS
+INTERNAL_IPS = ['127.0.0.1']    # 如果是本机调试，还在将127.0.0.1加入 INTERNAL_IPS
 
 DEBUG_TOOLBAR_PANELS = [
 
@@ -201,6 +216,7 @@ DEBUG_TOOLBAR_CONFIG = {
     'JQUERY_URL':'https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js',
 }
 
+
 # Django终端打印SQL语句
 # LOGGING = {
 #     'version': 1,
@@ -219,3 +235,62 @@ DEBUG_TOOLBAR_CONFIG = {
 #         },
 #     }
 # }
+
+# 配置ckeditor富文本编辑器的参数
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar_Basic': [
+            ['Source', '-', 'Bold', 'Italic']
+        ],
+        'toolbar_YourCustomToolbarConfig': [
+            {'name': 'document', 'items': ['Source', '-', 'Save', 'NewPage', 'Preview', 'Print', '-', 'Templates']},
+            {'name': 'clipboard', 'items': ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo']},
+            {'name': 'editing', 'items': ['Find', 'Replace', '-', 'SelectAll']},
+            {'name': 'forms',
+             'items': ['Form', 'Checkbox', 'Radio', 'TextField', 'Textarea', 'Select', 'Button', 'ImageButton',
+                       'HiddenField']},
+            '/',
+            {'name': 'basicstyles',
+             'items': ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat']},
+            {'name': 'paragraph',
+             'items': ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', 'CreateDiv', '-',
+                       'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'BidiLtr', 'BidiRtl',
+                       'Language']},
+            {'name': 'links', 'items': ['Link', 'Unlink', 'Anchor']},
+            {'name': 'insert',
+             'items': ['Image', 'Flash', 'Table', 'HorizontalRule', 'Smiley', 'SpecialChar', 'PageBreak', 'Iframe']},
+            '/',
+            {'name': 'styles', 'items': ['Styles', 'Format', 'Font', 'FontSize']},
+            {'name': 'colors', 'items': ['TextColor', 'BGColor']},
+            {'name': 'tools', 'items': ['Maximize', 'ShowBlocks']},
+            {'name': 'yourcustomtools', 'items': [
+                # put the name of your editor.ui.addButton here
+                'Preview',
+                'Maximize',
+
+            ]},
+        ],
+        'toolbar': 'YourCustomToolbarConfig',  # put selected toolbar config here
+        'toolbarGroups': [{ 'name': 'document', 'groups': [ 'mode', 'document', 'doctools' ] }],
+        'height': 400,
+        'width': '100%',
+
+        'tabSpaces': 4,
+        'extraPlugins': ','.join([
+            'uploadimage', # the upload image feature
+            # your extra plugins here
+            'div',
+            'autolink',
+            'autoembed',
+            'embedsemantic',
+            'autogrow',
+            # 'devtools',
+            'widget',
+            'lineutils',
+            'clipboard',
+            'dialog',
+            'dialogui',
+            'elementspath'
+        ]),
+    }
+}

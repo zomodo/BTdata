@@ -1,5 +1,279 @@
 {% extends 'base.html' %}
 
+{% load staticfiles %}
+
+{% block title %}
+    二级行业
+{% endblock %}
+
+{% block css %}
+    <!-- daterange picker -->
+    <link rel="stylesheet" href="{% static 'css/daterangepicker.css' %}">
+    <!-- load select2 -->
+    <link rel="stylesheet" href="{% static 'css/select2.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/select2-bootstrap4.min.css' %}">
+
+{% endblock %}
+
+{% block start-title %}
+    二级行业
+{% endblock %}
+
 {% block content %}
-    industry_2
+
+    <div class="row">
+
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-tools float-left">
+                        <div class="input-group input-group-sm">
+
+                            <button type="button" class="btn btn-default" id="daterange-btn">
+                                <i class="far fa-calendar-alt"></i>
+                                <span id="showrangedate">选择日期</span>
+                                <i class="fas fa-caret-down"></i>
+                            </button>
+                            &nbsp;
+                            <select class="select2bs4" id="indus1" style="width: 180px">
+                                <!-- options -->
+                            </select>
+                            &nbsp;
+                            <select class="select2bs4" id="indus2" style="width: 180px">
+                                <!-- options -->
+                            </select>
+                            &nbsp;
+                            <select class="select2bs4" id="ctype" style="width: 150px">
+                                <option value="all">全部产品线</option>
+                                <option value="fengchao">凤巢</option>
+                                <option value="feed">原生</option>
+                                <option value="op">品牌</option>
+                            </select>
+
+                            <input type="button" id="indus1_btn" class="btn btn-outline-primary ml-2" value="查 询">
+
+                        </div>
+                    </div>
+                </div>
+                <!-- /.card-header -->
+
+                <div class="card-body table-responsive p-0">
+                    <div id="container" style="min-width:400px;height:400px"></div>
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+        </div>
+
+    </div>
+{% endblock %}
+
+{% block js %}
+
+    <!-- InputMask -->
+    <script src="{% static 'js/moment.min.js' %}"></script>
+    <!-- date-range-picker -->
+    <script src="{% static 'js/daterangepicker.js' %}"></script>
+    <script src="{% static 'js/datepicker-zh-cn.js' %}"></script>
+    <!-- load bootstrap4 -->
+    <script src="{% static 'js/bootstrap4/util.js' %}"></script>
+    <script src="{% static 'js/bootstrap4/dropdown.js' %}"></script>
+    <script src="{% static 'js/bootstrap4/popper.js' %}"></script>
+    <script src="{% static 'js/bootstrap4/bootstrap.min.js' %}"></script>
+    <!-- load select2 -->
+    <script src="{% static 'js/select2.full.min.js' %}"></script>
+
+    <!-- highcharts -->
+    <script src="{% static 'js/highcharts/highcharts.js' %}"></script>
+    <script src="{% static 'js/highcharts/exporting.js' %}"></script>
+    <script src="{% static 'js/highcharts/highcharts-zh_CN.js' %}"></script>
+
+    <script>
+
+        $(function () {
+
+            $('.select2bs4').select2({
+                theme: 'bootstrap4'
+            });
+
+            //Date range as a button
+            $('#daterange-btn').daterangepicker({
+                    ranges   : {
+                        // '今日'       : [moment(), moment()],
+                        // '昨日'   : [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                        '前七天' : [moment().subtract(7, 'days'), moment().subtract(1,'days')],
+                        '前30天': [moment().subtract(30, 'days'), moment().subtract(1,'days')],
+                        '本月'  : [moment().startOf('month'), moment().endOf('month')],
+                        '上月'  : [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                    },
+                    startDate: moment().subtract(30, 'days'),
+                    endDate  : moment().subtract(1, 'days'),
+                    dateLimit : {days : 90},    //起止时间的最大间隔
+                    autoApply:true,
+                    minDate:moment('2020-04-01'),
+                    maxDate:moment().subtract(1, 'days'),
+                },
+                function (start, end) {
+                    $('#showrangedate').html(start.format('YYYY.MM.DD')+'-'+end.format('YYYY.MM.DD'));
+            });
+
+            function getstart(){
+                $('#showrangedate').html(
+                    moment().subtract(30,'days').format('YYYY.MM.DD')+'-'+moment().subtract(1,'days').format('YYYY.MM.DD')
+                );
+                $('#indus1').html("<option value='IT/消费电子'>IT/消费电子</option>");
+                $('#indus2').html("<option value='3C周边'>3C周边</option>");
+                getindus1();
+                indus1_name=$('#indus1').val();
+                getindus2(indus1_name);
+                getdata();
+
+            }
+            getstart();
+
+
+            function getindus1() {
+                $.get("{% url 'data:get_indus1' %}",function (ret) {
+                    // console.log(ret);
+                    var op_list=[];
+                    // op_list.push("<option value='all'>所有行业</option>");
+                    $.each(ret,function (i,v) {
+                        op="<option value="+v+">"+v+"</option>";
+                        op_list +=op;
+                    });
+                    // console.log(op_list);
+                    $('#indus1').html(op_list);
+
+                });
+            }
+
+            function getindus2(indus1_name) {
+
+                $.get("{% url 'data:get_indus2' %}",{'indus1':indus1_name},function (ret) {
+                    //console.log(ret);
+                    var op_list=[];
+                    $.each(ret,function (i,v) {
+                        op="<option value="+v+">"+v+"</option>";
+                        op_list += op;
+                    });
+                    // $('#indus2').find('option').remove();
+                    $('#indus2').html(op_list);
+
+                });
+
+            }
+
+            $('#indus1').change(function () {
+                indus1_name=$('#indus1').val();
+                getindus2(indus1_name)
+            });
+
+            function getdata(){
+                var indus1=$('#indus1').val();
+                var indus2=$('#indus2').val();
+                var ctype=$('#ctype').val();
+                var alldate=$('#showrangedate').text().split('-');
+                //console.log(alldate[0],alldate[1]);
+
+                $.post("{% url 'data:indus2_chart' %}",
+                    {
+                        indus1:indus1,
+                        indus2:indus2,
+                        ctype:ctype,
+                        begin_date:alldate[0],
+                        end_date:alldate[1],
+                        csrfmiddlewaretoken:'{{ csrf_token }}',
+                    },
+                    function (ret) {
+                        // console.log(ret);
+                        date_list=ret['date_list'];
+                        consume_list=ret['consume_list'];
+                        ratio_list=ret['ratio_list'];
+
+                        // highcharts
+                        var chart = Highcharts.chart('container', {
+                            chart: {
+                                zoomType: 'xy'
+                            },
+                            title: {
+                                text: '二级行业消费趋势与消费占比'
+                            },
+                            subtitle: {
+                                text: '消费占比 = 二级行业 / 一级行业'
+                            },
+                            credits: {
+                                enabled: false
+                            },
+                            xAxis: [{
+                                categories: date_list,
+                                crosshair: true
+                            }],
+                            yAxis: [{ // Primary yAxis
+                                labels: {
+                                    format: '**',
+                                    style: {
+                                        color: Highcharts.getOptions().colors[1]
+                                    }
+                                },
+                                title: {
+                                    text: '消费',
+                                    style: {
+                                        color: Highcharts.getOptions().colors[1]
+                                    }
+                                }
+                            }, { // Secondary yAxis
+                                title: {
+                                    text: '行业占比',
+                                    style: {
+                                        color: Highcharts.getOptions().colors[0]
+                                    }
+                                },
+                                labels: {
+                                    format: '{value}%',
+                                    style: {
+                                        color: Highcharts.getOptions().colors[0]
+                                    }
+                                },
+                                opposite: true
+                            }],
+                            tooltip: {
+                                shared: true
+                            },
+                            legend: {
+                                layout: 'vertical',
+                                align: 'left',
+                                x: 120,
+                                verticalAlign: 'top',
+                                y: 100,
+                                floating: true,
+                                backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
+                            },
+                            series: [{
+                                name: '消费占比',
+                                type: 'column',
+                                yAxis: 1,
+                                data: ratio_list,
+                                tooltip: {
+                                    valueSuffix: '%'
+                                }
+                            }, {
+                                name: '消费趋势',
+                                type: 'spline',
+                                data: consume_list,
+                                tooltip: {
+                                    pointFormat: ''
+                                }
+                            }]
+                        });
+                });
+            }
+
+
+            $('#indus1_btn').click(function () {
+                getdata();
+            });
+
+        })
+    </script>
+
 {% endblock %}

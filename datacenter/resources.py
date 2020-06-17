@@ -20,7 +20,7 @@ class AccountResource(resources.ModelResource):
     sf_username=fields.Field(column_name='SF对应二级账号', attribute='sf_username')
     administrator = fields.Field(column_name='管理员', attribute='administrator')
     order_line = fields.Field(column_name='订单行', attribute='order_line')
-    is_rebate = fields.Field(column_name='高返标识', attribute='is_rebate')
+    is_rebate = fields.Field(column_name='累计高返', attribute='is_rebate')
     allconsume = fields.Field(column_name='总消费', attribute='allconsume')
 
     def before_import_row(self, row, **kwargs):
@@ -41,6 +41,8 @@ class AccountResource(resources.ModelResource):
         else:
             row['账户首次消费日']=None
 
+        if row['推广总余额']=='':
+            row['推广总余额']=0
         # 修改那些账户ID为0的数据，重命名为'op'+订单行
         if row['账户ID']=='0':
             row['账户ID']='op'+row['订单行']
@@ -70,7 +72,10 @@ class TotalResource(resources.ModelResource):
     order_line=fields.Field(column_name='订单行', attribute='order_line')
     health_type=fields.Field(column_name='客户行业健康度', attribute='health_type')
     allconsume = fields.Field(column_name='总消费', attribute='allconsume')
-    searchconsume = fields.Field(column_name='搜索点击消费', attribute='searchconsume')
+    fengchao_allconsume = fields.Field(column_name='凤巢总消费', attribute='fengchao_allconsume')
+    feed_allconsume= fields.Field(column_name='原生总消费', attribute='feed_allconsume')
+    op_allconsume=fields.Field(column_name='品牌展示总消费', attribute='op_allconsume')
+    feedow_allconsume=fields.Field(column_name='原生自主投放总消费', attribute='feedow_allconsume')
 
 
     def before_import_row(self, row, **kwargs):
@@ -79,7 +84,8 @@ class TotalResource(resources.ModelResource):
         # 修改那些账户ID为0的数据，重命名为'op'+订单行
         if row['账户ID']=='0':
             row['账户ID']='op'+row['订单行']
-        
+
+        # print(row['账户名称'])
         return super(TotalResource, self).before_import_row(row,**kwargs)
         
     class Meta:
@@ -187,3 +193,28 @@ class Industry2Resource(resources.ModelResource):
     class Meta:
         model=models.Industry2
 
+class InvalidResource(resources.ModelResource):
+    date = fields.Field(column_name='日期', attribute='date')
+    userid = fields.Field(column_name='账户ID', attribute='userid')
+    username = fields.Field(column_name='账户名称', attribute='username')
+    company_name = fields.Field(column_name='公司名称', attribute='company_name')
+    account_indus_1 = fields.Field(column_name='账户一级行业', attribute='account_indus_1')
+    account_indus_2 = fields.Field(column_name='账户二级行业', attribute='account_indus_2')
+    linked_id = fields.Field(column_name='资质客户ID', attribute='linked_id')
+    account_firstdate = fields.Field(column_name='账户首次消费日', attribute='account_firstdate')
+    sf_username = fields.Field(column_name='SF对应二级账号', attribute='sf_username')
+    depart = fields.Field(column_name='部门', attribute='depart')
+
+    # def before_import_row(self, row, **kwargs):
+    #     row['日期']=datetime.strftime(row['日期'],"%Y-%m-%d")
+    #
+    #     if row['账户首次消费日']:
+    #         row['账户首次消费日'] = datetime.strftime(row['账户首次消费日'], "%Y-%m-%d")
+    #     else:
+    #         row['账户首次消费日']=None
+
+    class Meta:
+        model=models.Invalid
+        skip_diff=True
+        skip_unchanged = True
+        report_skipped = False

@@ -25,11 +25,3 @@ urlpatterns = [
     path('page2/', views.page2, name='page2'),
 
 ]
-
-# 意思是当DEBUG=True时候引入django-debug-toolbar的debug_toolbar，并配置对应的URL地址
-if settings.DEBUG:
-    import debug_toolbar
-
-    urlpatterns += [
-        path('__debug__/', include(debug_toolbar.urls)),
-    ]

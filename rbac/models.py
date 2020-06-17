@@ -1,5 +1,7 @@
 from django.db import models
+from django.contrib.auth.models import User as AuthUser
 
+from ckeditor_uploader.fields import RichTextUploadingField
 # Create your models here.
 
 class Menu(models.Model):
@@ -68,3 +70,30 @@ class User(models.Model):
 
     class Meta:
         verbose_name=verbose_name_plural="用户信息"
+
+
+class Message(models.Model):
+
+    TYPE_STATUS=(
+        (0,'数据中心'),
+        (1,'策略中心'),
+        (2,'百推学院'),
+    )
+
+    SHOW_STATUS=(
+        (1,'显示'),
+        (0,'不显示'),
+    )
+    type=models.PositiveIntegerField(choices=TYPE_STATUS,verbose_name='部门')
+    author=models.ForeignKey(AuthUser,on_delete=models.DO_NOTHING,verbose_name='作者')
+    show=models.PositiveIntegerField(choices=SHOW_STATUS,default=1,verbose_name='是否显示')
+    title=models.CharField(max_length=64,verbose_name='标题')
+    content=RichTextUploadingField(verbose_name='内容')
+    created_time=models.DateField(auto_now_add=True,verbose_name='创建时间')
+
+    class Meta:
+        verbose_name=verbose_name_plural='消息通知'
+        ordering=['-created_time']
+
+    def __str__(self):
+        return self.title

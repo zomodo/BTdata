@@ -4,6 +4,130 @@
     主页
 {% endblock %}
 
+{% block css %}
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+{% endblock %}
+
+{% block start-title %}
+{% endblock %}
+
 {% block content %}
-    index
+
+    <div class="row">
+
+        <div class="col-4">
+            <!-- Widget: user widget style 2 -->
+            <div class="card card-widget small-box widget-user-2">
+                <!-- Add the bg color to the header using any of the bg-* classes -->
+                <div class="widget-user-header bg-info">
+                    <h3>数据中心</h3>
+                    <h5>消息通知</h5>
+
+                    <div class="icon">
+                    <i class="fas fa-chart-pie"></i>
+                    </div>
+                </div>
+
+                <div class="card-body p-0">
+                    <ul class="nav nav-pills flex-column">
+                        {% for message in sheet0 %}
+                            <li class="nav-item">
+                                <a href="{% url 'message' message.id %}" class="nav-link">
+                                    {{ message.title }}
+                                    <span class="badge float-right">
+                                        {{ message.created_time }}
+                                    </span>
+                                </a>
+
+                            </li>
+
+                        {% endfor %}
+
+                    </ul>
+                </div>
+                <!-- /.card-body -->
+
+            </div>
+            <!-- /.widget-user -->
+        </div>
+
+
+        <div class="col-4">
+            <!-- Widget: user widget style 2 -->
+            <div class="card card-widget small-box widget-user-2">
+                <!-- Add the bg color to the header using any of the bg-* classes -->
+                <div class="widget-user-header bg-info">
+                    <h3>策略中心</h3>
+                    <h5>消息通知</h5>
+
+                    <div class="icon">
+                    <i class="ion ion-stats-bars"></i>
+                    </div>
+                </div>
+
+                <div class="card-body p-0">
+                    <ul class="nav nav-pills flex-column">
+
+                        {% for message in sheet1 %}
+                            <li class="nav-item">
+                                <a href="{% url 'message' message.id %}" class="nav-link">
+                                    {{ message.title }}
+                                    <span class="badge float-right">
+                                        {{ message.created_time }}
+                                    </span>
+                                </a>
+
+                            </li>
+
+                        {% endfor %}
+
+                    </ul>
+                </div>
+                <!-- /.card-body -->
+
+            </div>
+            <!-- /.widget-user -->
+        </div>
+
+
+        <div class="col-4">
+            <!-- Widget: user widget style 2 -->
+            <div class="card card-widget small-box widget-user-2">
+                <!-- Add the bg color to the header using any of the bg-* classes -->
+                <div class="widget-user-header bg-info">
+                    <h3>百推学院</h3>
+                    <h5>消息通知</h5>
+
+                    <div class="icon">
+                    <i class="fas fa-user"></i>
+                    </div>
+                </div>
+
+                <div class="card-body p-0">
+                    <ul class="nav nav-pills flex-column">
+
+                        {% for message in sheet2 %}
+                            <li class="nav-item">
+                                <a href="{% url 'message' message.id %}" class="nav-link">
+                                    {{ message.title }}
+                                    <span class="badge float-right">
+                                        {{ message.created_time }}
+                                    </span>
+                                </a>
+
+                            </li>
+
+                        {% endfor %}
+
+                    </ul>
+                </div>
+                <!-- /.card-body -->
+
+            </div>
+            <!-- /.widget-user -->
+        </div>
+
+
+    </div>
+
 {% endblock %}

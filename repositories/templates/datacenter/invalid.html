@@ -1,5 +1,159 @@
 {% extends 'base.html' %}
 
+{% load staticfiles %}
+
+{% block title %}
+    失效账户查询
+{% endblock %}
+
+{% block css %}
+    <!-- daterange picker -->
+    <link rel="stylesheet" href="{% static 'css/daterangepicker.css' %}">
+    <!-- load bootstrap select -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap-select.min.css' %}">
+
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <!-- DataTables -->
+    <link rel="stylesheet" href="{% static 'css/dataTables.bootstrap4.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/responsive.bootstrap4.min.css' %}">
+
+{% endblock %}
+
+{% block start-title %}
+    失效账户查询
+{% endblock %}
+
 {% block content %}
-    invalid
+
+
+
+    <div class="row">
+
+        <div class="col-12">
+
+            <div class="card card-primary card-outline">
+                <div class="card-body">
+
+                    <div class="input-group input-group-sm">
+
+                        <input type="text" id="word" class="btn btn-default text-left text-sm" placeholder="账户名称/公司名称全称" style="width: 240px">
+                        <input type="submit" id="invalid_btn" class="btn btn-outline-primary ml-2" value="查 询">
+
+
+                    </div>
+
+                </div>
+            </div>
+            <!-- /.card -->
+
+        </div>
+
+    </div>
+
+    <div class="card">
+        <div class="card-body" style="min-height: 500px">
+
+            <table id="tab" class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                    <th>账户名称</th>
+                    <th>公司名称</th>
+                    <th>一级行业</th>
+                    <th>二级行业</th>
+                    <th>SF二级账号</th>
+                    <th>部门</th>
+
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block js %}
+
+    <script src="{% static 'js/bootstrap4/util.js' %}"></script>
+    <script src="{% static 'js/bootstrap4/dropdown.js' %}"></script>
+    <script src="{% static 'js/bootstrap4/popper.js' %}"></script>
+    <script src="{% static 'js/bootstrap4/bootstrap.min.js' %}"></script>
+    <!-- load bootstrap select -->
+    <script src="{% static 'js/bootstrap-select.min.js' %}"></script>
+    <script src="{% static 'js/bootstrapselect-zh_CN.js' %}"></script>
+
+
+    <script>
+
+        // tab2
+
+        $(function () {
+
+
+
+            function removetab(){
+                var table=document.getElementById('tab');
+                var trs=table.getElementsByTagName('tr');
+                for(var i = trs.length - 1; i > 0; i--) {
+                    table.deleteRow(i);
+                }
+            }
+
+            function getdata(){
+
+                removetab();
+
+
+                var word=$('#word').val();
+
+                $.post("{% url 'data:get_invalid' %}",
+                    {
+                        word:word,
+                        csrfmiddlewaretoken:'{{ csrf_token }}',
+
+                    },
+                    function (ret) {
+                        // console.log(ret);
+
+                        $.each(ret['invalid_data'],function (i,v) {
+
+                            row="<tr>"+
+                                "<td>"+v['username']+"</td>"+
+                                "<td>"+v['company_name']+"</td>"+
+                                "<td>"+v['account_indus_1']+"</td>"+
+                                "<td>"+v['account_indus_2']+"</td>"+
+                                "<td>"+v['sf_username']+"</td>"+
+                                "<td>"+v['depart']+"</td>"+
+
+                                "</tr>";
+
+                            $('#tab tbody').append(row);
+
+                        });
+
+                    }
+                )
+            }
+
+            $('#invalid_btn').click(function () {
+                getdata();
+
+            });
+
+
+        });
+        // end tab2
+
+
+
+
+
+    </script>
+
 {% endblock %}

@@ -1,5 +1,188 @@
 {% extends 'base.html' %}
 
+{% load pagination_tags %}
+{% autopaginate allcompany 10 %}
+
+{% load staticfiles %}
+
+{% block title %}
+    新注册公司信息
+{% endblock %}
+
+{% block css %}
+    <!-- daterange picker -->
+    <link rel="stylesheet" href="{% static 'css/daterangepicker.css' %}">
+    <!-- load bootstrap select -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap-select.min.css' %}">
+
+    <style>
+        #showrangedate{
+            border: none;
+            background-color: #f8f9fa;
+        }
+    </style>
+{% endblock %}
+
+{% block start-title %}
+    新注册公司信息&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-sm">截止{{ latest_date }}已收录{{ allcount }}万条数据</span>
+{% endblock %}
+
 {% block content %}
-    新注册公司查询
+
+    <div class="row">
+
+        <div class="col-12">
+
+            <div class="card card-primary card-outline">
+                <div class="card-body">
+                    <div class="input-group input-group-sm">
+                        <form action="{% url 'api:company' %}" method="post">
+                            {% csrf_token %}
+                                <button type="button" class="btn btn-default" id="daterange-btn">
+                                    <i class="far fa-calendar-alt"></i>
+                                        {{ form.date }}
+                                    <i class="fas fa-caret-down"></i>
+                                </button>
+                                {{ form.area }}
+                                {{ form.searchword }}
+
+                                <input type="submit" id="company_btn" class="btn btn-outline-primary ml-1" value="查 询">
+
+                        </form>
+                    </div>
+{#                        <button type="button" class="btn btn-default" id="daterange-btn">#}
+{#                            <i class="far fa-calendar-alt"></i>#}
+{#                            <span id="showrangedate">选择日期</span>#}
+{#                            <i class="fas fa-caret-down"></i>#}
+{#                        </button>#}
+{##}
+{#                        <select class="selectpicker" id="area" data-live-search="true" data-size="5" data-style="btn btn-default ml-2">#}
+{#                            <!-- options -->#}
+{#                            <option value="all">全省</option>#}
+{#                            <option value="武汉">武汉</option>#}
+{#                            <option value="宜昌">宜昌</option>#}
+{#                            <option value="襄阳">襄阳</option>#}
+{#                            <option value="黄石">黄石</option>#}
+{#                            <option value="十堰">十堰</option>#}
+{#                            <option value="孝感">孝感</option>#}
+{#                            <option value="黄冈">黄冈</option>#}
+{#                            <option value="荆州">荆州</option>#}
+{#                            <option value="恩施">恩施</option>#}
+{#                            <option value="随州">随州</option>#}
+{#                            <option value="荆门">荆门</option>#}
+{#                            <option value="鄂州">鄂州</option>#}
+{#                            <option value="仙桃">仙桃</option>#}
+{#                            <option value="潜江">潜江</option>#}
+{#                            <option value="天门">天门</option>#}
+{#                            <option value="咸宁">咸宁</option>#}
+{#                            <option value="神农架">神农架</option>#}
+{#                            <option value="None">未标注</option>#}
+{#                        </select>#}
+{##}
+{#                        <input type="text" class="btn btn-default ml-3" id="searchword" placeholder="搜索业务（选填）" style="text-align: left">#}
+{##}
+{#                        <input type="button" id="indus1_btn" class="btn btn-outline-primary ml-2" value="查 询">#}
+
+
+
+                </div>
+            </div>
+            <!-- /.card -->
+
+
+
+        </div>
+
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+
+                {% for company in allcompany %}
+
+                    <div class="card-body border-bottom">
+                        <h5><a href="{% url 'api:company_detail' company.identifier %}">{{ company.companyName }}</a></h5>
+
+                        <div class="base-info mt-2">
+                            <span class="card-link">法人代表：{{ company.founder }}</span>
+                            <span class="card-link">注册资本：{{ company.registerMoney }}</span>
+                            <span class="card-link">成立日期：{{ company.date }}</span>
+                        </div>
+                        <div class="address-info mt-1">
+                            <p class="card-text">
+                            地址：{{ company.address }}
+                            </p>
+                        </div>
+                    </div>
+
+                {% endfor %}
+
+                <!-- page -->
+                {% paginate %}
+
+            </div>
+        </div>
+
+    </div>
+
+
+{% endblock %}
+
+{% block js %}
+
+    <!-- InputMask -->
+    <script src="{% static 'js/moment.min.js' %}"></script>
+    <!-- date-range-picker -->
+    <script src="{% static 'js/daterangepicker.js' %}"></script>
+    <script src="{% static 'js/datepicker-zh-cn.js' %}"></script>
+    <!-- load bootstrap4 -->
+    <script src="{% static 'js/bootstrap4/util.js' %}"></script>
+    <script src="{% static 'js/bootstrap4/dropdown.js' %}"></script>
+    <script src="{% static 'js/bootstrap4/popper.js' %}"></script>
+    <script src="{% static 'js/bootstrap4/bootstrap.min.js' %}"></script>
+    <!-- load bootstrap select -->
+    <script src="{% static 'js/bootstrap-select.min.js' %}"></script>
+    <script src="{% static 'js/bootstrapselect-zh_CN.js' %}"></script>
+
+    <script>
+
+        $(function () {
+
+            //Date range as a button
+            $('#daterange-btn').daterangepicker({
+                    ranges   : {
+                        // '今日'       : [moment(), moment()],
+                        // '昨日'   : [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                        '前七天' : [moment().subtract(7, 'days'), moment().subtract(1,'days')],
+                        '前30天': [moment().subtract(30, 'days'), moment().subtract(1,'days')],
+                        '本月'  : [moment().startOf('month'), moment().endOf('month')],
+                        '上月'  : [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                    },
+                    startDate: moment().subtract(30, 'days'),
+                    endDate  : moment().subtract(1, 'days'),
+                    dateLimit : {days : 90},    //起止时间的最大间隔
+                    autoApply:true,
+                    minDate:moment('2019-01-01'),
+                    maxDate:moment().subtract(1, 'days'),
+                },
+                function (start, end) {
+                    $('#showrangedate').val(start.format('YYYY.MM.DD')+'-'+end.format('YYYY.MM.DD'));
+            });
+
+
+            });
+
+            function getstart(){
+
+                $('#showrangedate').val(
+                    moment().subtract(30,'days').format('YYYY.MM.DD')+'-'+moment().subtract(1,'days').format('YYYY.MM.DD')
+                );
+            }
+            getstart();
+
+
+
+    </script>
+
 {% endblock %}

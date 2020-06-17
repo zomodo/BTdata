@@ -1,6 +1,6 @@
 <!-- Sidebar Menu -->
 <nav class="mt-2">
-    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+    <ul class="nav nav-pills nav-sidebar flex-column nav-child-indent" data-widget="treeview" role="menu" data-accordion="false">
         <!-- Add icons to the links using the .nav-icon class
         with font-awesome or any other icon font library -->
         {% for l1 in menu_data %}
@@ -17,20 +17,87 @@
 
                     <ul class="nav nav-treeview">
                         {% for l2 in l1.children %}
-                            {% if l2.open %}
-                                <li class="nav-item">
-                                    <a href="{{ l2.url }}" class="nav-link active">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>{{ l2.title }}</p>
-                                    </a>
-                                </li>
+
+                            {% if l2.children %}
+
+                                {% if l2.open %}
+                                    <li class="nav-item has-treeview menu-open">
+                                        <a href="#" class="nav-link active">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>
+                                                {{ l2.title }}<i class="right fas fa-angle-left"></i>
+                                            </p>
+                                        </a>
+                                        <ul class="nav nav-treeview">
+                                            {% for l3 in l2.children %}
+                                                {% if l3.open %}
+                                                    <li class="nav-item">
+                                                        <a href="{{ l3.url }}" class="nav-link active">
+                                                            <i class="far fa-dot-circle nav-icon"></i>
+                                                            <p>{{ l3.title }}</p>
+                                                        </a>
+                                                    </li>
+                                                {% else %}
+                                                    <li class="nav-item">
+                                                        <a href="{{ l3.url }}" class="nav-link">
+                                                            <i class="far fa-dot-circle nav-icon"></i>
+                                                            <p>{{ l3.title }}</p>
+                                                        </a>
+                                                    </li>
+                                                {% endif %}
+
+
+                                            {% endfor %}
+                                        </ul>
+                                    </li>
+
+                                {% else %}
+
+                                    <li class="nav-item has-treeview">
+                                        <a href="#" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>
+                                                {{ l2.title }}<i class="right fas fa-angle-left"></i>
+                                            </p>
+                                        </a>
+
+                                        <ul class="nav nav-treeview">
+                                            {% for l3 in l2.children %}
+
+                                               <li class="nav-item">
+                                                    <a href="{{ l3.url }}" class="nav-link">
+                                                      <i class="far fa-dot-circle nav-icon"></i>
+                                                      <p>{{ l3.title }}</p>
+                                                    </a>
+
+                                              </li>
+                                            {% endfor %}
+                                        </ul>
+
+                                    </li>
+                                {% endif %}
+
                             {% else %}
-                                <li class="nav-item">
-                                    <a href="{{ l2.url }}" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>{{ l2.title }}</p>
-                                    </a>
-                                </li>
+
+                                {% if l2.open %}
+                                    <li class="nav-item">
+                                        <a href="{{ l2.url }}" class="nav-link active">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>{{ l2.title }}</p>
+                                        </a>
+                                    </li>
+
+                                {% else %}
+
+                                    <li class="nav-item">
+                                        <a href="{{ l2.url }}" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>{{ l2.title }}</p>
+                                        </a>
+                                    </li>
+
+                                {% endif %}
+
                             {% endif %}
 
                         {% endfor %}
@@ -50,20 +117,84 @@
 
                     <ul class="nav nav-treeview">
                         {% for l2 in l1.children %}
-                            {% if l2.open %}
-                                <li class="nav-item">
-                                    <a href="{{ l2.url }}" class="nav-link active">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>{{ l2.title }}</p>
-                                    </a>
-                                </li>
+
+                            {% if l2.children %}
+
+                                {% if l2.open %}
+                                    <li class="nav-item has-treeview menu-open">
+                                        <a href="#" class="nav-link active">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>
+                                                {{ l2.title }}<i class="right fas fa-angle-left"></i>
+                                            </p>
+                                        </a>
+                                        <ul class="nav nav-treeview">
+                                            {% for l3 in l2.children %}
+                                                {% if l3.open %}
+                                                    <li class="nav-item">
+                                                        <a href="{{ l3.url }}" class="nav-link active">
+                                                            <i class="far fa-dot-circle nav-icon"></i>
+                                                            <p>{{ l3.title }}</p>
+                                                        </a>
+                                                    </li>
+                                                {% else %}
+                                                    <li class="nav-item">
+                                                        <a href="{{ l3.url }}" class="nav-link">
+                                                            <i class="far fa-dot-circle nav-icon"></i>
+                                                            <p>{{ l3.title }}</p>
+                                                        </a>
+                                                    </li>
+                                                {% endif %}
+
+
+                                            {% endfor %}
+                                        </ul>
+                                    </li>
+
+                                {% else %}
+
+                                    <li class="nav-item has-treeview">
+                                        <a href="#" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>
+                                                {{ l2.title }}<i class="right fas fa-angle-left"></i>
+                                            </p>
+                                        </a>
+
+                                        <ul class="nav nav-treeview">
+                                            {% for l3 in l2.children %}
+
+                                               <li class="nav-item">
+                                                    <a href="{{ l3.url }}" class="nav-link">
+                                                      <i class="far fa-dot-circle nav-icon"></i>
+                                                      <p>{{ l3.title }}</p>
+                                                    </a>
+
+                                              </li>
+                                            {% endfor %}
+                                        </ul>
+
+                                    </li>
+                                {% endif %}
+
                             {% else %}
-                                <li class="nav-item">
-                                    <a href="{{ l2.url }}" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>{{ l2.title }}</p>
-                                    </a>
-                                </li>
+
+                                {% if l2.open %}
+                                    <li class="nav-item">
+                                        <a href="{{ l2.url }}" class="nav-link active">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>{{ l2.title }}</p>
+                                        </a>
+                                    </li>
+                                {% else %}
+                                    <li class="nav-item">
+                                        <a href="{{ l2.url }}" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>{{ l2.title }}</p>
+                                        </a>
+                                    </li>
+                                {% endif %}
+
                             {% endif %}
 
                         {% endfor %}

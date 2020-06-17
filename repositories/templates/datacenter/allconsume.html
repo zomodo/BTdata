@@ -45,7 +45,7 @@
                         <div class="icon">
                             <i class="ion ion-stats-bars"></i>
                         </div>
-                        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                        <a href="{% url 'data:more_all' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                     </div>
 
                 </div>
@@ -59,8 +59,8 @@
             <!-- CARD 2 -->
             <div class="card bg-success">
                 <div class="card-header">
-                    <h3 class="card-title">搜索点击消费</h3>&nbsp;
-                    <span class="fa fa-question-circle" title="搜索点击消费"></span>
+                    <h3 class="card-title">凤巢总消费</h3>&nbsp;
+                    <span class="fa fa-question-circle" title="凤巢总消费"></span>
 
                     <div class="card-tools">
                         <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
@@ -75,9 +75,9 @@
                     <!-- small box -->
                     <div class="small-box bg-success" style="margin-bottom: 0;">
                         <div class="inner">
-                            <h3>{{ today_consume.searchconsume | floatformat:2 | intcomma }}</h3>
-                            <span class="text-sm">日环比：<b class="compare">{{ compare_l1.searchconsume_compare_l1 }}</b></span><br>
-                            <span class="text-sm">周同比：<b class="compare">{{ compare_l7.searchconsume_compare_l7 }}</b></span>
+                            <h3>{{ today_consume.fengchaoconsume | floatformat:2 | intcomma }}</h3>
+                            <span class="text-sm">日环比：<b class="compare">{{ compare_l1.fengchaoconsume_compare_l1 }}</b></span><br>
+                            <span class="text-sm">周同比：<b class="compare">{{ compare_l7.fengchaoconsume_compare_l7 }}</b></span>
                         </div>
                         <div class="icon">
                             <i class="ion ion-pie-graph"></i>
@@ -119,7 +119,7 @@
                         <div class="icon">
                             <i class="ion ion-map"></i>
                         </div>
-                        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                        <a href="{% url 'data:more_feed' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                     </div>
 
                 </div>
@@ -156,7 +156,7 @@
                         <div class="icon">
                             <i class="ion ion-speedometer"></i>
                         </div>
-                        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                        <a href="{% url 'data:more_op' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                     </div>
 
                 </div>
@@ -190,19 +190,19 @@
         </div>
         <!-- /.col-md-6 -->
 
-        <!-- searchconsume chart -->
+        <!-- fengchaoconsume chart -->
         <div class="col-md-6">
             <!-- Line chart -->
             <div class="card card-primary">
                 <div class="card-header">
-                    <h3 class="card-title">搜索点击消费</h3>
+                    <h3 class="card-title">凤巢总消费</h3>
                     <div class="card-tools">
                         <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
                         <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-times"></i></button>
                     </div>
                 </div>
                 <div class="card-body">
-                    <div id="container-search" style="min-width:300px;height:300px"></div>
+                    <div id="container-fengchao" style="min-width:300px;height:300px"></div>
                 </div>
             <!-- /.card-body -->
             </div>
@@ -266,7 +266,7 @@
     <!-- highcharts -->
     <script src="{% static 'js/highcharts/highcharts.js' %}"></script>
     <script src="{% static 'js/highcharts/exporting.js' %}"></script>
-    <script src="https://img.hcharts.cn/highcharts-plugins/highcharts-zh_CN.js"></script>
+    <script src="{% static 'js/highcharts/highcharts-zh_CN.js' %}"></script>
 
     <script>
 
@@ -298,6 +298,9 @@
                     },
                     subtitle: {
                         text: ''
+                    },
+                    credits: {
+                        enabled: false
                     },
                     xAxis: {
                         categories: ret['date'],
@@ -336,8 +339,8 @@
                 });
                 // allconsume end
 
-                // searchconsume start
-                var chart2 = Highcharts.chart('container-search', {
+                // fengchaoconsume start
+                var chart2 = Highcharts.chart('container-fengchao', {
                     chart: {
                         type: 'spline'
                     },
@@ -346,6 +349,9 @@
                     },
                     subtitle: {
                         text: ''
+                    },
+                    credits: {
+                        enabled: false
                     },
                     xAxis: {
                         categories: ret['date'],
@@ -379,10 +385,10 @@
                         marker: {
                             symbol: 'circle'
                         },
-                        data: ret['searchconsume']
+                        data: ret['fengchaoconsume']
                     },]
                 });
-                // searchconsume end
+                // fengchaoconsume end
 
                 // feedconsume start
                 var chart3 = Highcharts.chart('container-feed', {
@@ -394,6 +400,9 @@
                     },
                     subtitle: {
                         text: ''
+                    },
+                    credits: {
+                        enabled: false
                     },
                     xAxis: {
                         categories: ret['date'],
@@ -442,6 +451,9 @@
                     },
                     subtitle: {
                         text: ''
+                    },
+                    credits: {
+                        enabled: false
                     },
                     xAxis: {
                         categories: ret['date'],

@@ -1,5 +1,336 @@
 {% extends 'base.html' %}
 
-{% block content %}
+{% load staticfiles %}
+
+{% block title %}
     推广地域分布
+{% endblock %}
+
+{% block css %}
+    <!-- daterange picker -->
+    <link rel="stylesheet" href="{% static 'css/daterangepicker.css' %}">
+    <!-- load select2 -->
+    <link rel="stylesheet" href="{% static 'css/select2.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/select2-bootstrap4.min.css' %}">
+
+    <style>
+        table th,td{
+            font-size: 14px;
+            border: 1px solid #99ccff;
+            width: 65px;
+            height: 22px;
+            line-height: 22px;
+            text-align: center;
+        }
+        table th{
+            background-color: #1E90FF;
+            color: white;
+        }
+    </style>
+
+{% endblock %}
+
+{% block start-title %}
+    推广地域分布
+{% endblock %}
+
+{% block content %}
+
+    <div class="row">
+
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-tools float-left">
+                        <div class="input-group input-group-sm">
+
+                            <button type="button" class="btn btn-default">
+                                <i class="far fa-calendar-alt"></i>
+                                <span id="showdate">{{ latest_date | date:"Y-m" }}</span>
+                                <!-- i class="fas fa-caret-down"></i-->
+                            </button>
+                            &nbsp;
+                            <select class="select2bs4" id="ctype" style="width: 140px">
+                                <option value="all">整体</option>
+                                <option value="武汉">武汉</option>
+                                <option value="地市">地市</option>
+                            </select>
+                            &nbsp;
+                            <select class="select2bs4" id="indus1" style="width: 160px">
+                                <!-- options -->
+                            </select>
+                            &nbsp;
+                            <select class="select2bs4" id="indus2" style="width: 160px">
+                                <!-- options -->
+                            </select>
+                            &nbsp;
+                            <select class="select2bs4" id="ptype" style="width: 140px">
+                                <option value="consume">消费</option>
+                                <option value="click">点击</option>
+                                <option value="pv">展现</option>
+                            </select>
+
+                            <input type="button" id="area_btn" class="btn btn-outline-primary ml-2" value="查 询">
+
+                        </div>
+                    </div>
+                </div>
+                <!-- /.card-header -->
+
+
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <div id="mapcn" style="height:500px;"></div>
+                        </div>
+
+                        <div class="col-6">
+                            <div id="maphb" style="height:500px;"></div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-6">
+                            <table id="tabcn" style="margin: 0 auto">
+                                 <tr><th>序号</th><th>地域</th><th><span></span>占比</th></tr>
+                            </table>
+                        </div>
+
+                        <div class="col-6">
+                            <table id="tabhb" style="margin: 0 auto">
+                                 <tr><th>序号</th><th>地域</th><th><span></span>占比</th></tr>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+        </div>
+
+    </div>
+{% endblock %}
+
+{% block js %}
+
+    <!-- InputMask -->
+{#    <script src="{% static 'js/moment.min.js' %}"></script>#}
+    <!-- date-range-picker -->
+{#    <script src="{% static 'js/daterangepicker.js' %}"></script>#}
+{#    <script src="{% static 'js/datepicker-zh-cn.js' %}"></script>#}
+    <!-- load bootstrap4 -->
+    <script src="{% static 'js/bootstrap4/util.js' %}"></script>
+    <script src="{% static 'js/bootstrap4/dropdown.js' %}"></script>
+    <script src="{% static 'js/bootstrap4/popper.js' %}"></script>
+    <script src="{% static 'js/bootstrap4/bootstrap.min.js' %}"></script>
+    <!-- load select2 -->
+    <script src="{% static 'js/select2.full.min.js' %}"></script>
+
+    <!-- highcharts -->
+    <script src="{% static 'js/highcharts/highmaps.js' %}"></script>
+    <script src="{% static 'js/highcharts/exporting.js' %}"></script>
+    <script src="{% static 'js/highcharts/china.js' %}"></script>
+    <script src="{% static 'js/highcharts/hubei.js' %}"></script>
+    <script src="{% static 'js/highcharts/highcharts-zh_CN.js' %}"></script>
+
+    <script>
+
+        $(function () {
+
+            $('.select2bs4').select2({
+                theme: 'bootstrap4'
+            });
+
+            // highcharts
+
+            function getcn(data) {
+                // 初始化图表
+                var map = new Highcharts.Map('mapcn', {
+                    title: {
+                        text: '中国地图'
+                    },
+                    colorAxis: {
+                        min: 0,
+                        minColor: 'rgb(255,255,255)',
+                        maxColor: '#006cee',
+                        showInLegend: false
+                    },
+                    credits: {
+                        enabled: false
+                    },
+                    series: [{
+                        data: data,
+                        name: $('#ptype option:selected').text()+'占比',
+                        showInLegend: false,
+                        mapData: Highcharts.maps['cn/china'],
+                        joinBy: 'name', // 根据 name 属性进行关联
+                    }],
+                    tooltip: {
+                        pointFormatter: function () {
+                            v=this.value*100;
+                            return this.name+':'+v.toFixed(2)+'%'
+                        },
+
+                    },
+
+                });
+            }
+
+            function gethb(data) {
+                // 初始化图表
+                var map = new Highcharts.Map('maphb', {
+                    title: {
+                        text: '湖北省'
+                    },
+                    colorAxis: {
+                        min: 0,
+                        minColor: 'rgb(255,255,255)',
+                        maxColor: '#006cee',
+                        showInLegend: false
+                    },
+                    credits: {
+                        enabled: false
+                    },
+                    series: [{
+                        data: data,
+                        name: $('#ptype option:selected').text()+'占比',
+                        showInLegend: false,
+                        mapData: Highcharts.maps['cn/hubei'],
+                        joinBy: 'name' // 根据 name 属性进行关联
+                    }],
+                    tooltip: {
+                        pointFormatter: function () {
+                            v=this.value*100;
+                            return this.name+':'+v.toFixed(2)+'%'
+                        },
+
+                    },
+                });
+
+            }
+
+            function removetab() {
+                var tabcn=document.getElementById('tabcn');
+                var trcn=tabcn.getElementsByTagName('tr');
+                for(var x=trcn.length-1;x>0;x--){
+                    tabcn.deleteRow(x);
+                }
+
+                var tabhb=document.getElementById('tabhb');
+                var trhb=tabhb.getElementsByTagName('tr');
+                for(var y=trhb.length-1;y>0;y--){
+                    tabhb.deleteRow(y);
+                }
+            }
+
+
+            function getdata(){
+
+                var ctype=$('#ctype').val();
+                var indus1=$('#indus1').val();
+                var indus2=$('#indus2').val();
+                var ptype=$('#ptype').val();
+                // console.log(indus1,indus2);
+
+                $.post("{% url 'api:area_chart' %}",
+                    {
+                        ctype:ctype,
+                        indus1:indus1,
+                        indus2:indus2,
+                        ptype:ptype,
+                        csrfmiddlewaretoken:'{{ csrf_token }}',
+                    },
+                    function (ret) {
+                        // console.log(ret);
+                        getcn(ret['data_cn']);
+                        gethb(ret['data_hb']);
+
+                        removetab();
+                        /*   做一个小表tab1     */
+                        var tabcn=document.getElementById('tabcn');
+                        $.each(ret['data_cn'],function (index,item) {
+                            if(index<10){
+                                var row=tabcn.insertRow(tabcn.rows.length);
+                                var c0=row.insertCell(0);
+                                c0.innerHTML=index+1;
+                                var c1=row.insertCell(1);
+                                c1.innerHTML=item['name'];
+                                var c2=row.insertCell(2);
+                                c2.innerHTML=parseInt(item['value']*100)+"%";
+                            }
+                        });
+                        /*   做一个小表tab1     */
+                        var tabhb=document.getElementById('tabhb');
+                        $.each(ret['data_hb'],function (index,item) {
+                            if(index<10){
+                                var row=tabhb.insertRow(tabhb.rows.length);
+                                var c0=row.insertCell(0);
+                                c0.innerHTML=index+1;
+                                var c1=row.insertCell(1);
+                                c1.innerHTML=item['name'];
+                                var c2=row.insertCell(2);
+                                c2.innerHTML=parseInt(item['value']*100)+"%";
+                            }
+                        });
+
+                });
+            }
+
+
+            function getindus1() {
+                $.get("{% url 'data:get_indus1' %}",function (ret) {
+                    // console.log(ret);
+                    var op_list=[];
+                    // op_list.push("<option value='all'>所有行业</option>");
+                    $.each(ret,function (i,v) {
+                        op="<option value="+v+">"+v+"</option>";
+                        op_list +=op;
+                    });
+                    // console.log(op_list);
+                    $('#indus1').html(op_list);
+
+                });
+            }
+
+            function getindus2(indus1_name) {
+
+                $.get("{% url 'data:get_indus2' %}",{'indus1':indus1_name},function (ret) {
+                    //console.log(ret);
+                    var op_list=[];
+                    $.each(ret,function (i,v) {
+                        op="<option value="+v+">"+v+"</option>";
+                        op_list += op;
+                    });
+                    // $('#indus2').find('option').remove();
+                    $('#indus2').html(op_list);
+
+                });
+
+            }
+
+            getstart();
+
+            function getstart(){
+                getindus1();
+                $('#indus1').html("<option value='IT/消费电子'>IT/消费电子</option>");
+                indus1_name=$('#indus1').val();
+                getindus2(indus1_name);
+                $('#indus2').html("<option value='3C周边'>3C周边</option>");
+                getdata();
+            }
+
+            $('#indus1').change(function () {
+                indus1_name=$('#indus1').val();
+                getindus2(indus1_name)
+            });
+
+            $('#area_btn').click(function () {
+                getdata();
+            });
+
+
+        })
+    </script>
+
 {% endblock %}

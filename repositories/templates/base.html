@@ -45,16 +45,16 @@
             <li class="nav-item d-none d-sm-inline-block">
 
                 {% if mark == 'index' %}
-                    <a href="{% url 'index' %}" class="nav-link active" style="color: #007bff">Home</a>
+                    <a href="{% url 'index' %}" class="nav-link active" style="color: #007bff">主页</a>
                 {% else %}
-                    <a href="{% url 'index' %}" class="nav-link">Home</a>
+                    <a href="{% url 'index' %}" class="nav-link">主页</a>
                 {% endif %}
             </li>
             <li class="nav-item d-none d-sm-inline-block">
                 {% if mark == 'contact' %}
-                    <a href="{% url 'contact' %}" class="nav-link active" style="color: #007bff">Contact</a>
+                    <a href="{% url 'contact' %}" class="nav-link active" style="color: #007bff">联系我们</a>
                 {% else %}
-                    <a href="{% url 'contact' %}" class="nav-link">Contact</a>
+                    <a href="{% url 'contact' %}" class="nav-link">联系我们</a>
                 {% endif %}
 
             </li>
@@ -85,6 +85,12 @@
                         <span class="btn btn-block btn-outline-success">登 录</span>
                     </a>
                 </li>
+                &nbsp;
+                <li class="nav-item">
+                    <a href="{% url 'logout' %}" title="刷新">
+                        <span class="btn btn-block btn-outline-info">刷 新</span>
+                    </a>
+                </li>
 
             {% else %}
 
@@ -95,17 +101,17 @@
                         <span class="hidden-xs">Hi，{{ request.session.user_info.realname }}</span>
                     </a>
 
-                    <div class="dropdown-menu" style="margin-top: 0.5rem">
+                    <div class="dropdown-menu" style="margin-top: 0.5rem;margin-left: 16px">
 
                         <a href="#" class="dropdown-item-text">
                             <i class="fas fa-user mr-2"></i>个人中心
                         </a>
 
-                        <div class="dropdown-divider"></div><!-- 分隔线 -->
-
-                        <a href="#" class="dropdown-item-text">
-                            <i class="fas fa-lock mr-2"></i>锁 屏
-                        </a>
+{#                        <div class="dropdown-divider"></div><!-- 分隔线 -->#}
+{##}
+{#                        <a href="#" class="dropdown-item-text">#}
+{#                            <i class="fas fa-lock mr-2"></i>锁 屏#}
+{#                        </a>#}
 
                         <div class="dropdown-divider"></div><!-- 分隔线 -->
 
@@ -118,39 +124,13 @@
 
             {% endif %}
 
-            <!-- Notifications Dropdown Menu -->
-{#            <li class="nav-item dropdown">#}
-{#                <a href="#" class="dropdown-toggle user-panel nav-link" data-toggle="dropdown" aria-expanded="false">#}
-{#                    <img src="{% static 'img/avatar4.png' %}" class="img-circle" alt="User Image">#}
-{#                    <span class="hidden-xs">Hi，{{ request.session.user_info.realname }}</span>#}
+
+{#            <li class="nav-item">#}
+{#                <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button">#}
+{#                    <i class="fas fa-th-large"></i>#}
 {#                </a>#}
-{##}
-{#                <div class="dropdown-menu" style="margin-top: 0.5rem">#}
-{##}
-{#                    <a href="#" class="dropdown-item-text">#}
-{#                        <i class="fas fa-user mr-2"></i>个人中心#}
-{#                    </a>#}
-{##}
-{#                    <div class="dropdown-divider"></div><!-- 分隔线 -->#}
-{##}
-{#                    <a href="#" class="dropdown-item-text">#}
-{#                        <i class="fas fa-lock mr-2"></i>锁 屏#}
-{#                    </a>#}
-{##}
-{#                    <div class="dropdown-divider"></div><!-- 分隔线 -->#}
-{##}
-{#                    <a href="{% url 'logout' %}" class="dropdown-item-text">#}
-{#                        <i class="fas fa-power-off mr-2"></i>退 出#}
-{#                    </a>#}
-{##}
-{#                </div>#}
 {#            </li>#}
 
-            <li class="nav-item">
-                <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button">
-                    <i class="fas fa-th-large"></i>
-                </a>
-            </li>
         </ul>
     </nav>
     <!-- /.navbar -->
@@ -193,18 +173,52 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1 class="m-0 text-dark">
+                        <h4 class="m-0 text-dark">
                             {% block start-title %}
                                 Starter Page
                             {% endblock %}
-                        </h1>
+                        </h4>
                     </div><!-- /.col -->
-                    <!-- div class="col-sm-6">
+
+                    <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
+
+                            {% for m1 in request.session.menu.k1 %}
+                                {% if m1.open and not m1.parent_id %}
+                                    <li class="breadcrumb-item active">{{ m1.title }}</li>
+
+                                    {% for m2 in m1.children %}
+
+                                        {% if m2.open %}
+                                            <li class="breadcrumb-item active">{{ m2.title }}</li>
+
+                                            {% if m2.children %}
+                                                {% for m3 in m2.children %}
+                                                    {% if m3.open %}
+
+                                                        <li class="breadcrumb-item active">{{ m3.title }}</li>
+
+                                                    {% endif %}
+                                                {% endfor %}
+
+                                            {% endif %}
+
+                                        {% endif %}
+
+                                    {% endfor %}
+
+                                {% endif %}
+
+                            {% endfor %}
+
+                            <!--
                             <li class="breadcrumb-item"><a href="#">Home</a></li>
                             <li class="breadcrumb-item active">Starter Page</li>
+                            -->
+
                         </ol>
-                    </div--><!-- /.col -->
+                    </div><!-- /.col -->
+
                 </div><!-- /.row -->
             </div><!-- /.container-fluid -->
         </div>

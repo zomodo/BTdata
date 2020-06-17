@@ -1,0 +1,189 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+{% block title %}
+    {{ company.companyName }}
+{% endblock %}
+
+{% block css %}
+    <!-- daterange picker -->
+    <link rel="stylesheet" href="{% static 'css/daterangepicker.css' %}">
+    <!-- load bootstrap select -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap-select.min.css' %}">
+    <style>
+        #showrangedate{
+            border: none;
+            background-color: #f8f9fa;
+        }
+
+        .table tr th{
+            width: 20%;
+        }
+
+    </style>
+
+{% endblock %}
+
+{% block start-title %}
+    新注册公司信息
+{% endblock %}
+
+{% block content %}
+
+    <div class="row">
+
+        <div class="col-12">
+
+            <div class="card card-primary card-outline">
+                <div class="card-body">
+
+                    <div class="input-group input-group-sm">
+
+                        <form action="{% url 'api:company' %}" method="post">
+                            {% csrf_token %}
+                            <button type="button" class="btn btn-default" id="daterange-btn">
+                                <i class="far fa-calendar-alt"></i>
+                                    {{ form.date }}
+                                <i class="fas fa-caret-down"></i>
+                            </button>
+
+                            {{ form.area }}
+                            {{ form.searchword }}
+                            <input type="submit" id="company_btn" class="btn btn-outline-primary ml-1" value="查 询">
+                        </form>
+
+                    </div>
+
+                </div>
+            </div>
+            <!-- /.card -->
+
+        </div>
+
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+
+                <div class="card-body">
+
+                    <div class="col-12">
+                        <h3 class="ml-2 mb-4">
+                            {{ company.companyName }}
+                            <small>
+                                <a href="javascript:history.go(-1)" class="ml-2" title="返回">
+                                    <i class="fas fa-reply"></i>
+                                </a>
+                            </small>
+                        </h3>
+
+                        <div class="table-responsive">
+                            <table class="table">
+                                <tr>
+                                    <th>法人代表</th>
+                                    <td>{{ company.founder }}</td>
+                                </tr>
+                                <tr>
+                                    <th>注册资金</th>
+                                    <td>{{ company.registerMoney }}</td>
+                                </tr>
+                                <tr>
+                                    <th>经营状态</th>
+                                    <td>{{ company.companyStatus }}</td>
+                                </tr>
+                                <tr>
+                                    <th>成立日期</th>
+                                    <td>{{ company.date }}</td>
+                                </tr>
+                                <tr>
+                                    <th>统一社会信用代码</th>
+                                    <td>{{ company.identifier }}</td>
+                                </tr>
+                                <tr>
+                                    <th>纳税人识别号</th>
+                                    <td>{{ company.identifier }}</td>
+                                </tr>
+
+                                <tr>
+                                    <th>企业类型</th>
+                                    <td>{{ company.companyType }}</td>
+                                </tr>
+                                <tr>
+                                    <th>所属地区</th>
+                                    <td>{{ company.location }}</td>
+                                </tr>
+                                <tr>
+                                    <th>注册地址</th>
+                                    <td>{{ company.address }}</td>
+                                </tr>
+                                <tr>
+                                    <th>经营范围</th>
+                                    <td>{{ company.makesOffer }}</td>
+                                </tr>
+
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block js %}
+
+    <!-- InputMask -->
+    <script src="{% static 'js/moment.min.js' %}"></script>
+    <!-- date-range-picker -->
+    <script src="{% static 'js/daterangepicker.js' %}"></script>
+    <script src="{% static 'js/datepicker-zh-cn.js' %}"></script>
+    <!-- load bootstrap4 -->
+    <script src="{% static 'js/bootstrap4/util.js' %}"></script>
+    <script src="{% static 'js/bootstrap4/dropdown.js' %}"></script>
+    <script src="{% static 'js/bootstrap4/popper.js' %}"></script>
+    <script src="{% static 'js/bootstrap4/bootstrap.min.js' %}"></script>
+    <!-- load bootstrap select -->
+    <script src="{% static 'js/bootstrap-select.min.js' %}"></script>
+    <script src="{% static 'js/bootstrapselect-zh_CN.js' %}"></script>
+
+    <script>
+
+        $(function () {
+
+            //Date range as a button
+            $('#daterange-btn').daterangepicker({
+                    ranges   : {
+                        // '今日'       : [moment(), moment()],
+                        // '昨日'   : [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                        '前七天' : [moment().subtract(7, 'days'), moment().subtract(1,'days')],
+                        '前30天': [moment().subtract(30, 'days'), moment().subtract(1,'days')],
+                        '本月'  : [moment().startOf('month'), moment().endOf('month')],
+                        '上月'  : [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                    },
+                    startDate: moment().subtract(30, 'days'),
+                    endDate  : moment().subtract(1, 'days'),
+                    dateLimit : {days : 90},    //起止时间的最大间隔
+                    autoApply:true,
+                    minDate:moment('2019-01-01'),
+                    maxDate:moment().subtract(1, 'days'),
+                },
+                function (start, end) {
+                    $('#showrangedate').val(start.format('YYYY.MM.DD')+'-'+end.format('YYYY.MM.DD'));
+            });
+
+            function getstart(){
+                $('#showrangedate').val(
+                    moment().subtract(30,'days').format('YYYY.MM.DD')+'-'+moment().subtract(1,'days').format('YYYY.MM.DD')
+                );
+            }
+            getstart();
+
+        })
+    </script>
+
+{% endblock %}
