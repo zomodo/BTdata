@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+{% block title %}
+    {{ category.name }}
+{% endblock %}
+
+{% block css %}
+    <!-- css -->
+    <link rel="stylesheet" href="{% static 'css/dataTables.bootstrap4.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/responsive.bootstrap4.min.css' %}">
+
+
+{% endblock %}
+
+{% block start-title %}
+    {{ category.name }}
+{% endblock %}
+
+
+{% block content %}
+
+
+<div class="card card-solid">
+
+    <div class="card-body pb-0">
+        <div class="row d-flex align-items-stretch">
+
+            {% for data in resources_list %}
+
+                <div class="col-6 col-sm-6 col-md-3 d-flex align-items-stretch">
+                    <div class="card bg-light">
+                        <div class="card-header text-muted border-bottom-0"></div>
+
+                        <div class="card-body pt-0">
+
+                            {% if data.category_id == 1 %}
+                                <a href="{% url 'peixun:cate_detail1' data.id %}">
+                            {% elif data.category_id == 2 %}
+                                <a href="{% url 'peixun:cate_detail2' data.id %}">
+                            {% elif data.category_id == 3 %}
+                                <a href="{% url 'peixun:cate_detail3' data.id %}">
+                            {% elif data.category_id == 4 %}
+                                <a href="{% url 'peixun:cate_detail4' data.id %}">
+                            {% elif data.category_id == 5 %}
+                                <a href="{% url 'peixun:cate_detail5' data.id %}">
+                            {% elif data.category_id == 6 %}
+                                <a href="{% url 'peixun:cate_detail6' data.id %}">
+                            {% elif data.category_id == 7 %}
+                                <a href="{% url 'peixun:cate_detail7' data.id %}">
+                            {% endif %}
+
+                                <div class="row">
+                                    <div class="col-7">
+                                        <h2 class="lead"><b>{{ data.title }}</b></h2>
+                                        <p class="text-muted text-sm"><b>简介: </b> {{ data.desc }}</p>
+                                    </div>
+                                    <div class="col-5 text-center">
+                                        <img src="{{ data.image.url }}" alt="" style="width: 120px" class="img-circle img-fluid">
+                                    </div>
+                                </div>
+
+                            </a>
+
+                        </div>
+
+
+{#                        <div class="card-footer">#}
+{#                            <div class="text-right">#}
+{#                                <a href="{{ data.link }}" target="_blank" class="btn btn-sm bg-teal">#}
+{#                                    <i class="fas fa-link"></i> 直接跳转#}
+{#                                </a>#}
+{#                                {% if data.category_id == 1 %}#}
+{#                                    <a href="{% url 'peixun:cate_detail1' data.id %}" class="btn btn-sm btn-primary">#}
+{#                                {% elif data.category_id == 2 %}#}
+{#                                    <a href="{% url 'peixun:cate_detail2' data.id %}" class="btn btn-sm btn-primary">#}
+{#                                {% elif data.category_id == 3 %}#}
+{#                                    <a href="{% url 'peixun:cate_detail3' data.id %}" class="btn btn-sm btn-primary">#}
+{#                                {% elif data.category_id == 4 %}#}
+{#                                    <a href="{% url 'peixun:cate_detail4' data.id %}" class="btn btn-sm btn-primary">#}
+{#                                {% elif data.category_id == 5 %}#}
+{#                                    <a href="{% url 'peixun:cate_detail5' data.id %}" class="btn btn-sm btn-primary">#}
+{#                                {% elif data.category_id == 6 %}#}
+{#                                    <a href="{% url 'peixun:cate_detail6' data.id %}" class="btn btn-sm btn-primary">#}
+{#                                {% elif data.category_id == 7 %}#}
+{#                                    <a href="{% url 'peixun:cate_detail7' data.id %}" class="btn btn-sm btn-primary">#}
+{#                                {% endif %}#}
+{##}
+{#                                <i class="fas fa-arrow-circle-right"></i> 进入专栏#}
+{#                                </a>#}
+{#                            </div>#}
+{#                        </div>#}
+
+
+                    </div>
+                </div>
+
+            {% endfor %}
+
+
+        </div>
+    </div>
+        <!-- /.card-body -->
+{#        <div class="card-footer">#}
+{#          <nav aria-label="Contacts Page Navigation">#}
+{#            <ul class="pagination justify-content-center m-0">#}
+{#              <li class="page-item active"><a class="page-link" href="#">1</a></li>#}
+{#              <li class="page-item"><a class="page-link" href="#">2</a></li>#}
+{#              <li class="page-item"><a class="page-link" href="#">3</a></li>#}
+{#              <li class="page-item"><a class="page-link" href="#">4</a></li>#}
+{#              <li class="page-item"><a class="page-link" href="#">5</a></li>#}
+{#              <li class="page-item"><a class="page-link" href="#">6</a></li>#}
+{#              <li class="page-item"><a class="page-link" href="#">7</a></li>#}
+{#              <li class="page-item"><a class="page-link" href="#">8</a></li>#}
+{#            </ul>#}
+{#          </nav>#}
+{#        </div>#}
+        <!-- /.card-footer -->
+
+      </div>
+
+
+{% endblock %}
+
+
+{% block js %}
+    <script src="{% static 'js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'js/dataTables.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'js/responsive.bootstrap4.min.js' %}"></script>
+
+    <!-- js -->
+    <script>
+
+
+    </script>
+
+{% endblock %}

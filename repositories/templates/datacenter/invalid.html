@@ -12,11 +12,14 @@
     <!-- load bootstrap select -->
     <link rel="stylesheet" href="{% static 'css/bootstrap-select.min.css' %}">
 
-    <!-- Ionicons -->
-    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
     <!-- DataTables -->
     <link rel="stylesheet" href="{% static 'css/dataTables.bootstrap4.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/responsive.bootstrap4.min.css' %}">
+    <style>
+        .btn{
+            cursor: auto;
+        }
+    </style>
 
 {% endblock %}
 
@@ -37,9 +40,8 @@
 
                     <div class="input-group input-group-sm">
 
-                        <input type="text" id="word" class="btn btn-default text-left text-sm" placeholder="账户名称/公司名称全称" style="width: 240px">
+                        <input type="text" id="word" class="btn btn-default text-left text-sm" placeholder="账户名称/公司名称全称" style="width: 280px">
                         <input type="submit" id="invalid_btn" class="btn btn-outline-primary ml-2" value="查 询">
-
 
                     </div>
 

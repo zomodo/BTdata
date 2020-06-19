@@ -3,6 +3,10 @@
 {% load categery_count %}
 {% load staticfiles %}
 
+{% block title %}
+    案例分享
+{% endblock %}
+
 {% block css %}
     <!-- css -->
     <link rel="stylesheet" href="{% static 'css/dataTables.bootstrap4.min.css' %}">
@@ -86,7 +90,7 @@
                 <div class="card-body p-0">
 
                     <div class="table-responsive mailbox-messages">
-                        <table class="table table-hover table-striped" id="tab">
+                        <table class="table table-hover table-striped projects" id="tab">
                             <thead>
                                 <tr>
                                     <th></th>
@@ -103,8 +107,23 @@
                                         <td>{{ data.title }}</td>
                                         <td>{{ data.upload_file.name | cut:'chanpin/share_example/' }}</td>
                                         <td>{{ data.created_time }}</td>
-                                        <td><a href="{% url 'chanpin:share_example_show' data.id %}"><button class="btn btn-block btn-sm btn-outline-secondary">预览</button></a></td>
-                                        <td><a href="{% url 'chanpin:share_example_download' data.id %}"><button class="btn btn-block btn-sm btn-outline-secondary">下载</button></a></td>
+
+                                        <td>
+                                            <a href="{% url 'chanpin:share_example_show' data.id %}">
+                                                <button class="btn btn-block btn-outline-secondary">
+                                                    <i class="fas fa-eye mr-2"></i>预览
+                                                </button>
+                                            </a>
+                                        </td>
+
+                                        <td>
+                                            <a href="{% url 'chanpin:share_example_download' data.id %}">
+                                                <button class="btn btn-block btn-outline-secondary">
+                                                    <i class="fas fa-download mr-2"></i>下载
+                                                </button>
+                                            </a>
+                                        </td>
+
                                     </tr>
 
                                 {% endfor %}

@@ -102,17 +102,20 @@ class FeedResource(resources.ModelResource):
     account_indus_2=fields.Field(column_name='账户二级行业', attribute='account_indus_2')
     sf_username = fields.Field(column_name='SF对应二级账号', attribute='sf_username')
     order_line=fields.Field(column_name='订单行', attribute='order_line')
-    feed_allconsume = fields.Field(column_name='原生总消费', attribute='feed_allconsume')
     feed_ald_consume=fields.Field(column_name='原生阿拉丁消费', attribute='feed_ald_consume')
     feed_cpc_consume=fields.Field(column_name='原生CPC消费', attribute='feed_cpc_consume')
     feed_cpm_consume=fields.Field(column_name='原生CPM消费', attribute='feed_cpm_consume')
     baiyi_feed=fields.Field(column_name='百意Feed消费', attribute='baiyi_feed')
     baiyi_wi_cpc=fields.Field(column_name='百意无线开屏CPC消费', attribute='baiyi_wi_cpc')
     baiyi_feedGD=fields.Field(column_name='百意FeedGD消费', attribute='baiyi_feedGD')
-
+    feed_allconsume=fields.Field(column_name='原生总消费', attribute='feed_allconsume')
 
     def before_import_row(self, row, **kwargs):
         row['日期']=datetime.strptime(row['data_flag'], "%Y%m%d").date()
+        all_feed=float(row['原生阿拉丁消费'])+float(row['原生CPC消费'])+float(row['原生CPM消费'])+\
+                 float(row['百意Feed消费'])+float(row['百意无线开屏CPC消费'])+float(row['百意FeedGD消费'])
+
+        row['原生总消费']=all_feed
 
         # 修改那些账户ID为0的数据，重命名为'op'+订单行
         if row['账户ID']=='0':
@@ -134,7 +137,6 @@ class OtherProResource(resources.ModelResource):
     account_indus_2=fields.Field(column_name='账户二级行业', attribute='account_indus_2')
     sf_username = fields.Field(column_name='SF对应二级账号', attribute='sf_username')
     order_line=fields.Field(column_name='订单行', attribute='order_line')
-    op_allconsume=fields.Field(column_name='品牌展示总消费', attribute='op_allconsume')
     feed_gd_consume=fields.Field(column_name='原生GD消费', attribute='feed_gd_consume')
     qipaoxian_consume=fields.Field(column_name='品牌起跑线消费', attribute='qipaoxian_consume')
     jvping_search=fields.Field(column_name='凤巢聚屏消费', attribute='jvping_search')
@@ -150,11 +152,16 @@ class OtherProResource(resources.ModelResource):
     quanjing_consume=fields.Field(column_name='品牌全景消费', attribute='quanjing_consume')
     xuzhang_consume=fields.Field(column_name='品牌序章消费', attribute='xuzhang_consume')
     jvping_allconsume=fields.Field(column_name='聚屏总消费', attribute='jvping_allconsume')
-
+    op_allconsume=fields.Field(column_name='品牌总消费', attribute='op_allconsume')
 
     def before_import_row(self, row, **kwargs):
         row['日期']=datetime.strptime(row['data_flag'], "%Y%m%d").date()
         row['聚屏总消费']=float(row['凤巢聚屏消费'])+float(row['聚屏平台合约消费'])+float(row['聚屏平台竞价消费'])
+        all_op=float(row['原生GD消费'])+float(row['品牌起跑线消费'])+float(row['品牌华表消费'])+float(row['图片推广消费'])+\
+               float(row['品牌专区消费'])+float(row['品牌丝路消费'])+float(row['知识营销消费'])+float(row['手百开屏消费'])+\
+               float(row['非标消费'])+float(row['品牌全景消费'])+float(row['品牌序章消费'])+float(row['聚屏总消费'])
+
+        row['品牌总消费']=all_op
 
         # 修改那些账户ID为0的数据，重命名为'op'+订单行
         if row['账户ID']=='0':

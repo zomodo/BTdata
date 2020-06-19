@@ -2,6 +2,10 @@
 
 {% load staticfiles %}
 
+{% block title %}
+    {{ data.title }}
+{% endblock %}
+
 {% block css %}
     <!-- css -->
     <link rel="stylesheet" href="{% static 'css/dataTables.bootstrap4.min.css' %}">

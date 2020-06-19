@@ -13,9 +13,11 @@
     <link rel="stylesheet" href="{% static 'css/select2.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/select2-bootstrap4.min.css' %}">
 
-    <!-- Ionicons -->
-    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-
+    <style>
+        .btn{
+            cursor: auto;
+        }
+    </style>
 
 {% endblock %}
 
@@ -83,7 +85,7 @@
 
                             <button type="button" class="btn btn-default">
                                 <i class="far fa-calendar-alt"></i>
-                                <span id="showdate2"> {{ latest_date }} </span>
+                                <span id="showdate2"> {{ latest_date | date:"Y-m" }} </span>
                                 <!-- i class="fas fa-caret-down"></i-->
                             </button>
                             &nbsp;
