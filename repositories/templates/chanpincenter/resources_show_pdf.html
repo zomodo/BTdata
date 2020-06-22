@@ -8,8 +8,6 @@
 
 {% block css %}
     <!-- css -->
-    <link rel="stylesheet" href="{% static 'css/dataTables.bootstrap4.min.css' %}">
-    <link rel="stylesheet" href="{% static 'css/responsive.bootstrap4.min.css' %}">
 
     <style>
     label{
@@ -69,7 +67,7 @@
                     <div class="mailbox-read-info">
                         <h5>{{ data.title }}</h5>
                         <h6>
-                            <span class="mailbox-read-time float-right">
+                            <span class="mailbox-read-time text-sm float-right">
                                 {{ data.author.first_name }}-{{ data.created_time }}
                             </span>
                         </h6>
@@ -113,54 +111,5 @@
 
 
 {% block js %}
-    <script src="{% static 'js/jquery.dataTables.min.js' %}"></script>
-    <script src="{% static 'js/dataTables.bootstrap4.min.js' %}"></script>
-    <script src="{% static 'js/dataTables.responsive.min.js' %}"></script>
-    <script src="{% static 'js/responsive.bootstrap4.min.js' %}"></script>
     <!-- js -->
-    <script>
-
-        $('thead').hide();
-
-        $("#tab").DataTable({
-
-            language: {
-                "sProcessing": "处理中...",
-                "sLengthMenu": "显示 _MENU_ 项结果",
-                "sZeroRecords": "没有匹配结果",
-                "sInfo": "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
-                "sInfoEmpty": "显示第 0 至 0 项结果，共 0 项",
-                "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
-                "sInfoPostFix": "",
-                "sSearch": "",
-                "sSearchPlaceholder": "搜索",
-                "sUrl": "",
-                "sEmptyTable": "表中数据为空",
-                "sLoadingRecords": "载入中...",
-                "sInfoThousands": ",",
-                "oPaginate": {
-                "sFirst": "首页",
-                "sPrevious": "«",
-                "sNext": "»",
-                "sLast": "末页"
-                },
-            "oAria": {
-            "sSortAscending": ": 以升序排列此列",
-            "sSortDescending": ": 以降序排列此列"
-            }
-            },
-
-            "paging": true,
-            "lengthChange": false,
-            "searching": true,
-            "ordering": false,
-            "info": false,
-            "autoWidth": false,
-            "responsive": true,
-        });
-
-        $('.list-card').append($('#tab_filter'));
-
-    </script>
-
 {% endblock %}

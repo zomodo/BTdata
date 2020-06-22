@@ -3,11 +3,12 @@
 {% load staticfiles %}
 
 {% block title %}
-    案例分享
+    资讯速分享
 {% endblock %}
 
 {% block css %}
     <!-- css -->
+
     <style>
     label{
         margin: 0;
@@ -17,7 +18,7 @@
 {% endblock %}
 
 {% block start-title %}
-
+    资讯速分享
 {% endblock %}
 
 
@@ -25,46 +26,19 @@
 
     <div class="row">
 
-        <div class="col-md-3">
-            <a href="javascript:history.go(-1)" class="btn btn-primary btn-block mb-3"> 返 回 </a>
 
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">{{ data.category.name }}</h3>
-
-                    <div class="card-tools">
-                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="card-body p-0">
-                    <ul class="nav nav-pills flex-column">
-                        {% for t in alltitle %}
-
-                            <li class="nav-item">
-                                <a href="{% url 'chanpin:share_example_show' t.id %}" class="nav-link">
-                                    <i class="fas fa-filter"></i>&nbsp;&nbsp;{{ t.title }}
-                                </a>
-                            </li>
-
-                        {% endfor %}
-
-                    </ul>
-                </div>
-                <!-- /.card-body -->
-            </div>
-            <!-- /.card -->
-
-        </div>
-        <!-- /.col -->
-
-        <div class="col-md-9">
+        <div class="col-12">
             <div class="card card-primary card-outline">
 
                 <div class="card-body p-0">
                     <div class="mailbox-read-info">
-                        <h5>{{ data.title }}</h5>
+                        <h5>
+                            {{ data.title }}
+                            <a href="javascript:history.go(-1)" class="ml-2" title="返回">
+                                <i class="fas fa-reply"></i>
+                            </a>
+                        </h5>
+
                         <h6>
                             <span class="mailbox-read-time text-sm float-right">
                                 {{ data.author.first_name }}-{{ data.created_time }}
@@ -89,7 +63,7 @@
 
             <!-- /.card-footer -->
                 <div class="card-footer">
-                    <a href="{% url 'chanpin:share_example_download' data.id %}">
+                    <a href="{% url 'peixun:sharefile_download' data.id %}">
                         <button type="button" class="btn btn-outline-primary">
                             <i class="fas fa-download"></i> 下载
                         </button>
@@ -100,8 +74,6 @@
             <!-- /.card -->
         </div>
         <!-- /.col -->
-
-
 
     </div>
     <!-- /.row -->
