@@ -12,7 +12,7 @@ from django.db.models import Sum,Count,Avg,Q
 def allconsume(request):
     # 数据最新日期
     latest_date=models.Account.get_latest_date()
-    print(latest_date)
+    # print(latest_date)
     # 前一天日期，做环比
     yesterday=latest_date+datetime.timedelta(days=-1)
     # 前七天日期，做同比

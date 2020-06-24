@@ -60,8 +60,6 @@ INSTALLED_APPS = [
 
 
 MIDDLEWARE = [
-    'dj_pagination.middleware.PaginationMiddleware',  # dj_pagination
-
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -71,8 +69,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
     'rbac.middleware.rbac.RbacMiddleware',      # 添加rbac中间件
-    'debug_toolbar.middleware.DebugToolbarMiddleware',      # django-debug-toolbar中间件
-
+    'dj_pagination.middleware.PaginationMiddleware',  # dj_pagination
+    'debug_toolbar.middleware.DebugToolbarMiddleware',  # django-debug-toolbar中间件
 ]
 
 ROOT_URLCONF = 'BTdata.urls'
@@ -117,6 +115,7 @@ DATABASES = {
         'PASSWORD': '123456',
         'HOST': '172.16.3.92',
         'PORT': '3306',
+        'OPTIONS':{'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",},
     }
 }
 
@@ -203,6 +202,7 @@ DEBUG_TOOLBAR_PANELS = [
     'debug_toolbar.panels.timer.TimerPanel',
     'debug_toolbar.panels.settings.SettingsPanel',
     'debug_toolbar.panels.headers.HeadersPanel',
+    'debug_toolbar.panels.request.RequestPanel',
     'debug_toolbar.panels.sql.SQLPanel',
     'debug_toolbar.panels.staticfiles.StaticFilesPanel',
     'debug_toolbar.panels.templates.TemplatesPanel',
@@ -210,6 +210,7 @@ DEBUG_TOOLBAR_PANELS = [
     'debug_toolbar.panels.signals.SignalsPanel',
     'debug_toolbar.panels.logging.LoggingPanel',
     'debug_toolbar.panels.redirects.RedirectsPanel',
+    'debug_toolbar.panels.profiling.ProfilingPanel',
 ]
 # 如果上方的debug_toolbar配置展示不出来，可以修改JQUERY_URL为国内的CDN地址
 DEBUG_TOOLBAR_CONFIG = {
@@ -294,3 +295,16 @@ CKEDITOR_CONFIGS = {
         ]),
     }
 }
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache', # 指定缓存使用的引擎
+        'LOCATION': 'my_cache_table',         # 指定Memcache缓存服务器的IP地址和端口
+        'TIMEOUT': 60 * 60 * 24,
+        'OPTIONS':{
+            'MAX_ENTRIES': 1000,            # 最大缓存记录的数量（默认300）
+            'CULL_FREQUENCY': 10,           # 缓存到达最大个数之后，剔除缓存个数的比例，即：1/CULL_FREQUENCY（默认3）
+        }
+    }
+}
+

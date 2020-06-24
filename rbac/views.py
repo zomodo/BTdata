@@ -39,6 +39,7 @@ def logout(request):
     request.session.flush()
     return redirect(reverse('index'))
 
+
 def index(request):
 
     alldata=models.Message.objects.filter(show=1).only('id','title','created_time')
