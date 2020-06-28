@@ -38,7 +38,9 @@ urlpatterns = [
     path('cate7/<int:id>/', views.cate_detail, name='cate_detail7'),
 
     path('sharefile/', views.sharefile, name='sharefile'),
-    path('sharefile/show/<int:id>/', views.sharefile, name='sharefile_show'),
+    path('sharefile/<int:id>', views.sharefile, name='sharefile_category'),
+
+    path('sharefile/show/<int:id>/', views.sharefile_show, name='sharefile_show'),
     path('sharefile/download/<int:id>/', views.sharefile_download, name='sharefile_download'),
 
 

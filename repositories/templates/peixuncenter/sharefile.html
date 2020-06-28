@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 
+{% load share_category_count %}
 {% load staticfiles %}
 
 {% block title %}
@@ -27,7 +28,56 @@
 
     <div class="row">
 
-        <div class="col-12">
+        <div class="col-md-3">
+            <a href="{% url 'peixun:sharefile' %}" class="btn btn-primary btn-block mb-3"> 所 有 资 讯 </a>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">资讯分类</h3>
+
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
+                        </button>
+                    </div>
+                    <!-- /.card-tools -->
+                </div>
+
+                <div class="card-body p-0">
+                    <ul class="nav nav-pills flex-column">
+                        {% for category in allcategory %}
+                            {% if category.id == category_id %}
+
+                                <li class="nav-item">
+                                    <a href="{% url 'peixun:sharefile_category' category.id %}" class="nav-link active">
+                                        <i class="fas fa-filter"></i>&nbsp;&nbsp;{{ category.name }}
+                                        <span class="badge bg-info float-right">{{ category.id | share_count }}</span>
+                                    </a>
+                                </li>
+
+                            {% else %}
+
+                                <li class="nav-item">
+                                    <a href="{% url 'peixun:sharefile_category' category.id %}" class="nav-link">
+                                        <i class="fas fa-filter"></i>&nbsp;&nbsp;{{ category.name }}
+                                        <span class="badge bg-info float-right">{{ category.id | share_count }}</span>
+                                    </a>
+                                </li>
+
+                            {% endif %}
+
+                        {% endfor %}
+
+                    </ul>
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+
+        </div>
+        <!-- /.col -->
+
+
+        <div class="col-md-9">
             <div class="card card-primary card-outline">
                 <div class="card-header">
                     <h3 class="card-title">资讯列表</h3>
@@ -39,7 +89,7 @@
 
                 </div>
                 <!-- /.card-header -->
-                <div class="card-body">
+                <div class="card-body p-0">
 
                     <div class="table-responsive mailbox-messages">
                         <table class="table table-hover table-striped projects" id="tab">
@@ -58,9 +108,9 @@
                                     <tr>
                                         <td>{{ data.title }}</td>
                                         <td>{{ data.upload_file.name | cut:'peixun/share_file/' }}</td>
-                                        <td>{{ data.created_time }}</td>
+                                        <td style="min-width: 110px">{{ data.created_time }}</td>
 
-                                        <td>
+                                        <td style="min-width: 90px">
                                             <a href="{% url 'peixun:sharefile_show' data.id %}">
                                                 <button class="btn btn-block btn-outline-secondary">
                                                     <i class="fas fa-eye mr-2"></i>预览
@@ -68,7 +118,7 @@
                                             </a>
                                         </td>
 
-                                        <td>
+                                        <td style="min-width: 90px">
                                             <a href="{% url 'peixun:sharefile_download' data.id %}">
                                                 <button class="btn btn-block btn-outline-secondary">
                                                     <i class="fas fa-download mr-2"></i>下载
@@ -142,6 +192,7 @@
             },
 
             "paging": true,
+            "pageLength": 10,
             "lengthChange": false,
             "searching": true,
             "ordering": false,
@@ -152,7 +203,7 @@
 
         $('thead').hide();
 
-        {#$('.list-card').append($('#tab_filter'));#}
+        $('.list-card').append($('#tab_filter'));
 
     });
 

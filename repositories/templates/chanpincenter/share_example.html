@@ -106,9 +106,9 @@
                                     <tr>
                                         <td>{{ data.title }}</td>
                                         <td>{{ data.upload_file.name | cut:'chanpin/share_example/' }}</td>
-                                        <td>{{ data.created_time }}</td>
+                                        <td style="min-width: 110px">{{ data.created_time }}</td>
 
-                                        <td>
+                                        <td style="min-width: 90px">
                                             <a href="{% url 'chanpin:share_example_show' data.id %}">
                                                 <button class="btn btn-block btn-outline-secondary">
                                                     <i class="fas fa-eye mr-2"></i>预览
@@ -116,7 +116,7 @@
                                             </a>
                                         </td>
 
-                                        <td>
+                                        <td style="min-width: 90px">
                                             <a href="{% url 'chanpin:share_example_download' data.id %}">
                                                 <button class="btn btn-block btn-outline-secondary">
                                                     <i class="fas fa-download mr-2"></i>下载
@@ -190,6 +190,7 @@
             },
 
             "paging": true,
+            "pageLength": 10,
             "lengthChange": false,
             "searching": true,
             "ordering": false,
