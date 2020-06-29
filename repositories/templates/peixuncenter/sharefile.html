@@ -106,7 +106,12 @@
                             <tbody>
                                 {% for data in alldata %}
                                     <tr>
-                                        <td>{{ data.title }}</td>
+                                        <td>
+                                            {{ data.title }}
+                                            {% if data.is_top == 1 %}
+                                                <i class="fas fa-fire-alt text-danger ml-1"></i>
+                                            {% endif %}
+                                        </td>
                                         <td>{{ data.upload_file.name | cut:'peixun/share_file/' }}</td>
                                         <td style="min-width: 110px">{{ data.created_time }}</td>
 

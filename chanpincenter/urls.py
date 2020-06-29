@@ -42,6 +42,4 @@ urlpatterns = [
     path('item/<int:id>/', views.item, name='item_detail'),
     path('item/download/<int:id>/', views.item_download, name='item_download'),
 
-    path('dasou/d1/', views.d1, name='d1'),
-
 ]

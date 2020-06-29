@@ -56,7 +56,12 @@
                             <tbody>
                                 {% for data in data_list %}
                                     <tr>
-                                        <td>{{ data.title }}</td>
+                                        <td>
+                                            {{ data.title }}
+                                            {% if data.is_top == 1 %}
+                                                <i class="fas fa-fire-alt text-danger ml-1"></i>
+                                            {% endif %}
+                                        </td>
                                         <td>{{ data.upload_file.name | cut:'chanpin/item/' }}</td>
                                         <td style="min-width: 110px">{{ data.created_time }}</td>
 

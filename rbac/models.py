@@ -80,12 +80,18 @@ class Message(models.Model):
         (2,'百推学院'),
     )
 
+    IS_TOP_ITEMS=(
+        (1,'置顶'),
+        (0,'不置顶'),
+    )
+
     SHOW_STATUS=(
         (1,'显示'),
         (0,'不显示'),
     )
     type=models.PositiveIntegerField(choices=TYPE_STATUS,verbose_name='部门')
     author=models.ForeignKey(AuthUser,on_delete=models.DO_NOTHING,verbose_name='作者')
+    is_top = models.PositiveIntegerField(choices=IS_TOP_ITEMS, default=0, verbose_name='是否置顶', help_text='默认不置顶')
     show=models.PositiveIntegerField(choices=SHOW_STATUS,default=1,verbose_name='是否显示')
     title=models.CharField(max_length=64,verbose_name='标题')
     content=RichTextUploadingField(verbose_name='内容')
@@ -93,7 +99,7 @@ class Message(models.Model):
 
     class Meta:
         verbose_name=verbose_name_plural='消息通知'
-        ordering=['-created_time']
+        ordering=['-is_top','-created_time']
 
     def __str__(self):
         return self.title

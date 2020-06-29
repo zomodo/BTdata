@@ -34,6 +34,11 @@
                             <li class="nav-item">
                                 <a href="{% url 'message' message.id %}" class="nav-link">
                                     {{ message.title }}
+
+                                    {% if message.is_top == 1 %}
+                                        <i class="fas fa-fire-alt text-danger ml-1"></i>
+                                    {% endif %}
+
                                     <span class="badge float-right">
                                         {{ message.created_time }}
                                     </span>
@@ -72,6 +77,11 @@
                             <li class="nav-item">
                                 <a href="{% url 'message' message.id %}" class="nav-link">
                                     {{ message.title }}
+
+                                    {% if message.is_top == 1 %}
+                                        <i class="fas fa-fire-alt text-danger ml-1"></i>
+                                    {% endif %}
+
                                     <span class="badge float-right">
                                         {{ message.created_time }}
                                     </span>
@@ -110,6 +120,11 @@
                             <li class="nav-item">
                                 <a href="{% url 'message' message.id %}" class="nav-link">
                                     {{ message.title }}
+
+                                    {% if message.is_top == 1 %}
+                                        <i class="fas fa-fire-alt text-danger ml-1"></i>
+                                    {% endif %}
+
                                     <span class="badge float-right">
                                         {{ message.created_time }}
                                     </span>

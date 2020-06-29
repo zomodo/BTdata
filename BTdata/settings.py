@@ -296,27 +296,26 @@ CKEDITOR_CONFIGS = {
     }
 }
 
+"""
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.db.DatabaseCache', # 指定缓存使用的引擎
         'LOCATION': 'my_cache_table',         # 指定Memcache缓存服务器的IP地址和端口
-        'TIMEOUT': 86400,
         'OPTIONS':{
             'MAX_ENTRIES': 1000,            # 最大缓存记录的数量（默认300）
             'CULL_FREQUENCY': 3,           # 缓存到达最大个数之后，剔除缓存个数的比例，即：1/CULL_FREQUENCY（默认3）
         }
     }
 }
+"""
 
 """
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
         'LOCATION': '127.0.0.1:11211',
-        'TIMEOUT': 86400,
         'OPTIONS': {
-            'MAX_ENTRIES': 1000,  # 最大缓存记录的数量（默认300）
-            'CULL_FREQUENCY': 3,  # 缓存到达最大个数之后，剔除缓存个数的比例，即：1/CULL_FREQUENCY（默认3）
+            'server_max_value_length': 1024 * 1024 * 10,
         }
     }
 }
