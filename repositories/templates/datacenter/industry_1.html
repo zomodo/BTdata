@@ -113,27 +113,34 @@
                     $('#showrangedate').html(start.format('YYYY.MM.DD')+'-'+end.format('YYYY.MM.DD'));
             });
 
-            $.get("{% url 'data:get_indus1' %}",function (ret) {
-                // console.log(ret);
-                var op_list=[];
-                op_list.push("<option value='all'>所有行业</option>");
-                $.each(ret,function (i,v) {
-                    op="<option value="+v+">"+v+"</option>";
-                    op_list +=op;
-                });
-                // console.log(op_list);
-                $('#indus1').html(op_list)
-
-            });
+            getstart();
 
             function getstart(){
                 $('#showrangedate').html(
                     moment().subtract(30,'days').format('YYYY.MM.DD')+'-'+moment().subtract(1,'days').format('YYYY.MM.DD')
                 );
-                $('#indus1').html("<option value='all'>所有行业</option>");
+                // $('#indus1').html("<option value='all'>所有行业</option>");
+                $('#indus1').html("<option value='IT/消费电子'>IT/消费电子</option>");
+
                 getdata();
+                getindus1();
             }
-            getstart();
+
+
+            function getindus1(){
+                $.get("{% url 'data:get_indus1' %}",function (ret) {
+                    // console.log(ret);
+                    var op_list=[];
+                    // op_list.push("<option value='all'>所有行业</option>");
+                    $.each(ret,function (i,v) {
+                        op="<option value="+v+">"+v+"</option>";
+                        op_list +=op;
+                    });
+                    // console.log(op_list);
+                    $('#indus1').html(op_list)
+
+                });
+            }
 
             function getdata(){
                 var indus1=$('#indus1').val();

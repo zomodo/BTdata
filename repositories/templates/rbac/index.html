@@ -40,7 +40,7 @@
                                     {% endif %}
 
                                     <span class="badge float-right">
-                                        {{ message.created_time }}
+                                        {{ message.created_time | date:'Y-m-d' }}
                                     </span>
                                 </a>
 
@@ -83,7 +83,7 @@
                                     {% endif %}
 
                                     <span class="badge float-right">
-                                        {{ message.created_time }}
+                                        {{ message.created_time | date:'Y-m-d' }}
                                     </span>
                                 </a>
 
@@ -126,7 +126,7 @@
                                     {% endif %}
 
                                     <span class="badge float-right">
-                                        {{ message.created_time }}
+                                        {{ message.created_time | date:'Y-m-d' }}
                                     </span>
                                 </a>
 

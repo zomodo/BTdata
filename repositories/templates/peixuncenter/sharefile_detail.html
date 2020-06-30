@@ -70,7 +70,7 @@
 
                         <h6>
                             <span class="mailbox-read-time text-sm float-right">
-                                {{ data.author.first_name }}-{{ data.created_time }}
+                                {{ data.author.first_name }}-{{ data.created_time | date:'Y年m月d日' }}
                             </span>
                         </h6>
                     </div>

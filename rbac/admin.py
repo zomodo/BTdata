@@ -51,8 +51,8 @@ class MenuAdmin(ImportExportModelAdmin):
 
 @admin.register(models.Message)
 class MessageAdmin(admin.ModelAdmin):
-    list_display = ['title','type','author','show','is_top']
-    list_filter = ['type','show','is_top']
+    list_display = ['title','depart','author','status','is_top']
+    list_filter = ['depart','status','is_top']
     exclude = ['author']
 
     def save_model(self, request, obj, form, change):

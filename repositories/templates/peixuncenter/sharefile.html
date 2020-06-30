@@ -113,7 +113,7 @@
                                             {% endif %}
                                         </td>
                                         <td>{{ data.upload_file.name | cut:'peixun/share_file/' }}</td>
-                                        <td style="min-width: 110px">{{ data.created_time }}</td>
+                                        <td style="min-width: 120px">{{ data.created_time | date:'Y年m月d日' }}</td>
 
                                         <td style="min-width: 90px">
                                             <a href="{% url 'peixun:sharefile_show' data.id %}">

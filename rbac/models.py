@@ -74,7 +74,7 @@ class User(models.Model):
 
 class Message(models.Model):
 
-    TYPE_STATUS=(
+    DEPART_ITEMS=(
         (0,'数据中心'),
         (1,'策略中心'),
         (2,'百推学院'),
@@ -85,17 +85,17 @@ class Message(models.Model):
         (0,'不置顶'),
     )
 
-    SHOW_STATUS=(
+    STATUS_ITEMS=(
         (1,'显示'),
         (0,'不显示'),
     )
-    type=models.PositiveIntegerField(choices=TYPE_STATUS,verbose_name='部门')
+    depart=models.PositiveIntegerField(choices=DEPART_ITEMS,verbose_name='部门')
     author=models.ForeignKey(AuthUser,on_delete=models.DO_NOTHING,verbose_name='作者')
     is_top = models.PositiveIntegerField(choices=IS_TOP_ITEMS, default=0, verbose_name='是否置顶', help_text='默认不置顶')
-    show=models.PositiveIntegerField(choices=SHOW_STATUS,default=1,verbose_name='是否显示')
+    status=models.PositiveIntegerField(choices=STATUS_ITEMS,default=1,verbose_name='是否显示',help_text='默认显示')
     title=models.CharField(max_length=64,verbose_name='标题')
     content=RichTextUploadingField(verbose_name='内容')
-    created_time=models.DateField(auto_now_add=True,verbose_name='创建时间')
+    created_time=models.DateTimeField(auto_now_add=True,verbose_name='创建时间')
 
     class Meta:
         verbose_name=verbose_name_plural='消息通知'

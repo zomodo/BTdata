@@ -112,7 +112,7 @@
                                         </td>
 
                                         <td>{{ data.upload_file.name | cut:'chanpin/resources/' }}</td>
-                                        <td style="min-width: 110px">{{ data.created_time }}</td>
+                                        <td style="min-width: 120px">{{ data.created_time | date:'Y年m月d日' }}</td>
 
                                         <td style="min-width: 90px">
                                             <a href="{% url 'chanpin:resources_show' data.id %}">

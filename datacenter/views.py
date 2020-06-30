@@ -522,25 +522,8 @@ def indus1_chart(request):
     elif ctype == 'op':
         sum_name = 'op_allconsume'
 
-    if indus1=='all':
-        alldata=models.Total.objects.values('date').\
-            filter(date__range=(begin_date,end_date)).\
-            annotate(consume=Sum(sum_name)).\
-            order_by('date')
-        for data in alldata:
-            date_list.append(data['date'])
-            consume_list.append(float(data['consume']))
-            ratio_list.append(100)
+    if indus1:
 
-        context={
-            'date_list':date_list,
-            'consume_list':consume_list,
-            'ratio_list':ratio_list,
-        }
-
-        return JsonResponse(context)
-
-    else:
         indus_data=models.Total.objects.values('date').\
             filter(date__range=(begin_date,end_date),account_indus_1=indus1).\
             annotate(consume=Sum(sum_name)).\
@@ -549,7 +532,6 @@ def indus1_chart(request):
         for indus in indus_data:
             date_list.append(indus['date'])
             consume_list.append(float(indus['consume']))
-
 
         all_data=models.Total.objects.values('date').\
             filter(date__range=(begin_date,end_date)).\

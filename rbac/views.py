@@ -42,10 +42,10 @@ def logout(request):
 
 def index(request):
 
-    alldata=models.Message.objects.filter(show=1).only('id','title','created_time')
-    sheet0=alldata.filter(type=0)[:20]
-    sheet1=alldata.filter(type=1)[:20]
-    sheet2=alldata.filter(type=2)[:20]
+    alldata=models.Message.objects.filter(status=1).only('id','title','created_time')
+    sheet0=alldata.filter(depart=0)[:20]
+    sheet1=alldata.filter(depart=1)[:20]
+    sheet2=alldata.filter(depart=2)[:20]
 
     context={
         'mark':'index',
@@ -60,7 +60,7 @@ def index(request):
 def message(request,id):
 
     message=models.Message.objects.get(id=id)
-    menu_list=models.Message.objects.filter(type=message.type,show=1).only('title')[:20]
+    menu_list=models.Message.objects.filter(depart=message.depart,status=1).only('title')[:20]
 
     context={
         'menu_list':menu_list,
