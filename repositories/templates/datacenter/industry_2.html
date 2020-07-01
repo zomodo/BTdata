@@ -109,8 +109,9 @@
                     startDate: moment().subtract(30, 'days'),
                     endDate  : moment().subtract(1, 'days'),
                     dateLimit : {days : 90},    //起止时间的最大间隔
+                    showDropdowns: true,
                     autoApply:true,
-                    minDate:moment('2020-04-01'),
+                    minDate:moment('2019-01-01'),
                     maxDate:moment().subtract(1, 'days'),
                 },
                 function (start, end) {
@@ -188,7 +189,7 @@
                         // console.log(ret);
                         date_list=ret['date_list'];
                         consume_list=ret['consume_list'];
-                        ratio_list=ret['ratio_list'];
+                        count_list=ret['count_list'];
 
                         // highcharts
                         var chart = Highcharts.chart('container', {
@@ -196,10 +197,10 @@
                                 zoomType: 'xy'
                             },
                             title: {
-                                text: '二级行业消费趋势与消费占比'
+                                text: '二级行业消费趋势与有消费账户数'
                             },
                             subtitle: {
-                                text: '消费占比 = 二级行业 / 一级行业'
+                                text: ''
                             },
                             credits: {
                                 enabled: false
@@ -223,13 +224,13 @@
                                 }
                             }, { // Secondary yAxis
                                 title: {
-                                    text: '行业占比',
+                                    text: '有消费账户数',
                                     style: {
                                         color: Highcharts.getOptions().colors[0]
                                     }
                                 },
                                 labels: {
-                                    format: '{value}%',
+                                    format: '{value}',
                                     style: {
                                         color: Highcharts.getOptions().colors[0]
                                     }
@@ -249,12 +250,12 @@
                                 backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
                             },
                             series: [{
-                                name: '消费占比',
+                                name: '有消费账户数',
                                 type: 'column',
                                 yAxis: 1,
-                                data: ratio_list,
+                                data: count_list,
                                 tooltip: {
-                                    valueSuffix: '%'
+                                    valueSuffix: ''
                                 }
                             }, {
                                 name: '消费趋势',

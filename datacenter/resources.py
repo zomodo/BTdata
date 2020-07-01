@@ -24,20 +24,20 @@ class AccountResource(resources.ModelResource):
     allconsume = fields.Field(column_name='总消费', attribute='allconsume')
 
     def before_import_row(self, row, **kwargs):
-        row['日期'] = datetime.strptime(row['data_flag'],"%Y%m%d").date()
+        row['日期'] = datetime.strptime(str(row['data_flag']),"%Y%m%d").date()
 
         if row['开户日期']:
-            row['开户日期'] = datetime.strptime(row['开户日期'], "%Y/%m/%d %H:%M").date()
+            row['开户日期'] = datetime.strptime(str(row['开户日期']), "%Y/%m/%d %H:%M").date()
         else:
             row['开户日期']=None
 
         if row['自主投放首次消费日']:
-            row['自主投放首次消费日'] = datetime.strptime(row['自主投放首次消费日'], "%Y/%m/%d").date()
+            row['自主投放首次消费日'] = datetime.strptime(str(row['自主投放首次消费日']), "%Y/%m/%d").date()
         else:
             row['自主投放首次消费日']=None
 
         if row['账户首次消费日']:
-            row['账户首次消费日'] = datetime.strptime(row['账户首次消费日'], "%Y/%m/%d").date()
+            row['账户首次消费日'] = datetime.strptime(str(row['账户首次消费日']), "%Y/%m/%d").date()
         else:
             row['账户首次消费日']=None
 
@@ -79,7 +79,7 @@ class TotalResource(resources.ModelResource):
 
 
     def before_import_row(self, row, **kwargs):
-        row['日期'] = datetime.strptime(row['data_flag'], "%Y%m%d").date()
+        row['日期'] = datetime.strptime(str(row['data_flag']), "%Y%m%d").date()
 
         # 修改那些账户ID为0的数据，重命名为'op'+订单行
         if row['账户ID']=='0':
@@ -112,7 +112,7 @@ class FeedResource(resources.ModelResource):
 
 
     def before_import_row(self, row, **kwargs):
-        row['日期']=datetime.strptime(row['data_flag'], "%Y%m%d").date()
+        row['日期']=datetime.strptime(str(row['data_flag']), "%Y%m%d").date()
 
         # 修改那些账户ID为0的数据，重命名为'op'+订单行
         if row['账户ID']=='0':
@@ -153,7 +153,7 @@ class OtherProResource(resources.ModelResource):
 
 
     def before_import_row(self, row, **kwargs):
-        row['日期']=datetime.strptime(row['data_flag'], "%Y%m%d").date()
+        row['日期']=datetime.strptime(str(row['data_flag']), "%Y%m%d").date()
         row['聚屏总消费']=float(row['凤巢聚屏消费'])+float(row['聚屏平台合约消费'])+float(row['聚屏平台竞价消费'])
 
         # 修改那些账户ID为0的数据，重命名为'op'+订单行

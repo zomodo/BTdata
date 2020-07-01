@@ -190,7 +190,7 @@
                 singleDatePicker: true,
                 showDropdowns: true,
                 autoApply:true,
-                minDate:moment('2020-04-01'),
+                minDate:moment('2019-01-01'),
                 maxDate:moment().subtract(1, 'days'),
                 },
                 function (start) {
@@ -256,8 +256,9 @@
                     startDate: moment().subtract(30, 'days'),
                     endDate  : moment().subtract(1, 'days'),
                     dateLimit : {days : 90},    //起止时间的最大间隔
+                    showDropdowns: true,
                     autoApply:true,
-                    minDate:moment('2020-04-01'),
+                    minDate:moment('2019-01-01'),
                     maxDate:moment().subtract(1, 'days'),
                 },
                 function po(start, end) {

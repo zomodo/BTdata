@@ -509,47 +509,45 @@ def indus1_chart(request):
 
     date_list=[]
     consume_list=[]
-    allconsume_list=[]
-    ratio_list=[]
+
+    count_list=[]
+
     sum_name=''
+    search_dict={}
+
 
     if ctype == 'all':
-        sum_name = 'allconsume'
+        search_dict['allconsume__gt']=0
+        sum_name= 'allconsume'
     elif ctype == 'fengchao':
+        search_dict['fengchao_allconsume__gt']=0
         sum_name = 'fengchao_allconsume'
     elif ctype == 'feed':
+        search_dict['feed_allconsume__gt']=0
         sum_name = 'feed_allconsume'
     elif ctype == 'op':
+        search_dict['op_allconsume__gt']=0
         sum_name = 'op_allconsume'
 
     if indus1:
 
         indus_data=models.Total.objects.values('date').\
-            filter(date__range=(begin_date,end_date),account_indus_1=indus1).\
-            annotate(consume=Sum(sum_name)).\
+            filter(date__range=(begin_date,end_date),account_indus_1=indus1,**search_dict).\
             order_by('date')
 
-        for indus in indus_data:
-            date_list.append(indus['date'])
-            consume_list.append(float(indus['consume']))
+        allconsume=indus_data.annotate(consume=Sum(sum_name))
+        for data in allconsume:
+            date_list.append(data['date'])
+            consume_list.append(float(data['consume']))
 
-        all_data=models.Total.objects.values('date').\
-            filter(date__range=(begin_date,end_date)).\
-            annotate(allconsume=Sum(sum_name)).\
-            order_by('date')
-
-        for all in all_data:
-            allconsume_list.append(float(all['allconsume']))
-
-
-        for i in range(len(consume_list)):
-            ratio=consume_list[i] / allconsume_list[i] * 100
-            ratio_list.append(round(ratio,2))
+        allcount=indus_data.annotate(count=Count('id'))
+        for data in allcount:
+            count_list.append(data['count'])
 
         context={
             'date_list':date_list,
             'consume_list':consume_list,
-            'ratio_list':ratio_list,
+            'count_list':count_list,
         }
 
         return JsonResponse(context)
@@ -572,45 +570,46 @@ def indus2_chart(request):
 
     date_list=[]
     consume_list=[]
-    allconsume_list=[]
-    ratio_list=[]
+    count_list=[]
+
     sum_name=''
+    search_dict = {}
 
     if ctype == 'all':
         sum_name = 'allconsume'
+        search_dict['allconsume__gt']=0
     elif ctype == 'fengchao':
         sum_name = 'fengchao_allconsume'
+        search_dict['fengchao_allconsume__gt'] = 0
     elif ctype == 'feed':
         sum_name = 'feed_allconsume'
+        search_dict['feed_allconsume__gt'] = 0
     elif ctype == 'op':
         sum_name = 'op_allconsume'
+        search_dict['op_allconsume__gt'] = 0
 
-    allindus2=models.Total.objects.values('date').\
+
+    indus_data=models.Total.objects.values('date').\
         filter(
         date__range=(begin_date,end_date),
         account_indus_1=indus1,
         account_indus_2=indus2,
-    ).annotate(consume=Sum(sum_name)).order_by('date')
+        **search_dict
+    ).order_by('date')
 
-    for data2 in allindus2:
-        date_list.append(data2['date'])
-        consume_list.append(float(data2['consume']))
+    allconsume=indus_data.annotate(consume=Sum(sum_name))
+    for data in allconsume:
+        date_list.append(data['date'])
+        consume_list.append(float(data['consume']))
 
-    allindus1=models.Total.objects.values('date').\
-        filter(date__range=(begin_date,end_date),account_indus_1=indus1).\
-        annotate(consume=Sum(sum_name)).order_by('date')
-
-    for data1 in allindus1:
-        allconsume_list.append(float(data1['consume']))
-
-    for i in range(len(consume_list)):
-        ratio = consume_list[i] / allconsume_list[i] * 100
-        ratio_list.append(round(ratio, 2))
+    allcount=indus_data.annotate(count=Count('id'))
+    for data in allcount:
+        count_list.append(data['count'])
 
     context={
         'date_list':date_list,
         'consume_list':consume_list,
-        'ratio_list': ratio_list,
+        'count_list': count_list,
     }
     return JsonResponse(context)
 
