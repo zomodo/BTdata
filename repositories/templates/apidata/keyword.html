@@ -27,7 +27,6 @@
 
 {% block content %}
 
-
     <div class="card card-primary card-outline card-tabs">
         <div class="card-header p-0 pt-1 border-bottom-0">
             <ul class="nav nav-tabs" id="custom-tabs-three-tab" role="tablist">
@@ -69,7 +68,7 @@
                             <input type="text" class="btn btn-default text-left text-sm" id="searchword" placeholder="查关键词">
 
                             <input type="button" id="tab1_btn" class="btn btn-outline-primary ml-2" value="查 询">
-
+                            <span class="btn text-muted text-sm ml-1">搜索较慢，请等待3-5秒</span>
                         </div>
                     </div>
                 </div>
@@ -192,12 +191,6 @@
 
 {% block js %}
 
-    <!-- InputMask -->
-{#    <script src="{% static 'js/moment.min.js' %}"></script>#}
-    <!-- date-range-picker -->
-{#    <script src="{% static 'js/daterangepicker.js' %}"></script>#}
-{#    <script src="{% static 'js/datepicker-zh-cn.js' %}"></script>#}
-    <!-- load bootstrap4 -->
     <script src="{% static 'js/bootstrap4/util.js' %}"></script>
     <script src="{% static 'js/bootstrap4/dropdown.js' %}"></script>
     <script src="{% static 'js/bootstrap4/popper.js' %}"></script>
@@ -205,11 +198,6 @@
     <!-- load select2 -->
     <script src="{% static 'js/select2.full.min.js' %}"></script>
 
-    <!-- DataTables -->
-{#    <script src="{% static 'js/jquery.dataTables.js' %}"></script>#}
-{#    <script src="{% static 'js/dataTables.bootstrap4.min.js' %}"></script>#}
-{#    <script src="{% static 'js/dataTables.responsive.min.js' %}"></script>#}
-{#    <script src="{% static 'js/responsive.bootstrap4.min.js' %}"></script>#}
 
     <script>
 
@@ -240,7 +228,7 @@
                         kword:d3,
                         csrfmiddlewaretoken:'{{ csrf_token }}',
                     },
-                    function (ret) {
+                    function (ret,status) {
 
                         $.each(ret['kw_list'],function (i,v) {
 
@@ -322,9 +310,6 @@
                     }
                 )
             }
-
-
-
 
 
             function getindus1() {
@@ -476,7 +461,6 @@
         });
 
         // end tab1
-
 
     </script>
 

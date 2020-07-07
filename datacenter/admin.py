@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.db import transaction
 from import_export.admin import ImportExportModelAdmin
 from datacenter.resources import AccountResource,TotalResource,FeedResource,OtherProResource
 from datacenter.resources import Industry1Resource,Industry2Resource,InvalidResource

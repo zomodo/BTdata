@@ -44,16 +44,18 @@ class AccountResource(resources.ModelResource):
         if row['推广总余额']=='':
             row['推广总余额']=0
         # 修改那些账户ID为0的数据，重命名为'op'+订单行
-        if row['账户ID']=='0':
-            row['账户ID']='op'+row['订单行']
+        if str(row['账户ID'])=='0':
+            row['账户ID']='op'+str(row['订单行'])
 
         return super(AccountResource, self).before_import_row(row,**kwargs)
 
     class Meta:
         model=models.Account
-        skip_diff=True
+        # skip_diff = True
         skip_unchanged = True
         report_skipped = False
+        use_bulk = True
+        force_init_instance = True
 
 
 class TotalResource(resources.ModelResource):
@@ -82,17 +84,19 @@ class TotalResource(resources.ModelResource):
         row['日期'] = datetime.strptime(str(row['data_flag']), "%Y%m%d").date()
 
         # 修改那些账户ID为0的数据，重命名为'op'+订单行
-        if row['账户ID']=='0':
-            row['账户ID']='op'+row['订单行']
+        if str(row['账户ID'])=='0':
+            row['账户ID']='op'+str(row['订单行'])
 
         # print(row['账户名称'])
         return super(TotalResource, self).before_import_row(row,**kwargs)
         
     class Meta:
         model=models.Total
-        skip_diff=True
+        # skip_diff = True
         skip_unchanged = True
         report_skipped = False
+        use_bulk = True
+        force_init_instance = True
 
 class FeedResource(resources.ModelResource):
     date = fields.Field(column_name='日期', attribute='date')
@@ -115,16 +119,19 @@ class FeedResource(resources.ModelResource):
         row['日期']=datetime.strptime(str(row['data_flag']), "%Y%m%d").date()
 
         # 修改那些账户ID为0的数据，重命名为'op'+订单行
-        if row['账户ID']=='0':
-            row['账户ID']='op'+row['订单行']
+        if str(row['账户ID'])=='0':
+            row['账户ID']='op'+str(row['订单行'])
 
         return super(FeedResource, self).before_import_row(row,**kwargs)
 
     class Meta:
         model=models.Feed
-        skip_diff=True
+        # skip_diff=True
         skip_unchanged = True
         report_skipped = False
+        use_bulk=True
+        force_init_instance = True
+
 
 class OtherProResource(resources.ModelResource):
     date = fields.Field(column_name='日期', attribute='date')
@@ -157,16 +164,18 @@ class OtherProResource(resources.ModelResource):
         row['聚屏总消费']=float(row['凤巢聚屏消费'])+float(row['聚屏平台合约消费'])+float(row['聚屏平台竞价消费'])
 
         # 修改那些账户ID为0的数据，重命名为'op'+订单行
-        if row['账户ID']=='0':
-            row['账户ID']='op'+row['订单行']
+        if str(row['账户ID'])=='0':
+            row['账户ID']='op'+str(row['订单行'])
 
         return super(OtherProResource, self).before_import_row(row,**kwargs)
 
     class Meta:
         model=models.OtherPro
-        skip_diff=True
+        # skip_diff = True
         skip_unchanged = True
         report_skipped = False
+        use_bulk = True
+        force_init_instance = True
 
 
 class Industry1Resource(resources.ModelResource):
@@ -208,6 +217,8 @@ class InvalidResource(resources.ModelResource):
 
     class Meta:
         model=models.Invalid
-        skip_diff=True
+        # skip_diff = True
         skip_unchanged = True
         report_skipped = False
+        use_bulk = True
+        force_init_instance = True

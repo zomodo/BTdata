@@ -237,6 +237,10 @@ DEBUG_TOOLBAR_CONFIG = {
 #     }
 # }
 
+# django-import-export配置
+IMPORT_EXPORT_USE_TRANSACTIONS = True   # 导入数据时使用数据库事务，默认False
+IMPORT_EXPORT_SKIP_ADMIN_LOG = True
+
 # 配置ckeditor富文本编辑器的参数
 CKEDITOR_CONFIGS = {
     'default': {
@@ -320,3 +324,14 @@ CACHES = {
     }
 }
 """
+
+# redis 缓存
+# CACHES = {
+#     "default": {
+#         "BACKEND": "django_redis.cache.RedisCache",
+#         "LOCATION": "redis://127.0.0.1:6379/1",
+#         "OPTIONS": {
+#             "CLIENT_CLASS": "django_redis.client.DefaultClient",
+#         }
+#     }
+# }
