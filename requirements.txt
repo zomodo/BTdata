@@ -1,4 +1,4 @@
 django_ckeditor==5.9.0
 django_debug_toolbar==2.2
 django_import_export==2.2.0
-Django==2.2.11
+Django==2.2.13
