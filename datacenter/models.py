@@ -67,7 +67,7 @@ class Account(models.Model):
     account_indus_1=models.CharField(max_length=16,null=True,blank=True,verbose_name='账户一级行业')
     account_indus_2=models.CharField(max_length=16,null=True,blank=True,verbose_name='账户二级行业')
     account_status=models.CharField(max_length=16,null=True,blank=True,verbose_name='账户状态')
-    signup_date=models.DateField(verbose_name='开户日期',null=True,blank=True)
+    signup_date=models.DateTimeField(verbose_name='开户日期',null=True,blank=True)
     feed_firstdate=models.DateField(verbose_name='自主投放首消日',null=True,blank=True)
     account_firstdate=models.DateField(verbose_name='账户首消日',null=True,blank=True)
     allbalance=models.DecimalField(max_digits=10,decimal_places=2,verbose_name='推广总余额')

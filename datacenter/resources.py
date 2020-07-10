@@ -24,25 +24,34 @@ class AccountResource(resources.ModelResource):
     allconsume = fields.Field(column_name='总消费', attribute='allconsume')
 
     def before_import_row(self, row, **kwargs):
-        row['日期'] = datetime.strptime(str(row['data_flag']),"%Y%m%d").date()
+        row['日期'] = datetime.strptime(str(row['data_flag']),"%Y%m%d").date()    # 编码问题 \ufeff
 
-        if row['开户日期']:
-            row['开户日期'] = datetime.strptime(str(row['开户日期']), "%Y/%m/%d %H:%M").date()
-        else:
-            row['开户日期']=None
+        # if row['开户日期']:
+        #     row['开户日期'] = datetime.strptime(str(row['开户日期']), "%Y/%m/%d %H:%M:%S").date()
+        # else:
+        #     row['开户日期']=None
+        #
+        # if row['自主投放首次消费日']:
+        #     row['自主投放首次消费日'] = datetime.strptime(str(row['自主投放首次消费日']), "%Y/%m/%d").date()
+        # else:
+        #     row['自主投放首次消费日']=None
+        #
+        # if row['账户首次消费日']:
+        #     row['账户首次消费日'] = datetime.strptime(str(row['账户首次消费日']), "%Y/%m/%d").date()
+        # else:
+        #     row['账户首次消费日']=None
+        if not row['开户日期']:
+            row['开户日期'] = None
 
-        if row['自主投放首次消费日']:
-            row['自主投放首次消费日'] = datetime.strptime(str(row['自主投放首次消费日']), "%Y/%m/%d").date()
-        else:
-            row['自主投放首次消费日']=None
+        if not row['自主投放首次消费日']:
+            row['自主投放首次消费日'] = None
 
-        if row['账户首次消费日']:
-            row['账户首次消费日'] = datetime.strptime(str(row['账户首次消费日']), "%Y/%m/%d").date()
-        else:
-            row['账户首次消费日']=None
+        if not row['账户首次消费日']:
+            row['账户首次消费日'] = None
 
         if row['推广总余额']=='':
             row['推广总余额']=0
+
         # 修改那些账户ID为0的数据，重命名为'op'+订单行
         if str(row['账户ID'])=='0':
             row['账户ID']='op'+str(row['订单行'])

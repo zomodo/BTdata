@@ -102,7 +102,7 @@
                         '本月'  : [moment().startOf('month'), moment().endOf('month')],
                         '上月'  : [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
                     },
-                    startDate: moment().subtract(30, 'days'),
+                    startDate: moment().subtract(14, 'days'),
                     endDate  : moment().subtract(1, 'days'),
                     dateLimit : {days : 90},    //起止时间的最大间隔
                     showDropdowns: true,
@@ -118,7 +118,7 @@
 
             function getstart(){
                 $('#showrangedate').html(
-                    moment().subtract(30,'days').format('YYYY.MM.DD')+'-'+moment().subtract(1,'days').format('YYYY.MM.DD')
+                    moment().subtract(14,'days').format('YYYY.MM.DD')+'-'+moment().subtract(1,'days').format('YYYY.MM.DD')
                 );
                 // $('#indus1').html("<option value='all'>所有行业</option>");
                 $('#indus1').html("<option value='IT/消费电子'>IT/消费电子</option>");
