@@ -13,7 +13,7 @@ class AccountResource(resources.ModelResource):
     account_indus_2=fields.Field(column_name='账户二级行业', attribute='account_indus_2')
     account_status= fields.Field(column_name='账户状态', attribute='account_status')
     signup_date=fields.Field(column_name='开户日期',attribute='signup_date')
-    feed_firstdate = fields.Field(column_name='自主投放首次消费日', attribute='feed_firstdate')
+    feed_firstdate = fields.Field(column_name='原生首次消费日', attribute='feed_firstdate')
     account_firstdate= fields.Field(column_name='账户首次消费日', attribute='account_firstdate')
     allbalance= fields.Field(column_name='推广总余额', attribute='allbalance')
     website_url = fields.Field(column_name='网站URL', attribute='website_url')
@@ -31,10 +31,10 @@ class AccountResource(resources.ModelResource):
         # else:
         #     row['开户日期']=None
         #
-        # if row['自主投放首次消费日']:
-        #     row['自主投放首次消费日'] = datetime.strptime(str(row['自主投放首次消费日']), "%Y/%m/%d").date()
+        # if row['原生首次消费日']:
+        #     row['原生首次消费日'] = datetime.strptime(str(row['自主投放首次消费日']), "%Y/%m/%d").date()
         # else:
-        #     row['自主投放首次消费日']=None
+        #     row['原生首次消费日']=None
         #
         # if row['账户首次消费日']:
         #     row['账户首次消费日'] = datetime.strptime(str(row['账户首次消费日']), "%Y/%m/%d").date()
@@ -43,8 +43,8 @@ class AccountResource(resources.ModelResource):
         if not row['开户日期']:
             row['开户日期'] = None
 
-        if not row['自主投放首次消费日']:
-            row['自主投放首次消费日'] = None
+        if not row['原生首次消费日']:
+            row['原生首次消费日'] = None
 
         if not row['账户首次消费日']:
             row['账户首次消费日'] = None

@@ -159,6 +159,8 @@ STATIC_URL = '/static/'
 
 STATIC_ROOT = os.path.join(BASE_DIR,'static')
 
+# session设置
+SESSION_COOKIE_AGE=60*60*10     # 过期时间
 
 # ckeditor配置图片上传路径
 MEDIA_URL='/media/'
