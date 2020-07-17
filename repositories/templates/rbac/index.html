@@ -32,17 +32,36 @@
                     <ul class="nav nav-pills flex-column">
                         {% for message in sheet0 %}
                             <li class="nav-item">
-                                <a href="{% url 'message' message.id %}" class="nav-link">
-                                    {{ message.title }}
 
-                                    {% if message.is_top == 1 %}
-                                        <i class="fas fa-fire-alt text-danger ml-1"></i>
-                                    {% endif %}
+                                {% if message.is_jump %}
 
-                                    <span class="badge float-right">
-                                        {{ message.created_time | date:'Y-m-d' }}
-                                    </span>
-                                </a>
+                                    <a href="{{ message.content }}" class="nav-link" title="点击跳转">
+                                        {{ message.title }}
+
+                                        {% if message.is_top == 1 %}
+                                            <i class="fas fa-fire-alt text-danger ml-1"></i>
+                                        {% endif %}
+
+                                        <span class="badge float-right">
+                                            {{ message.created_time | date:'Y-m-d' }}
+                                        </span>
+                                    </a>
+
+                                {% else %}
+
+                                    <a href="{% url 'message' message.id %}" class="nav-link">
+                                        {{ message.title }}
+
+                                        {% if message.is_top == 1 %}
+                                            <i class="fas fa-fire-alt text-danger ml-1"></i>
+                                        {% endif %}
+
+                                        <span class="badge float-right">
+                                            {{ message.created_time | date:'Y-m-d' }}
+                                        </span>
+                                    </a>
+
+                                {% endif %}
 
                             </li>
 
@@ -75,17 +94,35 @@
 
                         {% for message in sheet1 %}
                             <li class="nav-item">
-                                <a href="{% url 'message' message.id %}" class="nav-link">
-                                    {{ message.title }}
+                                {% if message.is_jump %}
 
-                                    {% if message.is_top == 1 %}
-                                        <i class="fas fa-fire-alt text-danger ml-1"></i>
-                                    {% endif %}
+                                    <a href="{{ message.content }}" class="nav-link" title="点击跳转">
+                                        {{ message.title }}
 
-                                    <span class="badge float-right">
-                                        {{ message.created_time | date:'Y-m-d' }}
-                                    </span>
-                                </a>
+                                        {% if message.is_top == 1 %}
+                                            <i class="fas fa-fire-alt text-danger ml-1"></i>
+                                        {% endif %}
+
+                                        <span class="badge float-right">
+                                            {{ message.created_time | date:'Y-m-d' }}
+                                        </span>
+                                    </a>
+
+                                {% else %}
+
+                                    <a href="{% url 'message' message.id %}" class="nav-link">
+                                        {{ message.title }}
+
+                                        {% if message.is_top == 1 %}
+                                            <i class="fas fa-fire-alt text-danger ml-1"></i>
+                                        {% endif %}
+
+                                        <span class="badge float-right">
+                                            {{ message.created_time | date:'Y-m-d' }}
+                                        </span>
+                                    </a>
+
+                                {% endif %}
 
                             </li>
 
@@ -118,17 +155,35 @@
 
                         {% for message in sheet2 %}
                             <li class="nav-item">
-                                <a href="{% url 'message' message.id %}" class="nav-link">
-                                    {{ message.title }}
+                                {% if message.is_jump %}
 
-                                    {% if message.is_top == 1 %}
-                                        <i class="fas fa-fire-alt text-danger ml-1"></i>
-                                    {% endif %}
+                                    <a href="{{ message.content }}" class="nav-link" title="点击跳转">
+                                        {{ message.title }}
 
-                                    <span class="badge float-right">
-                                        {{ message.created_time | date:'Y-m-d' }}
-                                    </span>
-                                </a>
+                                        {% if message.is_top == 1 %}
+                                            <i class="fas fa-fire-alt text-danger ml-1"></i>
+                                        {% endif %}
+
+                                        <span class="badge float-right">
+                                            {{ message.created_time | date:'Y-m-d' }}
+                                        </span>
+                                    </a>
+
+                                {% else %}
+
+                                    <a href="{% url 'message' message.id %}" class="nav-link">
+                                        {{ message.title }}
+
+                                        {% if message.is_top == 1 %}
+                                            <i class="fas fa-fire-alt text-danger ml-1"></i>
+                                        {% endif %}
+
+                                        <span class="badge float-right">
+                                            {{ message.created_time | date:'Y-m-d' }}
+                                        </span>
+                                    </a>
+
+                                {% endif %}
 
                             </li>
 

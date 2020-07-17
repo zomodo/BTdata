@@ -92,9 +92,10 @@ class Message(models.Model):
     depart=models.PositiveIntegerField(choices=DEPART_ITEMS,verbose_name='部门')
     author=models.ForeignKey(AuthUser,on_delete=models.DO_NOTHING,verbose_name='作者')
     is_top = models.PositiveIntegerField(choices=IS_TOP_ITEMS, default=0, verbose_name='是否置顶', help_text='默认不置顶')
+    is_jump=models.BooleanField(default=False,verbose_name='是否跳转',help_text='勾选，输入链接，去掉勾选，输入文本')
     status=models.PositiveIntegerField(choices=STATUS_ITEMS,default=1,verbose_name='是否显示',help_text='默认显示')
     title=models.CharField(max_length=64,verbose_name='标题')
-    content=RichTextUploadingField(verbose_name='内容')
+    content=models.TextField(verbose_name='内容')
     created_time=models.DateTimeField(auto_now_add=True,verbose_name='创建时间')
 
     class Meta:

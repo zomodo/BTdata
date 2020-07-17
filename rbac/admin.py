@@ -1,7 +1,7 @@
 from django.contrib import admin
 from import_export.admin import ImportExportModelAdmin
 
-from rbac.AdminForm import PermissionAdminForm
+from rbac.AdminForm import PermissionAdminForm,MessageAdminForm
 from rbac import models
 # Register your models here.
 
@@ -51,13 +51,36 @@ class MenuAdmin(ImportExportModelAdmin):
 
 @admin.register(models.Message)
 class MessageAdmin(admin.ModelAdmin):
-    list_display = ['title','depart','author','status','is_top']
-    list_filter = ['depart','status','is_top']
+    form = MessageAdminForm
+
+    list_display = ['title','depart','author','status','is_top','is_jump']
+    list_filter = ['depart','status','is_top','is_jump']
     exclude = ['author']
+
+    fieldsets = (
+        ('部门',{
+            'fields':('depart',),
+        }),
+        ('配置',{
+            'fields':(
+                ('is_top','status'),
+            ),
+        }),
+        ('内容',{
+            'fields':(
+                'title',
+                'is_jump',
+                'content_url',
+                'content_word',
+                'content',
+            )
+        })
+    )
 
     def save_model(self, request, obj, form, change):
         obj.author=request.user
         return super(MessageAdmin, self).save_model(request,obj,form,change)
+
 
 
 admin.site.site_title='业务运营后台管理'

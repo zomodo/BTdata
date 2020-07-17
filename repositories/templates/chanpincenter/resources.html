@@ -111,7 +111,7 @@
                                             {% endif %}
                                         </td>
 
-                                        <td>{{ data.upload_file.name | cut:'chanpin/resources/' }}</td>
+                                        <td>{{ data.upload_file.size | filesizeformat }}</td>
                                         <td style="min-width: 120px">{{ data.created_time | date:'Y年m月d日' }}</td>
 
                                         <td style="min-width: 90px">

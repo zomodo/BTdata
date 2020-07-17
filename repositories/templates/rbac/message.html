@@ -33,9 +33,17 @@
                         {% for menu in menu_list %}
 
                             <li class="nav-item active">
-                                <a href="{% url 'message' menu.id %}" class="nav-link">
-                                    <i class="fas fa-inbox"></i> {{ menu.title }}
-                                </a>
+
+                                {% if menu.is_jump %}
+                                    <a href="{{ menu.content }}" class="nav-link" title="点击跳转">
+                                        <i class="fas fa-inbox"></i> {{ menu.title }}
+                                    </a>
+                                {% else %}
+                                    <a href="{% url 'message' menu.id %}" class="nav-link">
+                                        <i class="fas fa-inbox"></i> {{ menu.title }}
+                                    </a>
+                                {% endif %}
+
                             </li>
 
                         {% endfor %}
