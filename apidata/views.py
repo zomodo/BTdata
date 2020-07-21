@@ -273,15 +273,14 @@ def company(request):
         word=form.cleaned_data.get('searchword').strip()
         search_dict={}
 
-        begin_date=date.split('-')[0]
-        end_date=date.split('-')[1]
-
-        begin_date=datetime.datetime.strptime(begin_date,'%Y.%m.%d').date()
-        end_date=datetime.datetime.strptime(end_date,'%Y.%m.%d').date()
-
         q_all=Q()
 
-        if date:
+        if '-' in date:
+            begin_date = date.split('-')[0]
+            end_date = date.split('-')[1]
+            begin_date = datetime.datetime.strptime(begin_date, '%Y.%m.%d').date()
+            end_date = datetime.datetime.strptime(end_date, '%Y.%m.%d').date()
+
             search_dict['date__range']=(begin_date,end_date)
 
         if word:
@@ -292,7 +291,6 @@ def company(request):
 
         if city:
             search_dict['location']=city
-
 
         if search_dict['location']=='all':
             search_dict.pop('location')

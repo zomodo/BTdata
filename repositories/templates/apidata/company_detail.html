@@ -164,6 +164,7 @@
                     ranges   : {
                         // '今日'       : [moment(), moment()],
                         // '昨日'   : [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                        '全部日期' : [moment.invalid(),moment.invalid()],
                         '前七天' : [moment().subtract(7, 'days'), moment().subtract(1,'days')],
                         '前30天': [moment().subtract(30, 'days'), moment().subtract(1,'days')],
                         '本月'  : [moment().startOf('month'), moment().endOf('month')],
@@ -177,13 +178,18 @@
                     maxDate:moment().subtract(1, 'days'),
                 },
                 function (start, end) {
-                    $('#showrangedate').val(start.format('YYYY.MM.DD')+'-'+end.format('YYYY.MM.DD'));
+
+                    if(start.isValid() && end.isValid() ){
+                        $('#showrangedate').val(start.format('YYYY.MM.DD')+'-'+end.format('YYYY.MM.DD'));
+                    }
+                    else {
+                        $('#showrangedate').val(' 全部日期');
+                    }
             });
 
             function getstart(){
-                $('#showrangedate').val(
-                    moment().subtract(30,'days').format('YYYY.MM.DD')+'-'+moment().subtract(1,'days').format('YYYY.MM.DD')
-                );
+
+                $('#showrangedate').val(' 全部日期');
             }
             getstart();
 
