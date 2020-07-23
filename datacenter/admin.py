@@ -5,26 +5,27 @@ from datacenter.resources import AccountResource,TotalResource,FeedResource,Othe
 from datacenter.resources import Industry1Resource,Industry2Resource,InvalidResource
 
 from datacenter import models
+from datacenter.base_admin import BaseDateAdmin,BaseInvalidAdmin
 
 # Register your models here.
 
 @admin.register(models.Account)
-class AccountAdmin(ImportExportModelAdmin):
+class AccountAdmin(BaseDateAdmin):
     resource_class = AccountResource
     list_display = ['date','username','company_name','website_url']
 
 @admin.register(models.Feed)
-class FeedAdmin(ImportExportModelAdmin):
+class FeedAdmin(BaseDateAdmin):
     resource_class = FeedResource
     list_display = ['date','username','account_indus_1','account_indus_2','feed_allconsume']
 
 @admin.register(models.Total)
-class TotalAdmin(ImportExportModelAdmin):
+class TotalAdmin(BaseDateAdmin):
     resource_class = TotalResource
     list_display = ['date','username','register_province','register_city','allconsume']
 
 @admin.register(models.OtherPro)
-class OtherProAdmin(ImportExportModelAdmin):
+class OtherProAdmin(BaseDateAdmin):
     resource_class = OtherProResource
     list_display = ['date','username','account_indus_1','account_indus_2','op_allconsume']
 
@@ -43,6 +44,6 @@ class Industry2Admin(ImportExportModelAdmin):
     list_display = ['indus1_name','indus2_name']
 
 @admin.register(models.Invalid)
-class InvalidAdmin(ImportExportModelAdmin):
+class InvalidAdmin(BaseInvalidAdmin):
     resource_class = InvalidResource
     list_display = ['date','username','company_name','account_firstdate','depart']
