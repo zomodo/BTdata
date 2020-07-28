@@ -45,10 +45,10 @@
 
             {% for data in allresources %}
 
-                <div class="col-6 col-sm-6 col-md-3 d-flex align-items-stretch">
-                    <div class="card bg-light">
+                <div class="col-12 col-sm-6 col-md-4 d-flex align-items-stretch">
+                    <div class="card bg-light" style="width: 100%">
                         <div class="card-header text-muted border-bottom-0">
-                            <h5 class="mb-1">
+                            <h5>
                                 {{ data.title }}
 
                                 {% if data.is_top == 1 %}
