@@ -194,9 +194,8 @@
                 maxDate:moment().subtract(1, 'days'),
                 },
                 function (start) {
-                $('#showsingledate').html(start.format('YYYY-MM-DD'))
-                },
-            );
+                    $('#showsingledate').html(start.format('YYYY-MM-DD'))
+                });
 
             $('#datesingle-btn').on('apply.daterangepicker',function (ev,picker) {
                 choice_date=picker.startDate.format('YYYY-MM-DD');
@@ -341,7 +340,7 @@
             // 图形初始化
             getchart(
                 moment().subtract(30, 'days').format('YYYY-MM-DD'),
-                moment().subtract(1, 'days').format('YYYY-MM-DD'),
+                moment().subtract(1, 'days').format('YYYY-MM-DD')
             );
 
             // 图形初始化时填充日期

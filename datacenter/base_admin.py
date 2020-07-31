@@ -5,7 +5,7 @@ class BaseDateAdmin(ImportExportModelAdmin):
     def get_queryset(self, request):
         qs=super(BaseDateAdmin, self).get_queryset(request)
         latest_date=models.Account.get_latest_date()
-        return qs.filter(date=latest_date)
+        return qs.filter(date__gte=latest_date)
 
 class BaseInvalidAdmin(ImportExportModelAdmin):
     def get_queryset(self, request):
