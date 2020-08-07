@@ -255,7 +255,7 @@ def company(request):
 
     if request.method=="GET":
         form=forms.CompanyForm()
-        allcompany = models.NewCompany.objects.only('companyName','identifier','founder','registerMoney','date','address')[:50]
+        allcompany = models.NewCompany.objects.filter(location='武汉').only('companyName','identifier','founder','registerMoney','date','address')[:50]
 
         context={
             'form':form,
