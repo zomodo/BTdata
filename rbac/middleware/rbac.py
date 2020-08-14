@@ -24,18 +24,23 @@ class MiddlewareMixin(object):
 class RbacMiddleware(MiddlewareMixin):
     # 处理游客的权限
     def visitor_request(self,request):
-        if not request.session.get(settings.SESSION_USER_INFO):
-            user=User.objects.get(username='visitor')
-            init_permission(request,user)
-        else:
+        if request.session.get(settings.SESSION_USER_INFO):
             pass
+        else:
+            user = User.objects.get(username='visitor')
+            init_permission(request, user)
 
     """
     检查用户的url请求是否是其权限范围内
     """
     def process_request(self, request):
         # 判断是否为游客
-        self.visitor_request(request)
+        # 内网 外网区别认证
+        request_host=request.META['HTTP_HOST']
+        if request_host.startswith('172.') or request_host.startswith('127.'):
+            self.visitor_request(request)
+        else:
+            pass
 
         request_url = request.path_info
         permission_url = request.session.get(settings.SESSION_PERMISSION_URL_KEY)

@@ -1,5 +1,6 @@
 from django.shortcuts import render,HttpResponse
 from django.shortcuts import redirect,reverse
+from django.conf import settings
 import json
 
 from rbac import models
@@ -40,8 +41,17 @@ def logout(request):
     return redirect(reverse('index'))
 
 
-def index(request):
+def check_login(func):
+    def wrapper(request,*args,**kwargs):
+        is_login=request.session.get(settings.SESSION_USER_INFO)
+        if not is_login:
+            return redirect(reverse('login'))
+        return func(request,*args,**kwargs)
+    return wrapper
 
+
+@check_login
+def index(request):
     alldata=models.Message.objects.filter(status=1).only('id','title','created_time','is_top','is_jump')
     sheet0=alldata.filter(depart=0)[:20]
     sheet1=alldata.filter(depart=1)[:20]
@@ -53,12 +63,11 @@ def index(request):
         'sheet1':sheet1,
         'sheet2':sheet2,
     }
-
     return render(request,'rbac/index.html',context)
 
 
+@check_login
 def message(request,id):
-
     message=models.Message.objects.get(id=id)
     menu_list=models.Message.objects.filter(depart=message.depart,status=1).only('title','is_jump')[:20]
 
@@ -69,6 +78,7 @@ def message(request,id):
     return render(request,'rbac/message.html',context)
 
 
+@check_login
 def contact(request):
     context = {'mark': 'contact'}
     return render(request,'rbac/contact.html',context)
