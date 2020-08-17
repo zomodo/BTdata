@@ -2,6 +2,7 @@ from django.shortcuts import render,HttpResponse
 from django.shortcuts import redirect,reverse
 from django.conf import settings
 import json
+import hashlib
 
 from rbac import models
 from rbac import forms
@@ -19,7 +20,7 @@ def login(request):
                 message = '用户名错误！'
                 context = {'form':form,'message': json.dumps(message)}
                 return render(request, 'rbac/login.html', context)
-            if user.password == form.cleaned_data['password']:
+            if user.password == hash_code(form.cleaned_data['password']):
                 init_permission(request, user)
                 return redirect(reverse('index'))
             else:
@@ -48,6 +49,31 @@ def check_login(func):
             return redirect(reverse('login'))
         return func(request,*args,**kwargs)
     return wrapper
+
+
+def hash_code(s,salt='zomodo'):
+    h = hashlib.sha256()
+    s += salt
+    h.update(s.encode())
+    return h.hexdigest()
+
+
+@check_login
+def changepwd(request):
+    userid=request.session.get(settings.SESSION_USER_INFO)['id']
+    user=models.User.objects.get(id=userid)
+    if request.method=='GET':
+        form=forms.ChangePWDForm(initial={'username':user.username})
+        context = {'form':form,'user':user}
+        return render(request,'rbac/changepwd.html',context)
+    else:
+        form=forms.ChangePWDForm(request.POST)
+        if form.is_valid():
+            user.password=hash_code(form.cleaned_data.get('password1'))
+            user.save()
+            return redirect(reverse('login'))
+        context = {'form': form,'user':user}
+        return render(request,'rbac/changepwd.html',context)
 
 
 @check_login

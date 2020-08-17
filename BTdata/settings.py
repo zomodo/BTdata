@@ -191,6 +191,7 @@ SAFE_URL = [
     '/$',
     '/index/',
     '/contact/',
+    '/changepwd/',
 
 ]
 

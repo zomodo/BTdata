@@ -27,6 +27,7 @@ urlpatterns = [
     path('', rbac_views.index),
     path('login/',rbac_views.login,name='login'),
     path('logout/',rbac_views.logout,name='logout'),
+    path('changepwd/',rbac_views.changepwd,name='changepwd'),
     path('index/',rbac_views.index,name='index'),
     path('message/<str:id>',rbac_views.message,name='message'),
     path('contact/',rbac_views.contact,name='contact'),

@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+{% block css %}
+{% endblock %}
+
+{% block title %}
+    修改密码
+{% endblock %}
+
+{% block start-title %}
+{% endblock %}
+
+{% block content %}
+    <div class="hold-transition login-page" style="height: 80vh">
+        <div class="login-box">
+            <div class="login-logo">
+                <a href="{% url 'changepwd' %}"><b>修改密码</b></a>
+            </div>
+
+            <div class="card">
+                <div class="card-body login-card-body">
+                    <form action="{% url 'changepwd' %}" method="post">
+                        {% csrf_token %}
+                        <label class="font-weight-lighter">用户名</label>
+                        <div class="input-group mb-3">
+                            {{ form.username }}
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span class="fas fa-user"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <label class="font-weight-lighter">新密码</label>
+                        <div class="input-group mb-3">
+                            {{ form.password1 }}
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span class="fas fa-lock"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <label class="font-weight-lighter">确认新密码</label>
+                        <div class="input-group mb-3">
+                            {{ form.password2 }}
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span class="fas fa-lock"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-primary btn-block">修改密码</button>
+                            </div>
+                        </div>
+                        <span class="text-sm text-danger">{{ form.password1.errors.0 }}</span>
+                    </form>
+
+                </div>
+
+            </div><!-- /.card -->
+        </div>
+    </div>
+{% endblock %}
