@@ -14,8 +14,15 @@
     <link rel="stylesheet" href="{% static 'css/select2-bootstrap4.min.css' %}">
 
     <style>
-        .btn{
-            cursor: auto;
+        .cus-input{
+            display: inline-block;
+            padding: .375rem .75rem;
+            font-size: .875rem!important;
+            font-weight: 400;
+            line-height: 1.5;
+            color: #495057;
+            border: 1px solid #ced4da;
+            border-radius: .2rem;
         }
     </style>
 
@@ -47,7 +54,7 @@
                     <div class="card-tools float-left">
                         <div class="input-group input-group-sm">
 
-                            <button type="button" class="btn btn-default">
+                            <button type="button" class="btn btn-default" title="每月更新，日期不可选">
                             <i class="far fa-calendar-alt"></i>
                             <span id="showdate1">{{ latest_date | date:"Y-m" }}</span>
                             <!-- i class="fas fa-caret-down"></i-->
@@ -65,7 +72,7 @@
                             <option value="-pv">展现</option>
                             </select>
                             &nbsp;
-                            <input type="text" class="btn btn-default text-left text-sm" id="searchword" placeholder="查关键词">
+                            <input type="text" class="cus-input" id="searchword" placeholder="查关键词">
 
                             <input type="button" id="tab1_btn" class="btn btn-outline-primary ml-2" value="查 询">
                             <span class="btn text-muted text-sm ml-1">搜索较慢，请等待3-5秒</span>

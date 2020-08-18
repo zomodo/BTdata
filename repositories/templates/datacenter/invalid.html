@@ -16,8 +16,16 @@
     <link rel="stylesheet" href="{% static 'css/dataTables.bootstrap4.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/responsive.bootstrap4.min.css' %}">
     <style>
-        .btn{
-            cursor: auto;
+        .cus-input{
+            display: inline-block;
+            width: 300px;
+            padding: .375rem .75rem;
+            font-size: .875rem!important;
+            font-weight: 400;
+            line-height: 1.5;
+            color: #495057;
+            border: 1px solid #ced4da;
+            border-radius: .25rem;
         }
     </style>
 
@@ -40,7 +48,7 @@
 
                     <div class="input-group input-group-sm">
 
-                        <input type="text" id="word" class="btn btn-default text-left text-sm" placeholder="账户名称/公司名称全称" style="width: 280px">
+                        <input type="text" id="word" class="cus-input" placeholder="账户名称/公司名称全称">
                         <input type="submit" id="invalid_btn" class="btn btn-outline-primary ml-2" value="查 询">
 
                     </div>

@@ -38,6 +38,6 @@ class CompanyForm(forms.Form):
     searchword=forms.CharField(
         required=False,
         widget=forms.TextInput(
-            attrs={'class':'btn btn-default text-left','id':'searchword','placeholder':'搜公司/业务'},
+            attrs={'class':'cus-input','id':'searchword','placeholder':'搜公司/业务'},
         )
     )
