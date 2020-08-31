@@ -104,3 +104,23 @@ class Message(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Banner(models.Model):
+    STATUS_ITEMS=(
+        (1,'显示'),
+        (0,'不显示'),
+    )
+    title=models.CharField(max_length=64,verbose_name='标题')
+    status=models.PositiveIntegerField(choices=STATUS_ITEMS,default=1,verbose_name='是否显示',help_text='默认显示')
+    img=models.ImageField(upload_to='banners/',verbose_name='上传图片',help_text='高度最大500像素，超出自动等比压缩')
+    created_time=models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name=verbose_name_plural='主页滚动图片'
+        ordering=['-created_time']
+
+    def __str__(self):
+        return self.title
+
+

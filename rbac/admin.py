@@ -81,7 +81,10 @@ class MessageAdmin(admin.ModelAdmin):
         obj.author=request.user
         return super(MessageAdmin, self).save_model(request,obj,form,change)
 
-
+@admin.register(models.Banner)
+class BannerAdmin(admin.ModelAdmin):
+    list_display = ['title','status','created_time']
+    list_filter = ['title','status']
 
 admin.site.site_title='业务运营后台管理'
 admin.site.site_header='业务运营后台管理'
