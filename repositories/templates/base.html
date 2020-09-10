@@ -24,6 +24,8 @@
     <link rel="stylesheet" href="{% static 'css/toastr.min.css' %}">
     <!-- SweetAlert2 -->
     <link rel="stylesheet" href="{% static 'css/bootstrap-4.min.css' %}">
+    <!-- infoflow css -->
+    <link rel="stylesheet" href="{% static 'css/infoflow.css' %}">
 
     {% block css %}
         <!-- css -->
@@ -33,6 +35,32 @@
 
 
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
+
+    <!-- start 如流侧边栏 -->
+    <div class="suspension-icon" onclick="doFollowHiPu('兔吃鸡不吃草')">
+        <span id="icon-btn" onclick="btnHide()">x</span>
+    </div>
+
+    <script>
+        function doFollowHiPu(id) {
+            var f = document.createElement("form");
+            document.body.appendChild(f);
+            f.setAttribute("action", "baidu://message");
+            var input = document.createElement("input");
+            input.setAttribute("name", "id");
+            input.setAttribute("value", id);
+            input.setAttribute("type", "hidden");
+            f.appendChild(input);
+            f.submit();
+            document.body.removeChild(f);
+        }
+        function btnHide() {
+            var Btn = document.getElementById('icon-btn');
+            Btn.parentNode.style.display = "none";
+            window.event? window.event.cancelBubble = true : e.stopPropagation();
+        }
+    </script>
+    <!-- end 如流侧边栏 -->
 
 <div class="wrapper">
     <!-- Navbar -->
@@ -258,8 +286,11 @@
             <a href="/admin/" class="text-sm"><span class="fas fa-sign-in-alt mr-1"></span>后台管理</a>
         </div>
         <!-- Default to the left -->
-        <span class="text-sm">All rights reserved | 本站由业务运营部-数据部运营. 更多信息与疑问请百度Hi
-            <a href="baidu://message/?id=兔吃鸡不吃草" title="百度Hi" class="text-sm">兔吃鸡不吃草</a>
+        <span class="text-sm">All rights reserved | 本站由业务运营部-数据部运营. 更多信息与疑问
+            <a href="baidu://message/?id=兔吃鸡不吃草" title="如流" class="text-sm">
+                <img src="{% static 'img/infoflow.png' %}" height="15px" alt="infoflow">
+                数据部-张梦迪
+            </a>
         </span>
     </footer>
 </div>
