@@ -178,3 +178,29 @@ class Invalid(models.Model):
     @classmethod
     def get_latest_date(cls):
         return cls.objects.only('date').last().date
+
+
+class Personal(models.Model):
+    date = models.DateField(verbose_name='日期')
+    userid=models.CharField(max_length=16,verbose_name='账户ID')
+    company_name = models.CharField(max_length=128, null=True, blank=True, verbose_name='公司名称')
+    depart = models.CharField(max_length=64,null=True,blank=True,verbose_name='部门')
+    frame1 = models.CharField(max_length=64,verbose_name='一级架构')
+    frame2 = models.CharField(max_length=64,verbose_name='二级架构')
+    frame3 = models.CharField(max_length=64,verbose_name='三级架构')
+    frame4 = models.CharField(max_length=64,verbose_name='四级架构')
+    sign_date = models.CharField(max_length=16,verbose_name='计入业绩日期')
+    sf_name = models.CharField(max_length=64,verbose_name='SF二级账号')
+
+    class Meta:
+        verbose_name = verbose_name_plural = '开户消费'
+        ordering = ['-date']
+        get_latest_by = 'date'
+
+    def __str__(self):
+        return self.userid
+
+    @classmethod
+    def get_latest_date(cls):
+        return cls.objects.only('date').latest().date
+

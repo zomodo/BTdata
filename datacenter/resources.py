@@ -231,3 +231,26 @@ class InvalidResource(resources.ModelResource):
         report_skipped = False
         use_bulk = True
         force_init_instance = True
+
+
+class PersonalResource(resources.ModelResource):
+    date = fields.Field(column_name='日期', attribute='date')
+    userid = fields.Field(column_name='账户ID', attribute='userid')
+    sf_name = fields.Field(column_name='SF对应二级账号', attribute='sf_name')
+    company_name = fields.Field(column_name='公司名称', attribute='company_name')
+    sign_date = fields.Field(column_name='全资质计业绩', attribute='sign_date')
+    frame1 = fields.Field(column_name='IS', attribute='frame1')
+    frame2 = fields.Field(column_name='主管', attribute='frame2')
+    frame3 = fields.Field(column_name='经理', attribute='frame3')
+    frame4 = fields.Field(column_name='总监', attribute='frame4')
+    depart = fields.Field(column_name='部门', attribute='depart')
+
+    def before_import_row(self, row, **kwargs):
+        row['日期']=datetime.strftime(row['日期'],"%Y-%m-%d")
+
+    class Meta:
+        models=models.Personal
+        skip_unchanged = True
+        report_skipped = False
+        use_bulk = True
+        force_init_instance = True

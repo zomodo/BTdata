@@ -1,4 +1,6 @@
 from django import template
+from datacenter import models
+
 
 register=template.Library()
 

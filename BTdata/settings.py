@@ -192,7 +192,6 @@ SAFE_URL = [
     '/index/',
     '/contact/',
     '/changepwd/',
-
 ]
 
 # 配置django-debug-toolbar

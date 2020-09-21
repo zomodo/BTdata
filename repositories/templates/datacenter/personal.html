@@ -1,0 +1,297 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+{% block title %}
+    商务新户消费
+{% endblock %}
+
+{% block css %}
+    <!-- css -->
+    <link rel="stylesheet" href="{% static 'css/dataTables.bootstrap4.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/responsive.bootstrap4.min.css' %}">
+    <style>
+    label{
+        margin: 0;
+    }
+    .table thead th {
+        border-bottom: none;
+    }
+
+    td.details-control {
+        background: url({% static 'img/details_open.png' %}) no-repeat center center;
+        cursor: pointer;
+    }
+    tr.shown td.details-control {
+        background: url({% static 'img/details_close.png' %}) no-repeat center center;
+    }
+    </style>
+
+{% endblock %}
+
+{% block start-title %}
+    商务新户消费&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-md">截止到{{ latest_date }}</span>
+{% endblock %}
+
+
+{% block content %}
+
+    <div class="row">
+
+        <div class="col-12">
+            <div class="card card-primary card-outline">
+                <div class="card-body">
+
+                    <div class="table-responsive mailbox-messages">
+                        <table class="table table-hover text-nowrap" id="tab">
+                            {% if request.session.user_info.realname == '员工' %}
+                                <thead>
+                                    <tr>
+                                        <th>账户名称</th>
+                                        <th>公司名称</th>
+                                        <th>计入业绩</th>
+                                        <th>SF账号</th>
+                                        <th>季度消费</th>
+                                    </tr>
+                                </thead>
+
+                                <tfoot>
+                                    <tr>
+                                        <th colspan="4" class="text-right">合计：</th>
+                                        <th></th>
+                                    </tr>
+                                </tfoot>
+
+                                <tbody>
+                                    {% for data in alldata %}
+                                        <tr>
+                                            <td>
+                                                {{ data.username }}
+                                            </td>
+                                            <td>
+                                                {{ data.company_name }}
+                                            </td>
+                                            <td>
+                                                {{ data.sign_date }}
+                                            </td>
+                                            <td>
+                                                {{ data.sf_name }}
+                                            </td>
+                                            <td>
+                                                {{ data.consume }}
+                                            </td>
+
+                                        </tr>
+
+                                    {% endfor %}
+
+                                </tbody>
+
+                            {% else %}
+
+                                <thead>
+                                    <tr>
+                                        <th style="width: 8%"></th>
+                                        <th>姓名</th>
+                                        <th>部门</th>
+                                        <th>季度消费</th>
+                                    </tr>
+                                </thead>
+
+                                <tfoot>
+                                    <tr>
+                                        <th colspan="3" class="text-right">合计：<br>总计：</th>
+                                        <th></th>
+                                    </tr>
+                                </tfoot>
+
+                                <tbody>
+                                    {% for data in alldata %}
+                                        <tr>
+                                            <td class="details-control">
+                                            </td>
+                                            <td>
+                                                {{ data.frame1 }}
+                                            </td>
+                                            <td>
+                                                {{ data.depart }}
+                                            </td>
+                                            <td>
+                                                {{ data.consume }}
+                                            </td>
+
+                                        </tr>
+                                    {% endfor %}
+
+                                </tbody>
+
+                            {% endif %}
+
+                        </table>
+                        <!-- /.table -->
+
+                    </div>
+                    <!-- /.mail-box-messages -->
+                </div>
+                <!-- /.card-body -->
+
+            </div>
+            <!-- /.card -->
+
+        </div>
+        <!-- /.col -->
+
+    </div>
+    <!-- /.row -->
+
+{% endblock %}
+
+
+{% block js %}
+    <script src="{% static 'js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'js/dataTables.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'js/responsive.bootstrap4.min.js' %}"></script>
+    <!-- js -->
+    <script>
+
+    $(function () {
+
+        var cells = document.getElementById("tab").rows[0].cells.length;
+        t = cells-1;
+
+        var table=$("#tab").DataTable({
+
+            language: {
+                "sProcessing": "处理中...",
+                "sLengthMenu": "显示 _MENU_ 项结果",
+                "sZeroRecords": "没有匹配结果",
+                "sInfo": "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+                "sInfoEmpty": "显示第 0 至 0 项结果，共 0 项",
+                "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+                "sInfoPostFix": "",
+                "sSearch": "",
+                "sSearchPlaceholder": "搜索",
+                "sUrl": "",
+                "sEmptyTable": "数据为空",
+                "sLoadingRecords": "载入中...",
+                "sInfoThousands": ",",
+                "oPaginate": {
+                "sFirst": "首页",
+                "sPrevious": "«",
+                "sNext": "»",
+                "sLast": "末页"
+                },
+            "oAria": {
+            "sSortAscending": ": 以升序排列此列",
+            "sSortDescending": ": 以降序排列此列"
+            }
+            },
+
+            "aoColumnDefs": [ { "bSortable": false, "aTargets": [ 0 ] }],   // 第0列不排序
+            "aaSorting": [[3, "desc"]],     // 默认消费降序排列
+            "paging": true,
+            "pageLength": 10,
+            "lengthChange": false,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
+
+            // start total
+            "footerCallback": function ( row, data, start, end, display ) {
+            var api = this.api(), data;
+
+            // Remove the formatting to get integer data for summation
+            var intVal = function ( i ) {
+                return typeof i === 'string' ?
+                    i.replace(/[\$,]/g, '')*1 :
+                    typeof i === 'number' ?
+                        i : 0;
+            };
+
+            // Total over all pages
+            total = api
+                .column( t )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                } );
+
+            // Total over this page
+            pageTotal = api
+                .column( t, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            // Update footer
+            $( api.column( t ).footer() ).html(
+                {#total.toFixed(2)#}
+                pageTotal.toFixed(2) +'<br>'+ total.toFixed(2)
+            );
+        },
+        //  end total
+
+        });
+
+
+        function format ( data ) {
+            trs='';
+            for (i = 0; i < data.length; i++) {
+                trs +=
+                    '<tr>'+
+                        '<td>'+data[i]['username']+'</td>'+
+                        '<td>'+data[i]['company_name']+'</td>'+
+                        '<td>'+data[i]['sign_date']+'</td>'+
+                        '<td>'+data[i]['sf_name']+'</td>'+
+                        '<td>'+data[i]['consume']+'</td>'+
+                    '</tr>';
+             }
+
+            // `d` is the original data object for the row
+            return '<table style="background-color: antiquewhite;width: 70%">'+
+                '<thead>'+
+                    '<tr>'+
+                        '<th>账户名称</th>'+
+                        '<th>公司名称</th>'+
+                        '<th>计入业绩</th>'+
+                        '<th>SF账号</th>'+
+                        '<th>季度消费</th>'+
+                    '</tr>'+
+                '</thead>'+
+
+                '<tbody>'+
+                    trs+
+                '</tbody>'+
+            '</table>';
+        }
+
+
+        $('#tab tbody').on('click', 'td.details-control', function () {
+            var tr = $(this).closest('tr');
+            var row = table.row( tr );
+            var n = $(this).siblings()[0].innerText;
+            $.post('{% url 'data:personal_detail' %}',{n:n,csrfmiddlewaretoken:'{{ csrf_token }}'},function (data) {
+
+                if ( row.child.isShown() ) {
+                    // This row is already open - close it
+                    row.child.hide();
+                    tr.removeClass('shown');
+                }
+                else {
+                    // Open this row
+                    row.child( format(data)).show();
+                    tr.addClass('shown');
+                }
+                });
+
+        })
+
+    });
+
+    </script>
+
+{% endblock %}

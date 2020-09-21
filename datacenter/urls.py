@@ -43,5 +43,8 @@ urlpatterns = [
 
     path('invalid/',views.invalid,name='invalid'),
     path('get_invalid/',views.get_invalid,name='get_invalid'),
+    path('personal/',views.personal,name='personal'),
+    path('personal_detail/',views.personal_detail,name='personal_detail'),
+
 
 ]

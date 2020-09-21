@@ -5,9 +5,9 @@ from rbac import models
 class LoginForm(forms.Form):
     username=forms.CharField(
         label='账户名称',
-        min_length=3,
+        min_length=2,
         max_length=16,
-        error_messages={'min_length': '最小长度3位','max_length': '最大长度16位'},
+        error_messages={'min_length': '最小长度2位','max_length': '最大长度16位'},
         widget=forms.TextInput(
             attrs={'class':'form-control'},
         ),

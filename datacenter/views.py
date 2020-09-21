@@ -630,3 +630,127 @@ def get_invalid(request):
         'invalid_data':data_list,
     }
     return JsonResponse(context)
+
+
+def personal(request):
+    # 数据最新日期
+    latest_date = models.Account.get_latest_date()
+    # 新开最新日期
+    new_date = models.Personal.get_latest_date()
+    # 计算季度第一天
+    quarter_start_day = datetime.date(latest_date.year, latest_date.month - (latest_date.month - 1) % 3, 1)
+
+    username = request.session.get('user_info')['username']
+    realname = request.session.get('user_info')['realname']
+    # print(username,realname,quarter_start_day,latest_date,new_date)
+
+    alldata=None
+
+    if realname == '员工':
+
+        userid = models.Personal.objects.values('userid').filter(date=new_date,frame1=username)
+        alluserid=[i['userid'] for i in userid]
+        sql = ''
+        if len(alluserid) > 1:
+            sql = "select p.id,t.username,p.company_name,p.sign_date,p.sf_name,sum(t.allconsume) as consume from datacenter_personal p left join datacenter_total t on p.userid=t.userid " \
+                  "where t.date BETWEEN '{}' and '{}' and t.userid in {} group by t.username".format(quarter_start_day,latest_date,tuple(alluserid))
+        elif len(alluserid) == 1:
+            sql = "select p.id,t.username,p.company_name,p.sign_date,p.sf_name,sum(t.allconsume) as consume from datacenter_personal p left join datacenter_total t on p.userid=t.userid " \
+                  "where t.date BETWEEN '{}' and '{}' and t.userid='{}' group by t.username".format(quarter_start_day,latest_date,alluserid[0])
+        alldata = models.Personal.objects.raw(sql)
+
+    if realname == '主管':
+        userid = models.Personal.objects.values('userid').filter(date=new_date, frame2=username)
+        alluserid=[i['userid'] for i in userid]
+
+        sql = ''
+        if len(alluserid) > 1:
+            sql = "select p.id,p.frame1,sum(t.allconsume) as consume from datacenter_personal p left join datacenter_total t on p.userid=t.userid " \
+                  "where t.date BETWEEN '{}' and '{}' and t.userid in {} group by p.frame1".format(quarter_start_day,latest_date,tuple(alluserid))
+        elif len(alluserid) == 1:
+            sql = "select p.id,p.frame1,sum(t.allconsume) as consume from datacenter_personal p left join datacenter_total t on p.userid=t.userid " \
+                  "where t.date BETWEEN '{}' and '{}' and t.userid ='{}' group by p.frame1".format(quarter_start_day,latest_date,alluserid[0])
+        alldata = models.Personal.objects.raw(sql)
+
+    if realname == '经理':
+        userid = models.Personal.objects.values('userid').filter(date=new_date, frame3=username)
+        alluserid=[i['userid'] for i in userid]
+
+        sql = ''
+        if len(alluserid) >1:
+            sql = "select p.id,p.frame1,sum(t.allconsume) as consume from datacenter_personal p left join datacenter_total t on p.userid=t.userid " \
+                  "where t.date BETWEEN '{}' and '{}' and t.userid in {} group by p.frame1".format(quarter_start_day,latest_date,tuple(alluserid))
+        elif len(alluserid) == 1:
+            sql = "select p.id,p.frame1,sum(t.allconsume) as consume from datacenter_personal p left join datacenter_total t on p.userid=t.userid " \
+                  "where t.date BETWEEN '{}' and '{}' and t.userid ='{}' group by p.frame1".format(quarter_start_day,latest_date,alluserid[0])
+        alldata = models.Personal.objects.raw(sql)
+
+    if realname == '总监':
+        userid = models.Personal.objects.values('userid').filter(date=new_date, frame4=username)
+        alluserid=[i['userid'] for i in userid]
+
+        sql = ''
+        if len(alluserid) > 1:
+            sql = "select p.id,p.frame1,p.depart,sum(t.allconsume) as consume from datacenter_personal p left join datacenter_total t on p.userid=t.userid " \
+                  "where t.date BETWEEN '{}' and '{}' and t.userid in {} group by p.frame1".format(quarter_start_day,latest_date,tuple(alluserid))
+        elif len(alluserid) == 1:
+            sql = "select p.id,p.frame1,p.depart,sum(t.allconsume) as consume from datacenter_personal p left join datacenter_total t on p.userid=t.userid " \
+                  "where t.date BETWEEN '{}' and '{}' and t.userid ='{}' group by p.frame1".format(quarter_start_day,latest_date,alluserid[0])
+        alldata = models.Personal.objects.raw(sql)
+
+    if realname == 'all':
+        userid = models.Personal.objects.values('userid').filter(date=new_date)
+        alluserid=[i['userid'] for i in userid]
+
+        sql = ''
+        if len(alluserid) > 1:
+            sql = "select p.id,p.frame1,p.depart,sum(t.allconsume) as consume from datacenter_personal p left join datacenter_total t on p.userid=t.userid " \
+                  "where t.date BETWEEN '{}' and '{}' and t.userid in {} group by p.frame1".format(quarter_start_day,latest_date,tuple(alluserid))
+        elif len(alluserid) == 1:
+            sql = "select p.id,p.frame1,p.depart,sum(t.allconsume) as consume from datacenter_personal p left join datacenter_total t on p.userid=t.userid " \
+                  "where t.date BETWEEN '{}' and '{}' and t.userid ='{}' group by p.frame1".format(quarter_start_day,latest_date,alluserid[0])
+        alldata = models.Personal.objects.raw(sql)
+
+
+    context={
+        'latest_date':latest_date,
+        'alldata':alldata
+    }
+    return render(request, 'datacenter/personal.html',context)
+
+
+def personal_detail(request):
+    # 数据最新日期
+    latest_date = models.Account.get_latest_date()
+    # 新开最新日期
+    new_date = models.Personal.get_latest_date()
+    # 计算季度第一天
+    quarter_start_day = datetime.date(latest_date.year, latest_date.month - (latest_date.month - 1) % 3, 1)
+    name = request.POST.get('n')
+
+    userid = models.Personal.objects.values('userid').filter(date=new_date, frame1=name)
+    alluserid = [i['userid'] for i in userid]
+
+    sql = ''
+    if len(alluserid) > 1:
+        sql = "select p.id,t.username,p.company_name,p.sign_date,p.sf_name,sum(t.allconsume) as consume from datacenter_personal p left join datacenter_total t on p.userid=t.userid " \
+              "where t.date BETWEEN '{}' and '{}' and t.userid in {} group by t.username order by consume desc".format(quarter_start_day,latest_date,tuple(alluserid))
+
+    elif len(alluserid) == 1:
+        sql = "select p.id,t.username,p.company_name,p.sign_date,p.sf_name,sum(t.allconsume) as consume from datacenter_personal p left join datacenter_total t on p.userid=t.userid " \
+              "where t.date BETWEEN '{}' and '{}' and t.userid= '{}' group by t.username".format(quarter_start_day,latest_date,alluserid[0])
+
+    alldata = models.Personal.objects.raw(sql)
+
+    context=[]
+    for data in alldata:
+        d={}
+        d['username']=data.username
+        d['company_name']=data.company_name
+        d['sign_date']=data.sign_date
+        d['sf_name']=data.sf_name
+        d['consume']=data.consume
+        context.append(d)
+
+    return JsonResponse(context,safe=False)
+
