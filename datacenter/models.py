@@ -193,7 +193,7 @@ class Personal(models.Model):
     sf_name = models.CharField(max_length=64,verbose_name='SF二级账号')
 
     class Meta:
-        verbose_name = verbose_name_plural = '开户消费'
+        verbose_name = verbose_name_plural = '商务新户消费'
         ordering = ['-date']
         get_latest_by = 'date'
 

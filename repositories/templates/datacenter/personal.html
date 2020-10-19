@@ -63,27 +63,35 @@
                                 </tfoot>
 
                                 <tbody>
-                                    {% for data in alldata %}
-                                        <tr>
-                                            <td>
-                                                {{ data.username }}
-                                            </td>
-                                            <td>
-                                                {{ data.company_name }}
-                                            </td>
-                                            <td>
-                                                {{ data.sign_date }}
-                                            </td>
-                                            <td>
-                                                {{ data.sf_name }}
-                                            </td>
-                                            <td>
-                                                {{ data.consume }}
-                                            </td>
+                                    {% if alldata %}
 
-                                        </tr>
+                                        {% for data in alldata %}
+                                            <tr>
+                                                <td>
+                                                    {{ data.username }}
+                                                </td>
+                                                <td>
+                                                    {{ data.company_name }}
+                                                </td>
+                                                <td>
+                                                    {{ data.sign_date }}
+                                                </td>
+                                                <td>
+                                                    {{ data.sf_name }}
+                                                </td>
+                                                <td>
+                                                    {{ data.consume }}
+                                                </td>
 
-                                    {% endfor %}
+                                            </tr>
+
+                                        {% endfor %}
+
+                                    {% else %}
+
+                                        <tr><td colspan="5">当前没有数据</td></tr>
+
+                                    {% endif %}
 
                                 </tbody>
 
@@ -106,22 +114,31 @@
                                 </tfoot>
 
                                 <tbody>
-                                    {% for data in alldata %}
-                                        <tr>
-                                            <td class="details-control">
-                                            </td>
-                                            <td>
-                                                {{ data.frame1 }}
-                                            </td>
-                                            <td>
-                                                {{ data.depart }}
-                                            </td>
-                                            <td>
-                                                {{ data.consume }}
-                                            </td>
 
-                                        </tr>
-                                    {% endfor %}
+                                    {% if alldata %}
+
+                                        {% for data in alldata %}
+                                            <tr>
+                                                <td class="details-control">
+                                                </td>
+                                                <td>
+                                                    {{ data.frame1 }}
+                                                </td>
+                                                <td>
+                                                    {{ data.depart }}
+                                                </td>
+                                                <td>
+                                                    {{ data.consume }}
+                                                </td>
+
+                                            </tr>
+                                        {% endfor %}
+
+                                    {% else %}
+
+                                        <tr><td colspan="4">当前没有数据</td></tr>
+
+                                    {% endif %}
 
                                 </tbody>
 
