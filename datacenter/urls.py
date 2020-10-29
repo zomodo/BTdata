@@ -45,6 +45,7 @@ urlpatterns = [
     path('get_invalid/',views.get_invalid,name='get_invalid'),
     path('personal/',views.personal,name='personal'),
     path('personal_detail/',views.personal_detail,name='personal_detail'),
+    path('personal_chart/',views.personal_chart,name='personal_chart'),
 
 
 ]

@@ -36,6 +36,23 @@
 
 {% block content %}
 
+    <div class="modal fade" id="modal-chart">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+                <div class="modal-body">
+
+                    <div id="container" style="min-width:400px;height:400px"></div>
+
+                </div>
+
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+
     <div class="row">
 
         <div class="col-12">
@@ -66,7 +83,7 @@
                                     {% if alldata %}
 
                                         {% for data in alldata %}
-                                            <tr>
+                                            <tr data-toggle="modal" data-target="#modal-chart" data-name={{ data.username }}>
                                                 <td>
                                                     {{ data.username }}
                                                 </td>
@@ -170,6 +187,10 @@
     <script src="{% static 'js/dataTables.responsive.min.js' %}"></script>
     <script src="{% static 'js/responsive.bootstrap4.min.js' %}"></script>
     <!-- js -->
+    <script src="{% static 'js/highcharts/highcharts.js' %}"></script>
+    <script src="{% static 'js/highcharts/oldie.js' %}"></script>
+    <script src="{% static 'js/highcharts/highcharts-zh_CN.js' %}"></script>
+
     <script>
 
     $(function () {
@@ -209,7 +230,7 @@
             "aaSorting": [[3, "desc"]],     // 默认消费降序排列
             "paging": true,
             "pageLength": 10,
-            "lengthChange": false,
+            "lengthChange": true,
             "searching": true,
             "ordering": true,
             "info": true,
@@ -246,8 +267,9 @@
 
             // Update footer
             $( api.column( t ).footer() ).html(
-                {#total.toFixed(2)#}
-                pageTotal.toFixed(2) +'<br>'+ total.toFixed(2)
+                // total.toFixed(2)
+                Math.round(pageTotal*100)/100 +'<br>'+ Math.round(total*100)/100
+                // pageTotal.toFixed(2) +'<br>'+ total.toFixed(2)
             );
         },
         //  end total
@@ -259,7 +281,7 @@
             trs='';
             for (i = 0; i < data.length; i++) {
                 trs +=
-                    '<tr>'+
+                    '<tr data-toggle="modal" data-target="#modal-chart" data-name='+data[i]['username']+'>'+
                         '<td>'+data[i]['username']+'</td>'+
                         '<td>'+data[i]['company_name']+'</td>'+
                         '<td>'+data[i]['sign_date']+'</td>'+
@@ -305,9 +327,55 @@
                 }
                 });
 
-        })
+        });
+
 
     });
+
+
+    $('#modal-chart').on('show.bs.modal',function (e) {
+        var name = $(e.relatedTarget).data('name');
+
+        $.post('{% url 'data:personal_chart' %}',{name:name,csrfmiddlewaretoken:'{{ csrf_token }}'},function (alldata) {
+
+            var chart = Highcharts.chart('container', {
+                chart: {
+                    type: 'line'
+                },
+                title: {
+                    text: name+" - 近七日消费"
+                },
+                credits: {
+                        enabled: false
+                },
+                xAxis: {
+                    categories: alldata.keys
+                },
+                yAxis: {
+                    title: {
+                        text: '消费'
+                    }
+                },
+                plotOptions: {
+                    line: {
+                        dataLabels: {
+                            // 开启数据标签
+                            enabled: true
+                        },
+                        // 关闭鼠标跟踪，对应的提示框、点击事件会失效
+                        enableMouseTracking: false
+                    }
+                },
+                series: [{
+                    name: '近七日消费',
+                    data: alldata.values,
+                    showInLegend: false // 设置为 false 即为不显示在图例中
+                }]
+            });
+
+        })
+
+    })
 
     </script>
 

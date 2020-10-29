@@ -747,6 +747,11 @@ def personal_detail(request):
 
     alldata = models.Personal.objects.raw(sql)
 
+    # info_sql="select id,date,allconsume from datacenter_total where date between '2020-10-19' and '2020-10-25' and userid in {}".format(tuple(alluserid))
+    # allinfo = models.Total.objects.raw(info_sql)
+    # for i in allinfo:
+    #     print(i,i.date,i.allconsume)
+
     context=[]
     for data in alldata:
         d={}
@@ -759,3 +764,37 @@ def personal_detail(request):
 
     return JsonResponse(context,safe=False)
 
+def personal_chart(request):
+    # 数据最新日期
+    latest_date = models.Account.get_latest_date()
+    # 七天前的日期
+    last_seven_day=latest_date+datetime.timedelta(days=-6)
+
+    name = request.POST.get('name')
+
+    # print(latest_date, last_seven_day , name)
+
+    sql = "select id,date,allconsume from datacenter_total where date between '{}' and '{}' and username='{}'".format(last_seven_day,latest_date,name)
+    alldata = models.Total.objects.raw(sql)
+
+
+    data_dict={}
+    alldata_dict={}
+
+    for i in alldata:
+        data_dict[i.date]=i.allconsume
+        # print(i.date,i.allconsume)
+
+    for d in range(7):
+        c_date=last_seven_day+datetime.timedelta(days=d)
+        if c_date in data_dict.keys():
+            alldata_dict[datetime.datetime.strftime(c_date,"%Y-%m-%d")] = float(data_dict[c_date])
+        else:
+            alldata_dict[datetime.datetime.strftime(c_date,"%Y-%m-%d")] = 0
+
+    context={
+        'keys':list(alldata_dict.keys()),
+        'values':list(alldata_dict.values()),
+    }
+
+    return JsonResponse(context)
