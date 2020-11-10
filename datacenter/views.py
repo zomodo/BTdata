@@ -637,6 +637,10 @@ def personal(request):
     latest_date = models.Account.get_latest_date()
     # 新开最新日期
     new_date = models.Personal.get_latest_date()
+    # 七天前的日期
+    last_seven_day = latest_date + datetime.timedelta(days=-7)
+    # 一天前的日期
+    last_one_day = latest_date + datetime.timedelta(days=-1)
     # 计算季度第一天
     quarter_start_day = datetime.date(latest_date.year, latest_date.month - (latest_date.month - 1) % 3, 1)
 
@@ -645,6 +649,7 @@ def personal(request):
     # print(username,realname,quarter_start_day,latest_date,new_date)
 
     alldata=None
+    date_filter=(datetime.datetime.strftime(latest_date,"%Y-%m-%d"),datetime.datetime.strftime(last_one_day,"%Y-%m-%d"),datetime.datetime.strftime(last_seven_day,"%Y-%m-%d"))
 
     if realname == '员工':
 
@@ -653,13 +658,50 @@ def personal(request):
 
         if alluserid:
             sql = ''
+            sql_more = ''
+            moreinfo = {}
+
             if len(alluserid) > 1:
                 sql = "select p.id,t.username,p.company_name,p.sign_date,p.sf_name,sum(t.allconsume) as consume from datacenter_personal p left join datacenter_total t on p.userid=t.userid " \
                       "where t.date between '{}' and '{}' and t.userid in {} and p.date='{}' group by t.username".format(quarter_start_day,latest_date,tuple(alluserid),new_date)
+
+                sql_more = "select p.id,t.username,t.date,sum(t.allconsume) as s from datacenter_personal p left join datacenter_total t on p.userid=t.userid " \
+                           "where t.date in {} and t.userid in {} and p.date='{}' group by t.username,t.date".format(date_filter, tuple(alluserid), new_date)
+
             elif len(alluserid) == 1:
                 sql = "select p.id,t.username,p.company_name,p.sign_date,p.sf_name,sum(t.allconsume) as consume from datacenter_personal p left join datacenter_total t on p.userid=t.userid " \
                       "where t.date between '{}' and '{}' and t.userid ='{}' and p.date='{}' group by t.username".format(quarter_start_day,latest_date,alluserid[0],new_date)
+
+                sql_more = "select p.id,t.username,t.date,sum(t.allconsume) as s from datacenter_personal p left join datacenter_total t on p.userid=t.userid " \
+                           "where t.date in {} and t.userid = '{}' and p.date='{}' group by t.username,t.date".format(date_filter, alluserid[0], new_date)
+
             alldata = models.Personal.objects.raw(sql)
+            more_data = models.Personal.objects.raw(sql_more)
+
+            for i in more_data:
+
+                if not i.username in moreinfo.keys():
+                    moreinfo[i.username] = [0, 0, 0]
+
+                if i.date == latest_date:
+                    moreinfo[i.username][0] = i.s
+
+                if i.date == last_one_day:
+                    moreinfo[i.username][1] = i.s
+
+                if i.date == last_seven_day:
+                    moreinfo[i.username][2] = i.s
+
+            for a in alldata:
+                if a.username in moreinfo.keys():
+                    a.p1 = moreinfo[a.username][0]
+                    a.p2 = moreinfo[a.username][0] - moreinfo[a.username][1]
+                    a.p3 = moreinfo[a.username][0] - moreinfo[a.username][2]
+                else:
+                    a.p1 = 0
+                    a.p2 = 0
+                    a.p3 = 0
+
 
     if realname == '主管':
         userid = models.Personal.objects.values('userid').filter(date=new_date, frame2=username)
@@ -667,13 +709,50 @@ def personal(request):
 
         if alluserid:
             sql = ''
+            sql_more = ''
+            moreinfo = {}
+
             if len(alluserid) > 1:
                 sql = "select p.id,p.frame1,sum(t.allconsume) as consume from datacenter_personal p left join datacenter_total t on p.userid=t.userid " \
                       "where t.date between '{}' and '{}' and t.userid in {} and p.date='{}' group by p.frame1".format(quarter_start_day,latest_date,tuple(alluserid),new_date)
+
+                sql_more = "select p.id,p.frame1,t.date,sum(t.allconsume) as s from datacenter_personal p left join datacenter_total t on p.userid=t.userid " \
+                           "where t.date in {} and t.userid in {} and p.date='{}' group by p.frame1,t.date".format(date_filter, tuple(alluserid), new_date)
+
             elif len(alluserid) == 1:
                 sql = "select p.id,p.frame1,sum(t.allconsume) as consume from datacenter_personal p left join datacenter_total t on p.userid=t.userid " \
                       "where t.date between '{}' and '{}' and t.userid ='{}' and p.date='{}' group by p.frame1".format(quarter_start_day,latest_date,alluserid[0],new_date)
+
+                sql_more = "select p.id,p.frame1,t.date,sum(t.allconsume) as s from datacenter_personal p left join datacenter_total t on p.userid=t.userid " \
+                           "where t.date in {} and t.userid = '{}' and p.date='{}' group by p.frame1,t.date".format(date_filter, alluserid[0], new_date)
+
             alldata = models.Personal.objects.raw(sql)
+            more_data = models.Personal.objects.raw(sql_more)
+
+            for i in more_data:
+
+                if not i.frame1 in moreinfo.keys():
+                    moreinfo[i.frame1] = [0, 0, 0]
+
+                if i.date == latest_date:
+                    moreinfo[i.frame1][0] = i.s
+
+                if i.date == last_one_day:
+                    moreinfo[i.frame1][1] = i.s
+
+                if i.date == last_seven_day:
+                    moreinfo[i.frame1][2] = i.s
+
+            for a in alldata:
+                if a.frame1 in moreinfo.keys():
+                    a.p1 = moreinfo[a.frame1][0]
+                    a.p2 = moreinfo[a.frame1][0] - moreinfo[a.frame1][1]
+                    a.p3 = moreinfo[a.frame1][0] - moreinfo[a.frame1][2]
+                else:
+                    a.p1 = 0
+                    a.p2 = 0
+                    a.p3 = 0
+
 
     if realname == '经理':
         userid = models.Personal.objects.values('userid').filter(date=new_date, frame3=username)
@@ -681,13 +760,50 @@ def personal(request):
 
         if alluserid:
             sql = ''
+            sql_more = ''
+            moreinfo = {}
+
             if len(alluserid) >1:
                 sql = "select p.id,p.frame1,sum(t.allconsume) as consume from datacenter_personal p left join datacenter_total t on p.userid=t.userid " \
                       "where t.date between '{}' and '{}' and t.userid in {} and p.date='{}' group by p.frame1".format(quarter_start_day,latest_date,tuple(alluserid),new_date)
+
+                sql_more = "select p.id,p.frame1,t.date,sum(t.allconsume) as s from datacenter_personal p left join datacenter_total t on p.userid=t.userid " \
+                           "where t.date in {} and t.userid in {} and p.date='{}' group by p.frame1,t.date".format(date_filter, tuple(alluserid), new_date)
+
             elif len(alluserid) == 1:
                 sql = "select p.id,p.frame1,sum(t.allconsume) as consume from datacenter_personal p left join datacenter_total t on p.userid=t.userid " \
                       "where t.date between '{}' and '{}' and t.userid ='{}' and p.date='{}' group by p.frame1".format(quarter_start_day,latest_date,alluserid[0],new_date)
+
+                sql_more = "select p.id,p.frame1,t.date,sum(t.allconsume) as s from datacenter_personal p left join datacenter_total t on p.userid=t.userid " \
+                           "where t.date in {} and t.userid = '{}' and p.date='{}' group by p.frame1,t.date".format(date_filter, alluserid[0], new_date)
+
             alldata = models.Personal.objects.raw(sql)
+            more_data = models.Personal.objects.raw(sql_more)
+
+            for i in more_data:
+
+                if not i.frame1 in moreinfo.keys():
+                    moreinfo[i.frame1] = [0, 0, 0]
+
+                if i.date == latest_date:
+                    moreinfo[i.frame1][0] = i.s
+
+                if i.date == last_one_day:
+                    moreinfo[i.frame1][1] = i.s
+
+                if i.date == last_seven_day:
+                    moreinfo[i.frame1][2] = i.s
+
+            for a in alldata:
+                if a.frame1 in moreinfo.keys():
+                    a.p1 = moreinfo[a.frame1][0]
+                    a.p2 = moreinfo[a.frame1][0] - moreinfo[a.frame1][1]
+                    a.p3 = moreinfo[a.frame1][0] - moreinfo[a.frame1][2]
+                else:
+                    a.p1 = 0
+                    a.p2 = 0
+                    a.p3 = 0
+
 
     if realname == '总监':
         userid = models.Personal.objects.values('userid').filter(date=new_date, frame4=username)
@@ -695,27 +811,152 @@ def personal(request):
 
         if alluserid:
             sql = ''
+            sql_more = ''
+            moreinfo = {}
+
             if len(alluserid) > 1:
                 sql = "select p.id,p.frame1,p.depart,sum(t.allconsume) as consume from datacenter_personal p left join datacenter_total t on p.userid=t.userid " \
                       "where t.date between '{}' and '{}' and t.userid in {} and p.date='{}' group by p.frame1".format(quarter_start_day,latest_date,tuple(alluserid),new_date)
+
+                sql_more = "select p.id,p.frame1,t.date,sum(t.allconsume) as s from datacenter_personal p left join datacenter_total t on p.userid=t.userid " \
+                           "where t.date in {} and t.userid in {} and p.date='{}' group by p.frame1,t.date".format(date_filter, tuple(alluserid), new_date)
+
             elif len(alluserid) == 1:
                 sql = "select p.id,p.frame1,p.depart,sum(t.allconsume) as consume from datacenter_personal p left join datacenter_total t on p.userid=t.userid " \
                       "where t.date between '{}' and '{}' and t.userid ='{}' and p.date='{}' group by p.frame1".format(quarter_start_day,latest_date,alluserid[0],new_date)
+
+                sql_more = "select p.id,p.frame1,t.date,sum(t.allconsume) as s from datacenter_personal p left join datacenter_total t on p.userid=t.userid " \
+                           "where t.date in {} and t.userid = '{}' and p.date='{}' group by p.frame1,t.date".format(date_filter, alluserid[0], new_date)
+
             alldata = models.Personal.objects.raw(sql)
+            more_data = models.Personal.objects.raw(sql_more)
+
+            for i in more_data:
+
+                if not i.frame1 in moreinfo.keys():
+                    moreinfo[i.frame1] = [0, 0, 0]
+
+                if i.date == latest_date:
+                    moreinfo[i.frame1][0] = i.s
+
+                if i.date == last_one_day:
+                    moreinfo[i.frame1][1] = i.s
+
+                if i.date == last_seven_day:
+                    moreinfo[i.frame1][2] = i.s
+
+            for a in alldata:
+                if a.frame1 in moreinfo.keys():
+                    a.p1 = moreinfo[a.frame1][0]
+                    a.p2 = moreinfo[a.frame1][0] - moreinfo[a.frame1][1]
+                    a.p3 = moreinfo[a.frame1][0] - moreinfo[a.frame1][2]
+                else:
+                    a.p1 = 0
+                    a.p2 = 0
+                    a.p3 = 0
+
 
     if realname == 'all':
+        # --- type1 ---
+        # userid = models.Personal.objects.values('userid').filter(date=new_date)
+        # alluserid=[i['userid'] for i in userid]
+        #
+        # if alluserid:
+        #     sql = ''
+        #     if len(alluserid) > 1:
+        #         sql = "select p.id,p.frame1,case when sum(t.sa) is null then 0 else sum(t.sa) end consume from (select id,userid,frame1 from datacenter_personal where date='{}') p " \
+        #               "left join (select userid,sum(allconsume) sa from datacenter_total where date between '{}' and '{}' and userid in {} group by userid) t " \
+        #               "on p.userid = t.userid group by p.frame1".format(new_date,quarter_start_day,latest_date,tuple(alluserid))
+        #     elif len(alluserid) == 1:
+        #         sql = "select p.id,p.frame1,case when sum(t.sa) is null then 0 else sum(t.sa) end consume from (select id,userid,frame1 from datacenter_personal where date='{}') p " \
+        #               "left join (select userid,sum(allconsume) sa from datacenter_total where date between '{}' and '{}' and userid ='{}' group by userid) t " \
+        #               "on p.userid = t.userid group by p.frame1".format(new_date,quarter_start_day,latest_date,alluserid[0])
+        #     alldata = models.Personal.objects.raw(sql)
+        # --- end type1 ---
+
         userid = models.Personal.objects.values('userid').filter(date=new_date)
         alluserid=[i['userid'] for i in userid]
 
         if alluserid:
             sql = ''
+            sql_more = ''
+            moreinfo={}
+
             if len(alluserid) > 1:
                 sql = "select p.id,p.frame1,p.depart,sum(t.allconsume) as consume from datacenter_personal p left join datacenter_total t on p.userid=t.userid " \
                       "where t.date between '{}' and '{}' and t.userid in {} and p.date='{}' group by p.frame1".format(quarter_start_day,latest_date,tuple(alluserid),new_date)
+
+                sql_more = "select p.id,p.frame1,t.date,sum(t.allconsume) as s from datacenter_personal p left join datacenter_total t on p.userid=t.userid " \
+                           "where t.date in {} and t.userid in {} and p.date='{}' group by p.frame1,t.date".format(date_filter, tuple(alluserid), new_date)
+
             elif len(alluserid) == 1:
                 sql = "select p.id,p.frame1,p.depart,sum(t.allconsume) as consume from datacenter_personal p left join datacenter_total t on p.userid=t.userid " \
                       "where t.date between '{}' and '{}' and t.userid ='{}' and p.date='{}' group by p.frame1".format(quarter_start_day,latest_date,alluserid[0],new_date)
+
+                sql_more = "select p.id,p.frame1,t.date,sum(t.allconsume) as s from datacenter_personal p left join datacenter_total t on p.userid=t.userid " \
+                           "where t.date in {} and t.userid = '{}' and p.date='{}' group by p.frame1,t.date".format(date_filter, alluserid[0], new_date)
+
             alldata = models.Personal.objects.raw(sql)
+            more_data = models.Personal.objects.raw(sql_more)
+
+            for i in more_data:
+
+                if not i.frame1 in moreinfo.keys():
+                    moreinfo[i.frame1] = [0, 0, 0]
+
+                if i.date == latest_date:
+                    moreinfo[i.frame1][0] = i.s
+
+                if i.date == last_one_day:
+                    moreinfo[i.frame1][1] = i.s
+
+                if i.date == last_seven_day:
+                    moreinfo[i.frame1][2] = i.s
+
+            for a in alldata:
+                if a.frame1 in moreinfo.keys():
+                    a.p1 = moreinfo[a.frame1][0]
+                    a.p2 = moreinfo[a.frame1][0] - moreinfo[a.frame1][1]
+                    a.p3 = moreinfo[a.frame1][0] - moreinfo[a.frame1][2]
+                else:
+                    a.p1 = 0
+                    a.p2 = 0
+                    a.p3 = 0
+
+
+        """  sss """
+
+        # moreinfo = {}
+        #
+        # sql_more = "select p.id,p.frame1,t.date,sum(t.allconsume) as s from datacenter_personal p left join datacenter_total t on p.userid=t.userid " \
+        #       "where t.date in {} and t.userid in {} and p.date='{}' group by p.frame1,t.date".format(date_filter,tuple(alluserid), new_date)
+        # data = models.Personal.objects.raw(sql_more)
+        # for i in data:
+        #
+        #     if not i.frame1 in moreinfo.keys():
+        #         moreinfo[i.frame1] = [0, 0, 0]
+        #
+        #     if i.date == latest_date:
+        #         moreinfo[i.frame1][0] = i.s
+        #
+        #     if i.date == last_one_day:
+        #         moreinfo[i.frame1][1] = i.s
+        #
+        #     if i.date == last_seven_day:
+        #         moreinfo[i.frame1][2] = i.s
+        #
+        # for a in alldata:
+        #     if a.frame1 in moreinfo.keys():
+        #         a.p1 = moreinfo[a.frame1][0]
+        #         a.p2 = moreinfo[a.frame1][0] - moreinfo[a.frame1][1]
+        #         a.p3 = moreinfo[a.frame1][0] - moreinfo[a.frame1][2]
+        #     else:
+        #         a.p1 = 0
+        #         a.p2 = 0
+        #         a.p3 = 0
+
+        """  end """
+
 
     context={
         'latest_date':latest_date,
@@ -723,34 +964,96 @@ def personal(request):
     }
     return render(request, 'datacenter/personal.html',context)
 
+# django 合并查询集
 
 def personal_detail(request):
     # 数据最新日期
     latest_date = models.Account.get_latest_date()
     # 新开最新日期
     new_date = models.Personal.get_latest_date()
+    # 七天前的日期
+    last_seven_day = latest_date + datetime.timedelta(days=-7)
+    # 一天前的日期
+    last_one_day = latest_date + datetime.timedelta(days=-1)
     # 计算季度第一天
     quarter_start_day = datetime.date(latest_date.year, latest_date.month - (latest_date.month - 1) % 3, 1)
     name = request.POST.get('n')
 
+
     userid = models.Personal.objects.values('userid').filter(date=new_date, frame1=name)
     alluserid = [i['userid'] for i in userid]
-
     sql = ''
     if len(alluserid) > 1:
-        sql = "select p.id,t.username,p.company_name,p.sign_date,p.sf_name,sum(t.allconsume) as consume from datacenter_personal p left join datacenter_total t on p.userid=t.userid " \
+        sql = "select p.id,p.userid,t.username,p.company_name,p.sign_date,p.sf_name,sum(t.allconsume) as consume from datacenter_personal p left join datacenter_total t on p.userid=t.userid " \
               "where t.date between '{}' and '{}' and t.userid in {} and p.date='{}' group by t.username order by consume desc".format(quarter_start_day,latest_date,tuple(alluserid),new_date)
 
     elif len(alluserid) == 1:
-        sql = "select p.id,t.username,p.company_name,p.sign_date,p.sf_name,sum(t.allconsume) as consume from datacenter_personal p left join datacenter_total t on p.userid=t.userid " \
+        sql = "select p.id,p.userid,t.username,p.company_name,p.sign_date,p.sf_name,sum(t.allconsume) as consume from datacenter_personal p left join datacenter_total t on p.userid=t.userid " \
               "where t.date between '{}' and '{}' and t.userid= '{}' and p.date='{}' group by t.username".format(quarter_start_day,latest_date,alluserid[0],new_date)
+
+
+    # --- type1 ---
+    # if len(alluserid) > 1:
+    #
+    #     sql = "select p.id,t.userid,t.username,p.company_name,p.sign_date,p.sf_name,case when sum(t.sa) is null then 0 else sum(t.sa) end consume from" \
+    #           " (select id,userid,company_name,sign_date,sf_name from datacenter_personal where date='{}' and frame1='{}') p " \
+    #           "left join (select userid,username,sum(allconsume) sa from datacenter_total where date between '{}' and '{}' and userid in {} group by userid,username) t " \
+    #           "on p.userid = t.userid group by t.username order by consume desc".format(new_date,name,quarter_start_day,latest_date,tuple(alluserid))
+    #
+    # elif len(alluserid) == 1:
+    #     sql = "select p.id,t.userid,t.username,p.company_name,p.sign_date,p.sf_name,case when sum(t.sa) is null then 0 else sum(t.sa) end consume from" \
+    #           " (select id,userid,company_name,sign_date,sf_name from datacenter_personal where date='{}' and frame1='{}') p " \
+    #           "left join (select userid,username,sum(allconsume) sa from datacenter_total where date between '{}' and '{}' and userid ='{}' group by userid,username) t " \
+    #           "on p.userid = t.userid group by t.username order by consume desc".format(new_date, name,quarter_start_day, latest_date,alluserid[0])
+    # --- end type1 ---
 
     alldata = models.Personal.objects.raw(sql)
 
-    # info_sql="select id,date,allconsume from datacenter_total where date between '2020-10-19' and '2020-10-25' and userid in {}".format(tuple(alluserid))
-    # allinfo = models.Total.objects.raw(info_sql)
-    # for i in allinfo:
-    #     print(i,i.date,i.allconsume)
+    """ select 2 """
+
+    # moreinfo={}
+    # for u in alluserid:
+    #     data = models.Total.objects.filter(userid=u, date__in=(latest_date, last_one_day, last_seven_day)).values('date').annotate(s=Sum('allconsume'))
+    #
+    #     data_dict = {}
+    #     for i in data:
+    #         data_dict[i['date']] = i['s']
+    #
+    #     p = []
+    #     if latest_date in data_dict.keys():
+    #         p.insert(0, data_dict[latest_date])
+    #     else:
+    #         p.insert(0, 0)
+    #
+    #     if last_one_day in data_dict.keys():
+    #         p.insert(1, p[0] - data_dict[last_one_day])
+    #     else:
+    #         p.insert(1, p[0])
+    #
+    #     if last_seven_day in data_dict.keys():
+    #         p.insert(2, p[0] - data_dict[last_seven_day])
+    #     else:
+    #         p.insert(2, p[0])
+    #
+    #     moreinfo[u]=p
+
+    """  select 3  """
+    moreinfo = {}
+
+    data = models.Total.objects.filter(userid__in=userid, date__in=(latest_date, last_one_day, last_seven_day)).values('userid','date','allconsume')
+    for i in data:
+
+        if not i['userid'] in moreinfo.keys():
+            moreinfo[i['userid']]=[0,0,0]
+
+        if i['date'] == latest_date:
+            moreinfo[i['userid']][0]=i['allconsume']
+
+        if i['date'] == last_one_day:
+            moreinfo[i['userid']][1]=i['allconsume']
+
+        if i['date'] == last_seven_day:
+            moreinfo[i['userid']][2]=i['allconsume']
 
     context=[]
     for data in alldata:
@@ -760,9 +1063,20 @@ def personal_detail(request):
         d['sign_date']=data.sign_date
         d['sf_name']=data.sf_name
         d['consume']=data.consume
+        if data.userid in moreinfo.keys():
+            d['p1'] = moreinfo[data.userid][0]
+            d['p2'] = moreinfo[data.userid][0] - moreinfo[data.userid][1]
+            d['p3'] = moreinfo[data.userid][0] - moreinfo[data.userid][2]
+        else:
+            d['p1'] = 0
+            d['p2'] = 0
+            d['p3'] = 0
+
+
         context.append(d)
 
     return JsonResponse(context,safe=False)
+
 
 def personal_chart(request):
     # 数据最新日期
