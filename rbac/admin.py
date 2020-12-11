@@ -8,6 +8,7 @@ from rbac import models
 @admin.register(models.User)
 class UserAdmin(ImportExportModelAdmin):
     list_display = ['username','realname','email','show_roles']
+    list_filter = ['username','realname','roles']
     filter_horizontal = ['roles']
 
     def show_roles(self,obj):

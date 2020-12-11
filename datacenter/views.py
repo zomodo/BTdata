@@ -856,6 +856,59 @@ def personal(request):
                     a.p3 = 0
 
 
+    if realname == 'LKA':
+
+        edu = "教育行业拓展部"
+        userid = models.Personal.objects.values('userid').filter(date=new_date).exclude(depart=edu)
+        alluserid=[i['userid'] for i in userid]
+
+        if alluserid:
+            sql = ''
+            sql_more = ''
+            moreinfo={}
+
+            if len(alluserid) > 1:
+                sql = "select p.id,p.frame1,p.depart,sum(t.allconsume) as consume from datacenter_personal p left join datacenter_total t on p.userid=t.userid " \
+                      "where t.date between '{}' and '{}' and t.userid in {} and p.date='{}' and p.depart !='{}' group by p.frame1".format(quarter_start_day,latest_date,tuple(alluserid),new_date,edu)
+
+                sql_more = "select p.id,p.frame1,t.date,sum(t.allconsume) as s from datacenter_personal p left join datacenter_total t on p.userid=t.userid " \
+                           "where t.date in {} and t.userid in {} and p.date='{}' and p.depart !='{}' group by p.frame1,t.date".format(date_filter, tuple(alluserid), new_date, edu)
+
+            elif len(alluserid) == 1:
+                sql = "select p.id,p.frame1,p.depart,sum(t.allconsume) as consume from datacenter_personal p left join datacenter_total t on p.userid=t.userid " \
+                      "where t.date between '{}' and '{}' and t.userid ='{}' and p.date='{}' and p.depart !='{}' group by p.frame1".format(quarter_start_day,latest_date,alluserid[0],new_date,edu)
+
+                sql_more = "select p.id,p.frame1,t.date,sum(t.allconsume) as s from datacenter_personal p left join datacenter_total t on p.userid=t.userid " \
+                           "where t.date in {} and t.userid = '{}' and p.date='{}' and p.depart !='{}' group by p.frame1,t.date".format(date_filter, alluserid[0], new_date,edu)
+
+            alldata = models.Personal.objects.raw(sql)
+            more_data = models.Personal.objects.raw(sql_more)
+
+            for i in more_data:
+
+                if not i.frame1 in moreinfo.keys():
+                    moreinfo[i.frame1] = [0, 0, 0]
+
+                if i.date == latest_date:
+                    moreinfo[i.frame1][0] = i.s
+
+                if i.date == last_one_day:
+                    moreinfo[i.frame1][1] = i.s
+
+                if i.date == last_seven_day:
+                    moreinfo[i.frame1][2] = i.s
+
+            for a in alldata:
+                if a.frame1 in moreinfo.keys():
+                    a.p1 = moreinfo[a.frame1][0]
+                    a.p2 = moreinfo[a.frame1][0] - moreinfo[a.frame1][1]
+                    a.p3 = moreinfo[a.frame1][0] - moreinfo[a.frame1][2]
+                else:
+                    a.p1 = 0
+                    a.p2 = 0
+                    a.p3 = 0
+
+
     if realname == 'all':
         # --- type1 ---
         # userid = models.Personal.objects.values('userid').filter(date=new_date)
