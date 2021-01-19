@@ -47,5 +47,7 @@ urlpatterns = [
     path('personal_detail/',views.personal_detail,name='personal_detail'),
     path('personal_chart/',views.personal_chart,name='personal_chart'),
 
-
+    path('KApersonal/', views.KApersonal, name='KApersonal'),
+    path('KApersonal_detail/', views.KApersonal_detail, name='KApersonal_detail'),
+    path('KApersonal_chart/', views.KApersonal_chart, name='KApersonal_chart'),
 ]

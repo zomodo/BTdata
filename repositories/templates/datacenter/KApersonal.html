@@ -3,7 +3,7 @@
 {% load staticfiles %}
 
 {% block title %}
-    商务新户消费
+    KA商务消费监控
 {% endblock %}
 
 {% block css %}
@@ -31,7 +31,7 @@
 {% endblock %}
 
 {% block start-title %}
-    商务新户消费&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-md">截止{{ latest_date }}</span>
+    KA商务消费监控&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-md">截止{{ latest_date }}</span>
 {% endblock %}
 
 
@@ -67,8 +67,7 @@
                                     <tr>
                                         <th>账户名称</th>
                                         <th>公司名称</th>
-                                        <th>计入业绩</th>
-                                        <th>SF账号</th>
+                                        <th>部门</th>
                                         <th>季度消费</th>
                                         <th>昨日消费</th>
                                         <th>环比差值</th>
@@ -78,7 +77,7 @@
 
                                 <tfoot>
                                     <tr>
-                                        <th colspan="7" class="text-right">合计：</th>
+                                        <th colspan="6" class="text-right">合计：</th>
                                         <th></th>
                                     </tr>
                                 </tfoot>
@@ -95,10 +94,7 @@
                                                     {{ data.company_name }}
                                                 </td>
                                                 <td>
-                                                    {{ data.sign_date }}
-                                                </td>
-                                                <td>
-                                                    {{ data.sf_name }}
+                                                    {{ data.depart }}
                                                 </td>
                                                 <td>
                                                     {{ data.consume }}
@@ -311,8 +307,7 @@
                     '<tr data-toggle="modal" data-target="#modal-chart" data-name='+data[i]['username']+'>'+
                         '<td>'+data[i]['username']+'</td>'+
                         '<td>'+data[i]['company_name']+'</td>'+
-                        '<td>'+data[i]['sign_date']+'</td>'+
-                        '<td>'+data[i]['sf_name']+'</td>'+
+                        '<td>'+data[i]['depart']+'</td>'+
                         '<td>'+data[i]['consume']+'</td>'+
                         '<td>'+data[i]['p1']+'</td>'+
                         '<td>'+data[i]['p2']+'</td>'+
@@ -327,8 +322,7 @@
                     '<tr>'+
                         '<th>账户名称</th>'+
                         '<th>公司名称</th>'+
-                        '<th>计入业绩</th>'+
-                        '<th>SF账号</th>'+
+                        '<th>部门</th>'+
                         '<th>季度消费</th>'+
                         '<th>昨日消费</th>'+
                         '<th>环比差值</th>'+
@@ -347,7 +341,7 @@
             var tr = $(this).closest('tr');
             var row = table.row( tr );
             var n = $(this).siblings()[0].innerText;
-            $.post('{% url 'data:personal_detail' %}',{n:n,csrfmiddlewaretoken:'{{ csrf_token }}'},function (data) {
+            $.post('{% url 'data:KApersonal_detail' %}',{n:n,csrfmiddlewaretoken:'{{ csrf_token }}'},function (data) {
 
                 if ( row.child.isShown() ) {
                     // This row is already open - close it
@@ -370,7 +364,7 @@
     $('#modal-chart').on('show.bs.modal',function (e) {
         var name = $(e.relatedTarget).data('name');
 
-        $.post('{% url 'data:personal_chart' %}',{name:name,csrfmiddlewaretoken:'{{ csrf_token }}'},function (alldata) {
+        $.post('{% url 'data:KApersonal_chart' %}',{name:name,csrfmiddlewaretoken:'{{ csrf_token }}'},function (alldata) {
 
             var chart = Highcharts.chart('container', {
                 chart: {

@@ -254,3 +254,25 @@ class PersonalResource(resources.ModelResource):
         report_skipped = False
         use_bulk = True
         force_init_instance = True
+
+
+class KAPersonalResource(resources.ModelResource):
+    date = fields.Field(column_name='日期', attribute='date')
+    userid = fields.Field(column_name='账户ID', attribute='userid')
+    username = fields.Field(column_name='账户名称', attribute='username')
+    sf_name = fields.Field(column_name='SF二级账号', attribute='sf_name')
+    company_name = fields.Field(column_name='公司名称', attribute='company_name')
+    frame1 = fields.Field(column_name='商务', attribute='frame1')
+    frame2 = fields.Field(column_name='主管', attribute='frame2')
+    frame3 = fields.Field(column_name='经理', attribute='frame3')
+    depart = fields.Field(column_name='部门', attribute='depart')
+
+    def before_import_row(self, row, **kwargs):
+        row['日期']=datetime.strftime(row['日期'],"%Y-%m-%d")
+
+    class Meta:
+        models=models.KAPersonal
+        skip_unchanged = True
+        report_skipped = False
+        use_bulk = True
+        force_init_instance = True

@@ -2,7 +2,8 @@ from django.contrib import admin
 from django.db import transaction
 from import_export.admin import ImportExportModelAdmin
 from datacenter.resources import AccountResource,TotalResource,FeedResource,OtherProResource
-from datacenter.resources import Industry1Resource,Industry2Resource,InvalidResource,PersonalResource
+from datacenter.resources import Industry1Resource,Industry2Resource,InvalidResource
+from datacenter.resources import PersonalResource,KAPersonalResource
 
 from datacenter import models
 from datacenter.base_admin import BaseDateAdmin,BaseInvalidAdmin
@@ -51,4 +52,9 @@ class InvalidAdmin(BaseInvalidAdmin):
 @admin.register(models.Personal)
 class PersonalAdmin(ImportExportModelAdmin):
     resource_class = PersonalResource
+    list_display = ['date','userid','company_name','frame1']
+
+@admin.register(models.KAPersonal)
+class KAPersonalAdmin(ImportExportModelAdmin):
+    resource_class = KAPersonalResource
     list_display = ['date','userid','company_name','frame1']
