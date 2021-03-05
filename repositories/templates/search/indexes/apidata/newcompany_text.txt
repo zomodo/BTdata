@@ -1,0 +1,3 @@
+{{ object.companyName }}
+{{ object.location }}
+{{ object.makesOffer }}

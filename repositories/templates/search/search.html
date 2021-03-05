@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% load highlight %}
+
+{% block css %}
+    <style>
+        .highlight_word{
+            color: red;
+        }
+    </style>
+{% endblock %}
+
+{% block start-title %}
+    工商信息搜索
+{% endblock %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+
+        {% if query %}
+
+            {% for result in page.object_list %}
+
+                <div class="card-body border-bottom">
+                        <h5>
+                            <a href="{% url 'api:company_detail' result.object.identifier %}">
+                                {{ result.object.companyName }}
+                            </a>
+                        </h5>
+
+                        <div class="base-info mt-2">
+                            <span class="card-link">法人代表：{{ result.object.founder }}</span>
+                            <span class="card-link">注册资本：{{ result.object.registerMoney }}</span>
+                            <span class="card-link">成立日期：{{ result.object.date }}</span>
+                        </div>
+                        <div class="address-info mt-1">
+                            <p class="card-text">
+                                经营范围：
+                                {% highlight result.object.makesOffer with query html_tag "span" css_class "highlight_word" %}
+                            </p>
+                        </div>
+                </div>
+
+{#                <p>#}
+{#                    <a href="{% url 'api:company_detail' result.object.identifier %}">#}
+{#                        {{ result.object.companyName }}#}
+{#                    </a>#}
+{#                    <div>#}
+{#                        {% highlight result.object.makesOffer with query html_tag "span" css_class "highlight_word" %}#}
+{#                    </div>#}
+{#                </p>#}
+
+            {% empty %}
+                <div class="card-body">没有结果，换个方式再试一试</div>
+            {% endfor %}
+
+
+            {% if page.has_previous or page.has_next %}
+                <div class="card-footer">
+                    <nav aria-label="Contacts Page Navigation">
+                        <ul class="pagination justify-content-center m-0">
+
+                            {% if page.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?q={{ query }}&amp;page={{ page.previous_page_number }}">
+                                        上一页
+                                    {% if page.has_previous %}</a>{% endif %}
+                                </li>
+                            {% endif %}
+
+                            {% if page.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?q={{ query }}&amp;page={{ page.next_page_number }}">
+                                        下一页
+                                    {% if page.has_next %}</a>{% endif %}
+                                </li>
+                            {% endif %}
+
+
+                        </ul>
+                    </nav>
+                </div>
+
+            {% endif %}
+
+
+{#            {% if page.has_previous or page.has_next %}#}
+{#                <div>#}
+{#                    {% if page.has_previous %}<a href="?q={{ query }}&amp;page={{ page.previous_page_number }}">{% endif %}&laquo; 上一页{% if page.has_previous %}</a>{% endif %}#}
+{#                    |#}
+{#                    {% if page.has_next %}<a href="?q={{ query }}&amp;page={{ page.next_page_number }}">{% endif %}下一页 &raquo;{% if page.has_next %}</a>{% endif %}#}
+{#                </div>#}
+{#            {% endif %}#}
+
+
+        {% else %}
+            {# Show some example queries to run, maybe query syntax, something else? #}
+        {% endif %}
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

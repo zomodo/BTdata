@@ -46,6 +46,8 @@ urlpatterns = [
 
     path('ckeditor/',include('ckeditor_uploader.urls')),
 
+    path('search/',include('haystack.urls')),
+
 ] + static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
 
 # 意思是当DEBUG=True时候引入django-debug-toolbar的debug_toolbar，并配置对应的URL地址
