@@ -3,6 +3,9 @@ from django.http import JsonResponse
 from django.db.models import Sum,Q,F
 import datetime
 import calendar
+import jieba
+import jieba.analyse
+from collections import Counter
 
 from django.views.decorators.cache import cache_page
 
@@ -329,3 +332,64 @@ def company_detail(request,code):
         'company':company,
     }
     return render(request,'apidata/company_detail.html',context)
+
+
+def searchword(request):
+
+    if request.method == 'GET':
+        latest_date = models.SearchWord.get_latest_date()
+        end_date = datetime.timedelta(days=6)+latest_date
+
+        context={
+            "latest_date":latest_date,
+            "end_date":end_date,
+
+        }
+        return render(request,'apidata/searchword.html',context)
+
+    if request.method == 'POST':
+        area=request.POST.get('area')
+        indus1=request.POST.get('indus1')
+        indus2=request.POST.get('indus2')
+        s={}
+        if area != 'all':
+            s['depart_1']=area
+        if indus1:
+            s['indus_1']=indus1
+        if indus2 != 'all':
+            s['indus_2']=indus2
+
+        c1=Counter()
+        c2=Counter()
+        # jieba.enable_parallel(4)      # 并行分词 ，不支持windows
+        data1=models.SearchWord.objects.filter(**s).only('searchword')
+        data2=models.SearchWord.objects.filter(**s).only('searchword').order_by('-consume')[:100]
+        if data1:
+            for i in data1:
+                word=jieba.analyse.extract_tags(i.searchword)
+                for w in word:
+                    c1[w]+=1
+
+            for i in data2:
+                word=jieba.analyse.extract_tags(i.searchword)
+                for w in word:
+                    c2[w]+=1
+
+            data1_list=[]
+            for wd in c1.most_common(50):
+                data_dict = {}
+                data_dict['name']=wd[0]
+                data_dict['weight']=wd[1]
+                data1_list.append(data_dict)
+
+            data2_list=[]
+            for wd in c2.most_common(50):
+                data_dict = {}
+                data_dict['name']=wd[0]
+                data_dict['weight']=wd[1]
+                data2_list.append(data_dict)
+
+            # print(data_list)
+            return JsonResponse({'c1': data1_list,'c2': data2_list})
+
+        return JsonResponse({'c1':[{'name':'没有数据'}],'c2':[{'name':'没有数据'}]})

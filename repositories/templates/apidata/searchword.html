@@ -1,0 +1,261 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+{% block title %}
+    搜索词查询
+{% endblock %}
+
+{% block css %}
+    <!-- load select2 -->
+    <link rel="stylesheet" href="{% static 'css/select2.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/select2-bootstrap4.min.css' %}">
+
+{% endblock %}
+
+{% block start-title %}
+    搜索词查询
+{% endblock %}
+
+
+{% block content %}
+
+    <div class="card card-primary card-outline card-tabs">
+
+        <div class="tab-pane fade show active" id="custom-content-below-home" role="tabpanel" aria-labelledby="custom-content-below-home-tab">
+
+            <div class="card-header">
+                <div class="card-tools float-left">
+                    <div class="input-group input-group-sm">
+
+                        <button type="button" class="btn btn-default">
+                            <i class="far fa-calendar-alt"></i>
+                            <span id="showdate2"> {{ latest_date | date:"Y-m-d" }} 至 {{ end_date | date:"Y-m-d" }} </span>
+                            <!-- i class="fas fa-caret-down"></i-->
+                        </button>
+                        &nbsp;
+                        <select class="select2bs4" id="area" style="width: 130px">
+                            <option value="all">全省</option>
+                            <option value="武汉">武汉</option>
+                            <option value="宜昌">宜昌</option>
+                            <option value="襄阳">襄阳</option>
+                            <option value="黄石">黄石</option>
+                            <option value="十堰">十堰</option>
+                            <option value="孝感">孝感</option>
+                            <option value="黄冈">黄冈</option>
+                            <option value="荆州">荆州</option>
+                            <option value="恩施">恩施</option>
+                            <option value="随州">随州</option>
+                            <option value="荆门">荆门</option>
+                            <option value="鄂州">鄂州</option>
+                            <option value="仙桃">仙桃</option>
+                            <option value="潜江">潜江</option>
+                            <option value="天门">天门</option>
+                            <option value="咸宁">咸宁</option>
+                            <option value="神农架">神农架</option>
+
+                        </select>
+                        &nbsp;
+                        <select class="select2bs4" id="indus1" style="width: 180px">
+                            <!-- options -->
+                        </select>
+                        &nbsp;
+                        <select class="select2bs4" id="indus2" style="width: 180px">
+                            <!-- options -->
+                        </select>
+                        &nbsp;
+                        <input type="button" id="search_btn" class="btn btn-outline-primary ml-2" value="查 询">
+
+                    </div>
+                </div>
+            </div>
+            <!-- /.card-header -->
+
+        </div>
+    </div>
+
+
+    <div class="card">
+
+        <div class="card-header">
+                <p class="m-0 text-muted">词云是对海量文字内容中出现频率较高的“关键词”的视觉突出，即出现越多的“关键词”字体越大。</p>
+                <p class="m-0 text-muted">左图为行业全部搜索词进行分词后绘制的词云，右图为行业高消费的搜索词进行分词后绘制的词云。</p>
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-6" id="container1"></div>
+
+                <div class="col-md-6" id="container2"></div>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+{% endblock %}
+
+
+{% block js %}
+
+    <script src="{% static 'js/bootstrap4/util.js' %}"></script>
+    <script src="{% static 'js/bootstrap4/dropdown.js' %}"></script>
+    <script src="{% static 'js/bootstrap4/popper.js' %}"></script>
+    <script src="{% static 'js/bootstrap4/bootstrap.min.js' %}"></script>
+    <!-- load select2 -->
+    <script src="{% static 'js/select2.full.min.js' %}"></script>
+    <!-- load highcharts -->
+{#    <script src="{% static 'js/highcharts/highcharts.js' %}"></script>#}
+{#    <script src="{% static 'js/highcharts/exporting.js' %}"></script>#}
+{#    <script src="{% static 'js/highcharts/wordcloud.js' %}"></script>#}
+{#    <script src="{% static 'js/highcharts/oldie.js' %}"></script>#}
+
+    <script src="https://code.highcharts.com.cn/highcharts/highcharts.js"></script>
+    <script src="https://code.highcharts.com.cn/highcharts/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com.cn/highcharts/modules/wordcloud.js"></script>
+    <script src="https://code.highcharts.com.cn/highcharts/modules/oldie.js"></script>
+
+
+    <script>
+
+        $('.select2bs4').select2({
+            theme: 'bootstrap4'
+        });
+
+        $(function () {
+
+            getstart();
+
+            function wordcloud1(c1) {
+
+                Highcharts.chart('container1', {
+                    series: [{
+                        type: 'wordcloud',
+                        name:'频次',
+                        data: c1
+                    }],
+                    credits: {
+                            enabled: false
+                    },
+                    title: {
+                        text: '全部搜索词'
+                    }
+                });
+
+            }
+
+            function wordcloud2(c2) {
+
+                Highcharts.chart('container2', {
+                    series: [{
+                        type: 'wordcloud',
+                        name:'频次',
+                        data: c2
+                    }],
+                    credits: {
+                            enabled: false
+                    },
+                    title: {
+                        text: '高消费搜索词'
+                    }
+                });
+
+            }
+
+
+            function getindus1() {
+                $.get("{% url 'data:get_indus1' %}",function (ret) {
+                    // console.log(ret);
+                    var op_list=[];
+                    // op_list.push("<option value='all'>所有行业</option>");
+                    $.each(ret,function (i,v) {
+                        op="<option value="+v+">"+v+"</option>";
+                        op_list +=op;
+                    });
+                    // console.log(op_list);
+                    $('#indus1').html(op_list);
+
+                });
+            }
+
+            function getindus2(indus1_name) {
+
+                $.get("{% url 'data:get_indus2' %}",{'indus1':indus1_name},function (ret) {
+                    //console.log(ret);
+                    var op_list=[];
+                    op_list.push("<option value='all'>------</option>");
+                    $.each(ret,function (i,v) {
+                        op="<option value="+v+">"+v+"</option>";
+                        op_list += op;
+                    });
+                    // $('#indus2').find('option').remove();
+                    $('#indus2').html(op_list);
+
+                });
+
+            }
+
+
+            $('#indus1').change(function () {
+                indus1_name=$('#indus1').val();
+                getindus2(indus1_name)
+            });
+
+
+
+            function getstart(){
+
+                getindus1();
+                $('#indus1').html("<option value='IT/消费电子'>IT/消费电子</option>");
+                indus1_name=$('#indus1').val();
+
+                getindus2(indus1_name);
+                $('#indus2').html("<option value='all'>------</option>");
+
+                getdata();
+
+            }
+
+
+            $("#search_btn").click(function () {
+
+                getdata();
+
+            });
+
+
+            function getdata() {
+
+                var area=$("#area").val();
+                var indus1=$("#indus1").val();
+                var indus2=$("#indus2").val();
+                // console.log(area,indus1,indus2);
+
+                $.post(
+                    "{% url 'api:searchword' %}",
+                    {
+                        area:area,
+                        indus1:indus1,
+                        indus2:indus2,
+                        csrfmiddlewaretoken:'{{ csrf_token }}',
+                    },
+                    function (ret) {
+                        wordcloud1(ret['c1']);
+                        wordcloud2(ret['c2']);
+
+                    },
+                )
+
+            }
+
+
+        })
+
+    </script>
+
+{% endblock %}

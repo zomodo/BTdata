@@ -34,4 +34,6 @@ urlpatterns = [
     path('company/', views.company, name='company'),
     path('company/<str:code>', views.company_detail, name='company_detail'),
 
+    path('searchword/',views.searchword,name='searchword'),
+
 ]

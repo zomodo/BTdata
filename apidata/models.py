@@ -107,3 +107,30 @@ class NewCompany(models.Model):
         allcount=cls.objects.count()
 
         return latest_date,allcount
+
+
+class SearchWord(models.Model):
+    date=models.DateField(verbose_name='日期')
+    userid=models.CharField(max_length=16,verbose_name='账户ID')
+    username=models.CharField(max_length=64,verbose_name='账户名称')
+    indus_1=models.CharField(max_length=32,verbose_name='一级行业')
+    indus_2=models.CharField(max_length=32,verbose_name='二级行业')
+    sf_name=models.CharField(max_length=32,null=True,blank=True,verbose_name='SF二级账号')
+    depart_1=models.CharField(max_length=32,verbose_name='一级部门')
+    depart_2=models.CharField(max_length=32,verbose_name='二级部门')
+    depart_3=models.CharField(max_length=32,verbose_name='三级部门')
+    searchword=models.CharField(max_length=128,verbose_name='搜索词')
+    consume=models.DecimalField(max_digits=10,decimal_places=2,verbose_name='消费')
+    click=models.IntegerField(verbose_name='点击')
+    pv=models.IntegerField(verbose_name='展现')
+
+    class Meta:
+        verbose_name=verbose_name_plural='搜索词数据'
+        get_latest_by = 'date'
+
+    @classmethod
+    def get_latest_date(cls):
+        return cls.objects.only('date').latest().date
+
+    def __str__(self):
+        return self.searchword

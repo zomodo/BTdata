@@ -33,3 +33,13 @@ class AreaAdmin(admin.ModelAdmin):
 @admin.register(models.NewCompany)
 class CompanyAdmin(admin.ModelAdmin):
     list_display = ['date','companyName','location']
+
+
+@admin.register(models.SearchWord)
+class SearchWordAdmin(admin.ModelAdmin):
+    list_display = ['date','username','indus_1','indus_2','searchword']
+
+    def get_queryset(self, request):
+        qs=super(SearchWordAdmin, self).get_queryset(request)
+        latest_date=models.SearchWord.get_latest_date()
+        return qs.filter(date=latest_date)
