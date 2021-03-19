@@ -110,6 +110,7 @@
     <!-- load select2 -->
     <script src="{% static 'js/select2.full.min.js' %}"></script>
     <!-- load highcharts -->
+
 {#    <script src="{% static 'js/highcharts/highcharts.js' %}"></script>#}
 {#    <script src="{% static 'js/highcharts/exporting.js' %}"></script>#}
 {#    <script src="{% static 'js/highcharts/wordcloud.js' %}"></script>#}
@@ -119,7 +120,7 @@
     <script src="https://code.highcharts.com.cn/highcharts/modules/exporting.js"></script>
     <script src="https://code.highcharts.com.cn/highcharts/modules/wordcloud.js"></script>
     <script src="https://code.highcharts.com.cn/highcharts/modules/oldie.js"></script>
-
+    <script src="{% static 'js/highcharts/highcharts-zh_CN.js' %}"></script>
 
     <script>
 
@@ -188,7 +189,7 @@
                 $.get("{% url 'data:get_indus2' %}",{'indus1':indus1_name},function (ret) {
                     //console.log(ret);
                     var op_list=[];
-                    op_list.push("<option value='all'>------</option>");
+                    // op_list.push("<option value='all'>------</option>");
                     $.each(ret,function (i,v) {
                         op="<option value="+v+">"+v+"</option>";
                         op_list += op;

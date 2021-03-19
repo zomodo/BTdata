@@ -362,8 +362,14 @@ def searchword(request):
         c1=Counter()
         c2=Counter()
         # jieba.enable_parallel(4)      # 并行分词 ，不支持windows
-        data1=models.SearchWord.objects.filter(**s).only('searchword')
-        data2=models.SearchWord.objects.filter(**s).only('searchword').order_by('-consume')[:100]
+
+        # data1=models.SearchWord.objects.filter(**s).only('searchword')
+        # data2=models.SearchWord.objects.filter(**s).only('searchword').order_by('-consume')[:100]
+
+        data1 = models.SearchWord.objects.filter(**s).only('searchword').order_by('-consume')
+
+        data2 = data1[:100]
+
         if data1:
             for i in data1:
                 word=jieba.analyse.extract_tags(i.searchword)
