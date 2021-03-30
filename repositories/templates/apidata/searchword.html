@@ -170,7 +170,7 @@
 
 
             function getindus1() {
-                $.get("{% url 'data:get_indus1' %}",function (ret) {
+                $.get("{% url 'data:get_meg_indus1' %}",function (ret) {
                     // console.log(ret);
                     var op_list=[];
                     // op_list.push("<option value='all'>所有行业</option>");
@@ -186,7 +186,7 @@
 
             function getindus2(indus1_name) {
 
-                $.get("{% url 'data:get_indus2' %}",{'indus1':indus1_name},function (ret) {
+                $.get("{% url 'data:get_meg_indus2' %}",{'indus1':indus1_name},function (ret) {
                     //console.log(ret);
                     var op_list=[];
                     // op_list.push("<option value='all'>------</option>");

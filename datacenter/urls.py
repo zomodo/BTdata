@@ -41,6 +41,9 @@ urlpatterns = [
     path('get_indus1/',views.get_indus1,name='get_indus1'),
     path('get_indus2/',views.get_indus2,name='get_indus2'),
 
+    path('get_meg_indus1/', views.get_meg_indus1, name='get_meg_indus1'),
+    path('get_meg_indus2/', views.get_meg_indus2, name='get_meg_indus2'),
+
     path('invalid/',views.invalid,name='invalid'),
     path('get_invalid/',views.get_invalid,name='get_invalid'),
     path('personal/',views.personal,name='personal'),

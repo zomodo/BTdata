@@ -58,3 +58,11 @@ class PersonalAdmin(ImportExportModelAdmin):
 class KAPersonalAdmin(ImportExportModelAdmin):
     resource_class = KAPersonalResource
     list_display = ['date','userid','company_name','frame1']
+
+@admin.register(models.MEGIndustry1)
+class MEGIndustry1Admin(admin.ModelAdmin):
+    list_display = ['meg_indus1_name']
+
+@admin.register(models.MEGIndustry2)
+class MEGIndustry2Admin(admin.ModelAdmin):
+    list_display = ['meg_indus1_name','meg_indus2_name']

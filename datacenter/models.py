@@ -227,3 +227,23 @@ class KAPersonal(models.Model):
     def get_latest_date(cls):
         return cls.objects.only('date').latest().date
 
+
+class MEGIndustry1(models.Model):
+    meg_indus1_name=models.CharField(max_length=16,unique=True,verbose_name='MEG一级行业')
+
+    class Meta:
+        verbose_name=verbose_name_plural='MEG一级行业'
+
+    def __str__(self):
+        return self.meg_indus1_name
+
+class MEGIndustry2(models.Model):
+    meg_indus1_name=models.ForeignKey(MEGIndustry1,on_delete=models.CASCADE,verbose_name='MEG一级行业')
+    meg_indus2_name=models.CharField(max_length=16,unique=True,verbose_name='MEG二级行业')
+
+    class Meta:
+        verbose_name=verbose_name_plural='MEG二级行业'
+
+    def __str__(self):
+        return self.meg_indus2_name
+

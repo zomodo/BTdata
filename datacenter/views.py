@@ -492,6 +492,29 @@ def get_indus2(request):
     return JsonResponse(indus2_list,safe=False)
 
 
+# 获取MEG一级行业列表
+def get_meg_indus1(request):
+    indus1_list=[]
+    all_indus1=models.MEGIndustry1.objects.values()
+    for name in all_indus1:
+        indus1_list.append(name['meg_indus1_name'])
+
+    return JsonResponse(indus1_list,safe=False)
+
+
+# 获取MEG二级行业列表
+def get_meg_indus2(request):
+    indus1=request.GET.get('indus1')
+    indus2_list=[]
+
+    indus1_id=models.MEGIndustry1.objects.get(meg_indus1_name=indus1).id
+    all_indus2=models.MEGIndustry2.objects.filter(meg_indus1_name=indus1_id).values()
+    for name in all_indus2:
+        indus2_list.append(name['meg_indus2_name'])
+
+    return JsonResponse(indus2_list,safe=False)
+
+
 # 处理一级行业数据
 def industry_1(request):
     return render(request,'datacenter/industry_1.html')
@@ -1046,6 +1069,7 @@ def personal_detail(request):
 
 
     # --- type1 ---
+
     # if len(alluserid) > 1:
     #
     #     sql = "select p.id,t.userid,t.username,p.company_name,p.sign_date,p.sf_name,case when sum(t.sa) is null then 0 else sum(t.sa) end consume from" \
@@ -1058,6 +1082,7 @@ def personal_detail(request):
     #           " (select id,userid,company_name,sign_date,sf_name from datacenter_personal where date='{}' and frame1='{}') p " \
     #           "left join (select userid,username,sum(allconsume) sa from datacenter_total where date between '{}' and '{}' and userid ='{}' group by userid,username) t " \
     #           "on p.userid = t.userid group by t.username order by consume desc".format(new_date, name,quarter_start_day, latest_date,alluserid[0])
+
     # --- end type1 ---
 
     alldata = models.Personal.objects.raw(sql)
