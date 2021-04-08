@@ -38,7 +38,7 @@ python-dateutil==2.8.1
 python-memcached==1.59
 python-ptrace==0.9.8
 pytz==2019.3
-PyYAML==5.3.1
+PyYAML==5.4
 redis==3.5.3
 requests==2.24.0
 simpleui==4.0.2
