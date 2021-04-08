@@ -6,11 +6,11 @@ import calendar
 import jieba
 import jieba.analyse
 from collections import Counter
-
 from django.views.decorators.cache import cache_page
 
 from apidata import forms
 from apidata import models
+from apidata import es, es_index
 # Create your views here.
 
 # 处理关键词数据
@@ -351,6 +351,7 @@ def searchword(request):
         area=request.POST.get('area')
         indus1=request.POST.get('indus1')
         indus2=request.POST.get('indus2')
+
         s={}
         if area != 'all':
             s['depart_1']=area
@@ -369,6 +370,23 @@ def searchword(request):
         data1 = models.SearchWord.objects.filter(**s).only('searchword').order_by('-consume')
 
         data2 = data1[:100]
+
+        # es_index = settings.HAYSTACK_CONNECTIONS['default']['INDEX_NAME']
+        # es_url = settings.HAYSTACK_CONNECTIONS['default']['URL']
+        # es = Elasticsearch(es_url)
+
+        search_word = ''
+        if area != 'all':
+            search_word += area
+        if indus2 != 'all':
+            search_word += indus2
+        search_word+=' 公司'
+
+        cluedata = es.search(index=es_index,size=50,body={'query': {'match': {'text': search_word}}})
+        allclue = []
+        for i in cluedata['hits']['hits']:
+
+            allclue.append([i['_source']['django_id'], i['_source']['companyName'], i['_source']['location']])
 
         if data1:
             for i in data1:
@@ -395,7 +413,21 @@ def searchword(request):
                 data_dict['weight']=wd[1]
                 data2_list.append(data_dict)
 
-            # print(data_list)
-            return JsonResponse({'c1': data1_list,'c2': data2_list})
+            top_name=data1_list[0:20]
+            data3_list=[]
 
-        return JsonResponse({'c1':[{'name':'没有数据'}],'c2':[{'name':'没有数据'}]})
+            for i in top_name:
+
+                query_time=models.SearchWord.objects.filter(**s,searchword__icontains=i['name']).values('username').distinct().count()
+                query_word=models.SearchWord.objects.filter(**s,searchword__icontains=i['name']).values('searchword').order_by('-consume')[:5]
+
+                i['ct']=query_time
+                i['ex']=' | '.join([d['searchword'] for d in query_word])
+                data3_list.append(i)
+
+            # print(data3_list)
+
+            # print(data_list)
+            return JsonResponse({'c1': data1_list,'c2': data2_list,'c3':data3_list,'c4':allclue})
+
+        return JsonResponse({'c1':[{'name':'没有数据'}],'c2':[{'name':'没有数据'}],'c4':allclue})

@@ -97,6 +97,60 @@
 
     </div>
 
+    <div class="row">
+
+        <div class="col-12">
+            <div class="card">
+                <!-- /.card-header -->
+                <div class="card-body table-responsive p-0" style="height: 300px;">
+                    <table class="table table-head-fixed text-nowrap">
+                        <thead>
+                            <tr>
+                            <th>搜索词</th>
+                            <th>频次</th>
+                            <th>触发账户数</th>
+                            <th>搜索词示例</th>
+                            </tr>
+                        </thead>
+
+                        <tbody class="detail">
+
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+        </div>
+
+    </div>
+
+
+    <div class="row">
+
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body table-responsive p-0" style="height: 300px;">
+                    <table class="table table-head-fixed text-nowrap">
+                        <thead>
+                            <tr>
+                            <th>公司名称（行业相关线索）</th>
+                            <th>所在地区</th>
+                            </tr>
+                        </thead>
+
+                        <tbody class="clue">
+
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+        </div>
+
+    </div>
+
 
 {% endblock %}
 
@@ -216,7 +270,7 @@
                 indus1_name=$('#indus1').val();
 
                 getindus2(indus1_name);
-                $('#indus2').html("<option value='all'>------</option>");
+                $('#indus2').html("<option value='电器'>电器</option>");
 
                 getdata();
 
@@ -224,10 +278,27 @@
 
 
             $("#search_btn").click(function () {
-
+                removetab();
                 getdata();
 
             });
+
+            function removetab(){
+                var table1=document.getElementsByTagName('tbody')[0];
+                var trs1=table1.getElementsByTagName('tr');
+
+                for(var m = trs1.length -1; m >= 0; m--) {
+                    table1.deleteRow(m);
+                }
+
+                var table2=document.getElementsByTagName('tbody')[1];
+                var trs2=table2.getElementsByTagName('tr');
+
+                for(var n = trs2.length -1; n >= 0; n--) {
+                    table2.deleteRow(n);
+                }
+
+            }
 
 
             function getdata() {
@@ -249,8 +320,45 @@
                         wordcloud1(ret['c1']);
                         wordcloud2(ret['c2']);
 
+                        getdetail(ret['c3']);
+                        getclue(ret['c4']);
                     },
                 )
+
+            }
+
+
+            function getdetail(data) {
+                $.each(data,function (i,v) {
+
+                    row="<tr>"+
+                        "<td>"+v['name']+"</td>"+
+                        "<td>"+v['weight']+"</td>"+
+                        "<td>"+v['ct']+"</td>"+
+                        "<td>"+v['ex']+"</td>"+
+                        "</tr>";
+
+                    $('.detail').append(row);
+
+                })
+
+
+            }
+            
+            function getclue(data) {
+
+                $.each(data,function (i,v) {
+
+                    url="{% url 'api:company_detail' 'bb' %}".replace('bb',v[0]);
+
+                    row="<tr>"+
+                        "<td>"+"<a href="+url+">"+v[1]+"</a>"+"</td>"+
+                        "<td>"+v[2]+"</td>"+
+                        "</tr>";
+
+                    $('.clue').append(row);
+
+                });
 
             }
 

@@ -243,7 +243,7 @@
 
 
             function getindus1() {
-                $.get("{% url 'data:get_indus1' %}",function (ret) {
+                $.get("{% url 'data:get_meg_indus1' %}",function (ret) {
                     // console.log(ret);
                     var op_list=[];
                     // op_list.push("<option value='all'>所有行业</option>");
@@ -259,7 +259,7 @@
 
             function getindus2(indus1_name) {
 
-                $.get("{% url 'data:get_indus2' %}",{'indus1':indus1_name},function (ret) {
+                $.get("{% url 'data:get_meg_indus2' %}",{'indus1':indus1_name},function (ret) {
                     //console.log(ret);
                     var op_list=[];
                     $.each(ret,function (i,v) {
@@ -280,7 +280,7 @@
                 $('#indus1').html("<option value='IT/消费电子'>IT/消费电子</option>");
                 indus1_name=$('#indus1').val();
                 getindus2(indus1_name);
-                $('#indus2').html("<option value='3C周边'>3C周边</option>");
+                $('#indus2').html("<option value='电器'>电器</option>");
                 getdata();
             }
 

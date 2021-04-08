@@ -339,13 +339,23 @@ CACHES = {
 #     }
 # }
 
+
+# HAYSTACK_CONNECTIONS = {
+#     'default': {
+#         'ENGINE': 'haystack.backends.whoosh_cn_backend.WhooshEngine',
+#         # PATH为Whoosh 索引文件的存放文件夹
+#         'PATH': os.path.join(os.path.dirname(__file__), 'whoosh_index'),
+#     },
+# }
+
 HAYSTACK_CONNECTIONS = {
     'default': {
-        'ENGINE': 'haystack.backends.whoosh_cn_backend.WhooshEngine',
-        # PATH为Whoosh 索引文件的存放文件夹
-        'PATH': os.path.join(os.path.dirname(__file__), 'whoosh_index'),
+        'ENGINE': 'haystack.backends.elasticsearch5_backend.Elasticsearch5SearchEngine',
+        'URL': 'http://172.16.3.92:9200/',
+        'INDEX_NAME': 'company',
     },
 }
+# HAYSTACK_DEFAULT_OPERATOR = 'OR'
 # 搜索结果分页
 HAYSTACK_SEARCH_RESULTS_PER_PAGE = 20
 # 自动更新索引
